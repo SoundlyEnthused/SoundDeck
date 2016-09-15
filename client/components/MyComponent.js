@@ -4,9 +4,9 @@ export default class MyComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      label: 'Cool!'
+      label: 'Cool!',
     };
-  };
+  }
 
   render() {
     return (
@@ -15,4 +15,4 @@ export default class MyComponent extends React.Component {
       </div>
     );
   }
-};
+}
