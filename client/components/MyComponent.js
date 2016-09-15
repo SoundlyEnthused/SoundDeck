@@ -1,9 +1,18 @@
-var m = require('mithril')
+import React from 'react';
 
-exports.controller = function (options) {}
+export default class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      label: 'Cool!'
+    };
+  };
 
-exports.view = function (ctrl, options) {
-  return m('.my-component', [
-    m('h2', options.title)
-  ])
-}
+  render() {
+    return (
+      <div>
+        <h1>{ this.state.label }</h1>
+      </div>
+    );
+  }
+};

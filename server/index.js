@@ -8,7 +8,10 @@ var routes = express.Router()
 // Provide a browserified file at a specified path
 //
 routes.get('/app-bundle.js',
-  browserify('./client/app.js'))
+  browserify('./client/app.js', {
+    transform: [ [ require('babelify'), { presets: ["es2015", "react"] } ] ]
+  })
+);
 
 //
 // Example endpoint (also tested in test/server/index_test.js)
