@@ -1,30 +1,30 @@
-var browserify = require('browserify-middleware')
-var express = require('express')
-var Path = require('path')
+const browserify = require('browserify-middleware');
+const express = require('express');
+const Path = require('path');
 
-var routes = express.Router()
+const routes = express.Router();
 
 //
 // Provide a browserified file at a specified path
 //
 routes.get('/app-bundle.js',
   browserify('./client/app.js', {
-    transform: [ [ require('babelify'), { presets: ["es2015", "react"] } ] ]
+    transform: [[require('babelify'), { presets: ['es2015', 'react'] }]],
   })
 );
 
 //
 // Example endpoint (also tested in test/server/index_test.js)
 //
-routes.get('/api/tags-example', function(req, res) {
-  res.send(['node', 'express', 'browserify', 'mithril'])
-})
+routes.get('/api/tags-example', (req, res) => {
+  res.send(['node', 'express', 'browserify', 'mithril']);
+});
 
 //
 // Static assets (html, etc.)
 //
-var assetFolder = Path.resolve(__dirname, '../client/public')
-routes.use(express.static(assetFolder))
+const assetFolder = Path.resolve(__dirname, '../client/public');
+routes.use(express.static(assetFolder));
 
 
 if (process.env.NODE_ENV !== 'test') {
@@ -33,28 +33,28 @@ if (process.env.NODE_ENV !== 'test') {
   // This is for supporting browser history pushstate.
   // NOTE: Make sure this route is always LAST.
   //
-  routes.get('/*', function(req, res){
-    res.sendFile( assetFolder + '/index.html' )
-  })
+  routes.get('/*', (req, res) => {
+    res.sendFile(assetFolder + '/index.html');
+  });
 
   //
   // We're in development or production mode;
   // create and run a real server.
   //
-  var app = express()
+  const app = express();
 
   // Parse incoming request bodies as JSON
-  app.use( require('body-parser').json() )
+  app.use(require('body-parser').json());
 
   // Mount our main router
-  app.use('/', routes)
+  app.use('/', routes);
 
   // Start the server!
-  var port = process.env.PORT || 4000
-  app.listen(port)
-  console.log("Listening on port", port)
+  const port = process.env.PORT || 4000;
+  app.listen(port);
+  console.log('Listening on port', port);
 }
 else {
   // We're in test mode; make this file importable instead.
-  module.exports = routes
+  module.exports = routes;
 }
