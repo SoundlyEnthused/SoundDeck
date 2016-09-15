@@ -1,1 +1,1 @@
-./node_modules/.bin/mocha --recursive -r test/bootstrap.js "$@"
+./node_modules/.bin/mocha --compilers js:babel-core/register --recursive -r test/bootstrap.js "$@"
