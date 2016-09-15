@@ -1,5 +1,5 @@
-# SoundDeck
 <img src="https://travis-ci.org/SoundlyEnthused/SoundDeck.svg?branch=master"/>
+# SoundDeck
 TBD
 
 - [Description](#description)
