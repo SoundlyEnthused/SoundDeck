@@ -1,5 +1,5 @@
 # SoundDeck
-
+<img src="https://travis-ci.org/SoundlyEnthused/SoundDeck.svg?branch=master"/>
 TBD
 
 - [Description](#description)
@@ -12,7 +12,7 @@ TBD
 
 ## Description
 
-TBD 
+TBD
 
 ### Tech Stack
 - React
