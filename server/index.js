@@ -1,6 +1,10 @@
-const browserify = require('browserify-middleware');
-const express = require('express');
 const Path = require('path');
+// Imports for express
+const express = require('express');
+const bodyParser = require('body-parser');
+// Imports for browserify-middleware
+const browserify = require('browserify-middleware');
+const babelify = require('babelify');
 
 const routes = express.Router();
 
@@ -9,7 +13,7 @@ const routes = express.Router();
 //
 routes.get('/app-bundle.js',
   browserify('./client/app.js', {
-    transform: [[require('babelify'), { presets: ['es2015', 'react'] }]],
+    transform: [[babelify, { presets: ['es2015', 'react'] }]],
   })
 );
 
@@ -34,7 +38,7 @@ if (process.env.NODE_ENV !== 'test') {
   // NOTE: Make sure this route is always LAST.
   //
   routes.get('/*', (req, res) => {
-    res.sendFile(assetFolder + '/index.html');
+    res.sendFile(`${assetFolder}/index.html`);
   });
 
   //
@@ -44,7 +48,7 @@ if (process.env.NODE_ENV !== 'test') {
   const app = express();
 
   // Parse incoming request bodies as JSON
-  app.use(require('body-parser').json());
+  app.use(bodyParser.json());
 
   // Mount our main router
   app.use('/', routes);
@@ -53,8 +57,7 @@ if (process.env.NODE_ENV !== 'test') {
   const port = process.env.PORT || 4000;
   app.listen(port);
   console.log('Listening on port', port);
-}
-else {
+} else {
   // We're in test mode; make this file importable instead.
   module.exports = routes;
 }
