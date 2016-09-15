@@ -1,36 +1,61 @@
-# Node Catapult
+# SoundDeck
 
-A boilerplate starter project that includes Node, Express, Browserify, and Mithril:
+TBD
 
-* Minimal - Understand everything.
-* Efficient - Great defaults for development and production.
-* Rapid - Get started immediately.
+- [Description](#description)
+    - [Tech Stack](#tech-stack)
+    - [Authors](#authors)
+- [Usage](#usage)
+    - [Getting Started](#getting-started)
+    - [Testing](#testing)
+    - [Git Flow](#git-flow)
 
-## Getting Started
+## Description
 
+TBD 
+
+### Tech Stack
+- React
+- Node/Express
+- Socket.io
+- Mocha/Chai for testing
+
+### Authors
+- [Aaron](https://github.com/)
+- [CC](https://github.com/)
+- [Chris](https://github.com/)
+- [Joe](https://github.com/)
+- [Robert](https://github.com/)
+
+## Usage
+
+### Getting Started
 ```
-$ git clone https://github.com/mindeavor/node-catapult my-project
-$ cd my-project
 $ npm install
 $ npm start
 ```
 
 Now visit [localhost:4000](http://localhost:4000/)
 
-### Running the Tests
+### Testing
 
-There is a basic test framework in your `test/` folder. To run the tests, simply run `npm test`.
+- Run test suite
+> npm test
 
-## Jump-starting your App
+- Run code coverage (make sure you have babel-cli installed globally)
+> npm run cover
 
-[Check the wiki](https://github.com/mindeavor/node-catapult/wiki) for snippets to jump-start your app, including:
+### Git Flow
 
-- Support for SASS and Babel
-- How to set up React.js
-- Express cookie sessions
-- Postgres and knex.js
-- A functional-programming-based "ORM" pattern for your database models
+For a new feature, do:
+> git checkout -b <featureName>
+then work on the feature on the local branch.
 
-## Browserify Middleware
-
-The most notable part of this app is [browserify-middleware](https://github.com/ForbesLindesay/browserify-middleware). Great node packages are exceedingly rare – this is one of those packages.
+To make a pull request:
+> git checkout master
+> git pull
+> git checkout <featureName>
+> git rebase master
+Resolve all conflicts, then
+> git push -u origin <featureName>
+Then submit the pull request to master.
