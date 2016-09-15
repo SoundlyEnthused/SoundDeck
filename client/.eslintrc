@@ -1,0 +1,6 @@
+// Configure client specific lint rules here
+{
+  "env": {
+    "browser": true
+  }
+}
