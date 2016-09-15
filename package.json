@@ -11,7 +11,8 @@
   },
   "scripts": {
     "start": "nodemon server/ --ignore client/",
-    "test": "./test/run.sh"
+    "test": "./scripts/test.sh",
+    "lint": "./scripts/lint.sh"
   },
   "author": "Gilbert <gilbertbagrza@gmail.com>",
   "license": "MIT",
