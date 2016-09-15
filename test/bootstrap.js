@@ -4,4 +4,6 @@
 //
 // e.g. require(TEST_HELPER)
 //
-global.TEST_HELPER = __dirname + '/test-helper.js';
+const path = require('path');
+
+global.TEST_HELPER = path.join(__dirname, '/test-helper.js');
