@@ -1,10 +1,12 @@
 // neded for bootstrap-sass
 import jquery from 'jquery';
 // eslint-disable-next-line
-// import SC from 'soundcloud'; // don't need to use as SC is global!
+import SC from 'soundcloud'; // don't need to use as SC is global!
 import React from 'react';
 import Room from './Room';
-
+import Nav from './Nav';
+import Lobby from './Lobby';
+//import Login from './Login';
 
 // bootstrap-sass needs jQuery to be global
 window.jQuery = jquery;
@@ -14,27 +16,33 @@ window.$ = jquery;
 if (process.env.NODE_ENV !== 'test') {
   // sass doesn't export anything meaninful so disable lint
   // eslint-disable-next-line
-  const css = require('../sass/style.sass'); // require our sass!
+  const css = require('../sass/style.scss'); // require our sass!
 }
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentRoom: undefined,
       label: 'Cool!',
     };
+    this.joinRoom = this.joinRoom.bind(this);
+  }
+  joinRoom(room) {
+    this.setState({
+      currentRoom: room,
+    });
   }
 
   render() {
     return (
-      <div className="container">
-        <div className="row">
-          <div className="col-sm-12">
-            <h1>{ this.state.label }</h1>
-            <Room />
-          </div>
-        </div>
-      </div>
+      <main>
+        <Nav currentRoom={this.state.currentRoom} />
+        <Lobby rooms={['default', 'pop', 'metal']} joinRoom={this.joinRoom} />
+        {
+          this.state.currentRoom ? <Room room={this.state.currentRoom} /> : null
+        }
+      </main>
     );
   }
 }
