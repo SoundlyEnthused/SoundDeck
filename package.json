@@ -9,6 +9,7 @@
       "react"
     ]
   },
+  
   "scripts": {
     "start": "nodemon server/ --ignore client/",
     "test": "./scripts/test_client.sh && ./scripts/test_server.sh",
@@ -32,6 +33,7 @@
     "react": "^15.1.0",
     "react-addons-test-utils": "^15.3.1",
     "react-dom": "^15.1.0",
+    "soundcloud": "^3.1.2",
     "supertest-as-promised": "^3.1.0"
   },
   "devDependencies": {
