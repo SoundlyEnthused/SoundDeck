@@ -1,0 +1,20 @@
+@import '../../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss';
+
+#app {
+  color: purple;
+}
+
+.navbar {
+  border-radius: 0;
+  button {
+    padding: 16px 12px;
+    border-radius: 0;
+    border: none;
+  }
+}
+.lobby {
+  display: none;
+}
+.active {
+  display: block;
+}
