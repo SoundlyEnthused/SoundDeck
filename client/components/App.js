@@ -1,5 +1,8 @@
 import React from 'react';
 import Room from './Room';
+import Nav from './Nav';
+import Lobby from './Lobby';
+//import Login from './Login';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -11,14 +14,11 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <div className="container">
-        <div className="row">
-          <div className="col-sm-12">
-            <h1>{ this.state.label }</h1>
-            <Room />
-          </div>
-        </div>
-      </div>
+      <main>
+        <Nav />
+        <Lobby />
+        <Room />
+      </main>
     );
   }
 }

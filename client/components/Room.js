@@ -9,8 +9,11 @@ export default class Room extends React.Component {
   }
 
   render() {
+    // <Stage />
+    // <Vote />
+    // <Crowd />
     return (
-      <div>
+      <div className="room">
         {this.state.message}
       </div>
     );
