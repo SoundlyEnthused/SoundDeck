@@ -1,11 +1,13 @@
 import React from 'react';
 import { expect } from 'chai';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import MyComponent from '../../client/components/App';
 
 describe('<App />', () => {
-  it('renders an h1 with the text "Cool!"', () => {
-    const wrapper = shallow(<MyComponent />);
-    expect(wrapper.find('h1').html()).to.equal('<h1>Cool!</h1>');
+
+  it('renders a nav bar', () => {
+    const wrapper = mount(<MyComponent />);
+    expect(wrapper.find('nav').length).to.equal(1);
   });
+
 });
