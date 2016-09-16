@@ -4,6 +4,9 @@ import jquery from 'jquery';
 import SC from 'soundcloud'; // don't need to use as SC is global!
 import React from 'react';
 import Room from './Room';
+import Nav from './Nav';
+import Lobby from './Lobby';
+//import Login from './Login';
 
 
 // bootstrap-sass needs jQuery to be global
@@ -24,14 +27,11 @@ export default class App extends React.Component {
 
   render() {
     return (
-      <div className="container">
-        <div className="row">
-          <div className="col-sm-12">
-            <h1>{ this.state.label }</h1>
-            <Room />
-          </div>
-        </div>
-      </div>
+      <main>
+        <Nav />
+        <Lobby />
+        <Room />
+      </main>
     );
   }
 }
