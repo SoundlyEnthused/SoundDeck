@@ -15,11 +15,10 @@ export default class Room extends React.Component {
     // <Stage />
     // <Vote />
     // <Crowd />
-    console.log('SC in Room', SC);
     return (
       <div className="room">
         <div className="container">
-          {this.state.message}
+          <h1> {this.props.room} </h1>
           <SoundCloud url={this.state.track} />
         </div>
       </div>

@@ -26,6 +26,7 @@ export default class App extends React.Component {
       currentRoom: undefined,
       label: 'Cool!',
     };
+    this.joinRoom = this.joinRoom.bind(this);
   }
   joinRoom(room) {
     this.setState({
@@ -37,8 +38,10 @@ export default class App extends React.Component {
     return (
       <main>
         <Nav currentRoom={this.state.currentRoom} />
-        <Lobby rooms={['default', 'pop', 'metal']} joinRoom={this.joinRoom.bind(this)} />
-        <Room />
+        <Lobby rooms={['default', 'pop', 'metal']} joinRoom={this.joinRoom} />
+        {
+          this.state.currentRoom ? <Room room={this.state.currentRoom} /> : null
+        }
       </main>
     );
   }
