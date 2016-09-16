@@ -8,13 +8,27 @@ export default class Room extends React.Component {
     };
   }
 
+  renderPlayer() {
+    return SC.oEmbed('http://soundcloud.com/forss/flickermood', {
+      auto_play: true
+    }).then(function(embed){
+      console.log('oEmbed response: ', embed.html);
+      return embed.html
+    });
+  }
   render() {
     // <Stage />
     // <Vote />
     // <Crowd />
+    console.log('SC in Room', SC);
     return (
       <div className="room">
-        {this.state.message}
+        <div className="container">
+          {this.state.message}
+          {
+            //this.renderPlayer()
+          }
+        </div>
       </div>
     );
   }

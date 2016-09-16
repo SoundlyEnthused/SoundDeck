@@ -25,10 +25,10 @@ export default class App extends React.Component {
               {
                 this.props.rooms.map((room) => {
                   return (
-                    <li className="row lobby--room" key={room}>
-                      <div className="col-sm-12">
-                        {room}
-                        <button onClick={() => { this.joinRoom(room); }}> Join </button>
+                    <li className="row lobby--room list-unstyled" key={room}>
+                      <div className="col-sm-10">{room}</div>
+                      <div className="col-sm-2">
+                        <button className="btn btn-default" onClick={() => { this.joinRoom(room); }}> Join </button>
                       </div>
                     </li>
                   );
