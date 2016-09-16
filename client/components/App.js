@@ -8,15 +8,21 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentRoom: undefined,
       label: 'Cool!',
     };
+  }
+  joinRoom(room) {
+    this.setState({
+      currentRoom: room,
+    });
   }
 
   render() {
     return (
       <main>
-        <Nav />
-        <Lobby />
+        <Nav currentRoom={this.state.currentRoom} />
+        <Lobby rooms={['default', 'pop', 'metal']} joinRoom={this.joinRoom.bind(this)} />
         <Room />
       </main>
     );

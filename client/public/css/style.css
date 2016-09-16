@@ -5806,5 +5806,17 @@ button.close {
 @media print {
   .hidden-print {
     display: none !important; } }
+.navbar {
+  border-radius: 0; }
+  .navbar button {
+    padding: 16px 12px;
+    border-radius: 0;
+    border: none; }
+
+.lobby {
+  display: none; }
+
+.active {
+  display: block; }
 
 /*# sourceMappingURL=style.css.map */
