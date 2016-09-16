@@ -8,7 +8,7 @@ Error: File to import not found or unreadable: ../../node_modules/bootstrap-sass
 3: #app {
 4:   color: purple;
 5: }
-6: 
+6: .navbar {
 
 Backtrace:
 client/sass/style.scss:1
@@ -55,4 +55,4 @@ client/sass/style.scss:1
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: File to import not found or unreadable: ../../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss.\A        Load path: /Users/CCYang/workspace/mks/soundDeck/client/sass\A         on line 1 of client/sass/style.scss\A \A 1: @import '../../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss';\A 2: \A 3: #app {\A 4:   color: purple;\A 5: }\A 6: "; }
+  content: "Error: File to import not found or unreadable: ../../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss.\A        Load path: /Users/CCYang/workspace/mks/soundDeck/client/sass\A         on line 1 of client/sass/style.scss\A \A 1: @import '../../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss';\A 2: \A 3: #app {\A 4:   color: purple;\A 5: }\A 6: .navbar {"; }
