@@ -1,7 +1,7 @@
 // neded for bootstrap-sass
 import jquery from 'jquery';
 // eslint-disable-next-line
-import SC from 'soundcloud'; // don't need to use as SC is global!
+// import SC from 'soundcloud'; // don't need to use as SC is global!
 import React from 'react';
 import Room from './Room';
 
@@ -10,9 +10,12 @@ import Room from './Room';
 window.jQuery = jquery;
 window.$ = jquery;
 
-// sass doesn't export anything meaninful so disable lint
-// eslint-disable-next-line
-const css = require('../sass/style.sass'); // require our sass!
+// Do not include styles if testing
+if (process.env.NODE_ENV !== 'test') {
+  // sass doesn't export anything meaninful so disable lint
+  // eslint-disable-next-line
+  const css = require('../sass/style.sass'); // require our sass!
+}
 
 export default class App extends React.Component {
   constructor(props) {

@@ -13,7 +13,7 @@ const routes = express.Router();
 routes.get('/app-bundle.js',
   browserify('./client/app.js', {
     // Bundles all client-side es6, JSX, and CSS/SCSS/SASS
-    transform: [[babelify, { presets: ['es2015', 'react'] }], 'scssify'],
+    transform: [[babelify, { presets: ['es2015', 'react'] }], 'envify', 'scssify'],
   })
 );
 

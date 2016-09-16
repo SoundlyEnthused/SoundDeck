@@ -1,1 +1,1 @@
-./node_modules/.bin/mocha --compilers js:babel-core/register --recursive ./test/client -r test/bootstrap.js "$@"
+NODE_ENV=test ./node_modules/.bin/mocha --compilers js:babel-core/register -r jsdom-global/register --recursive ./test/client "$@"
