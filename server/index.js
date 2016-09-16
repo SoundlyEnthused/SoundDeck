@@ -7,13 +7,13 @@ const browserify = require('browserify-middleware');
 const babelify = require('babelify');
 
 const routes = express.Router();
-
 //
 // Provide a browserified file at a specified path
 //
 routes.get('/app-bundle.js',
   browserify('./client/app.js', {
-    transform: [[babelify, { presets: ['es2015', 'react'] }]],
+    // Bundles all client-side es6, JSX, and CSS/SCSS/SASS
+    transform: [[babelify, { presets: ['es2015', 'react'] }], 'scssify'],
   })
 );
 
