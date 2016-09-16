@@ -1,21 +1,16 @@
 import React from 'react';
+import SoundCloud from 'react-soundcloud-widget';
+//let widget = SC.Widget('react-sc-player');
 
 export default class Room extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       message: 'This is a room.',
+      track: 'https://soundcloud.com/logic_official/flexicution-1?in=hennessy/sets/never-stop-never-settle',
     };
   }
 
-  renderPlayer() {
-    return SC.oEmbed('http://soundcloud.com/forss/flickermood', {
-      auto_play: true
-    }).then(function(embed){
-      console.log('oEmbed response: ', embed.html);
-      return embed.html
-    });
-  }
   render() {
     // <Stage />
     // <Vote />
@@ -25,9 +20,7 @@ export default class Room extends React.Component {
       <div className="room">
         <div className="container">
           {this.state.message}
-          {
-            //this.renderPlayer()
-          }
+          <SoundCloud url={this.state.track} />
         </div>
       </div>
     );
