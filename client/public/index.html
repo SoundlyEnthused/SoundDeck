@@ -1,28 +1,10 @@
 <html>
 <head>
   <title>My App</title>
-  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <script src="https://connect.soundcloud.com/sdk/sdk-3.1.2.js"></script>
-  <script>
-  SC.initialize({
-    client_id: 'key goes here',
-    redirect_uri: 'http://localhost:4000/callback.html'
-  });
-
-  // initiate auth popup
-  SC.connect().then(function() {
-    return SC.get('/me');
-  }).then(function(me) {
-    console.log(me);
-    alert('Good job, ' + me.username);
-  });
-  </script>
 <div id="app"></div>
-
+<!-- all dependencies provided through app-bundles.js" -->
 <script src="/app-bundle.js"></script>
-<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
 </body>
 </html>
