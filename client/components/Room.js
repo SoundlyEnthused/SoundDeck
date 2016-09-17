@@ -20,9 +20,8 @@ export default class Room extends React.Component {
       this.widget.load(this.state.track);
     });
 
-    //
     const djs = [{ 'id': 3203, 'username': 'manyoora', 'avatar_url': 'https://a1.sndcdn.com/images/default_avatar_large.png' },
-    { 'id': 3503, 'username': 'Moe Biggs The Dean', 'avatar_url': 'https://i1.sndcdn.com/avatars-000004998673-hd0299-large.jpg' },
+    { 'id': 4973508, 'username': 'Macabre!', 'avatar_url': "https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg" },
     { 'id': 9509, 'username': 'compositeone', 'avatar_url': 'https://i1.sndcdn.com/avatars-000000607500-271hqp-large.jpg' },
     {}];
     this.setState({
@@ -52,6 +51,8 @@ export default class Room extends React.Component {
             }
           </div>
           <iframe id="soundcloudPlayer" width="100%" height="166" scrolling="no" frameBorder="no" src="https://w.soundcloud.com/player/?url=" />
+          <div className="crowd">
+          </div>
         </div>
       </div>
     );
