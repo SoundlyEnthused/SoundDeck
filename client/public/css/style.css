@@ -5807,30 +5807,39 @@ button.close {
   .hidden-print {
     display: none !important; } }
 body {
-  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#000000+2,7a7a7a+100 */
-  background: #000000;
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#7a7a7a+0,000000+100 */
+  background: #7a7a7a;
   /* Old browsers */
-  background: -moz-linear-gradient(top, #000000 2%, #7a7a7a 100%);
+  background: -moz-linear-gradient(top, #7a7a7a 0%, #000000 100%);
   /* FF3.6-15 */
-  background: -webkit-linear-gradient(top, #000000 2%, #7a7a7a 100%);
+  background: -webkit-linear-gradient(top, #7a7a7a 0%, #000000 100%);
   /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom, #000000 2%, #7a7a7a 100%);
+  background: linear-gradient(to bottom, #7a7a7a 0%, #000000 100%);
   /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#7a7a7a',GradientType=0 );
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7a7a7a', endColorstr='#000000',GradientType=0 );
   /* IE6-9 */ }
 
 #app {
   color: purple; }
 
 .navbar {
-  border-radius: 0; }
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 0;
+  margin-bottom: 0;
+  background-color: #2d2d2d;
+  border-color: #000000; }
   .navbar button {
     padding: 16px 12px;
     border-radius: 0;
-    border: none; }
+    border: none;
+    background: none;
+    color: #9a9a9a; }
 
 .lobby {
-  display: none; }
+  display: none;
+  width: 100%; }
+  .lobby h1 {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3); }
 
 .active {
   display: block;
@@ -5838,7 +5847,17 @@ body {
   background: rgba(255, 255, 255, 0.8); }
 
 .lobby--room {
-  padding-bottom: 20px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
   font-size: 1.2em; }
+  .lobby--room:after {
+    display: block;
+    content: '';
+    margin: 0 15px;
+    padding-top: 10px;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.3); }
+
+.lobby--joinBtn {
+  text-align: right; }
 
 /*# sourceMappingURL=style.css.map */
