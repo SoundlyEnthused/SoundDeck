@@ -9,10 +9,11 @@ login.signin = function (){
     redirect_uri: 'http://localhost:4000/callback.html',
   });
 
-  SC.connect().then(function () {
+  return SC.connect().then(function () {
     return SC.get('/me');
   }).then(function(me) {
-    alert('Hello, ' + me.username);
+    console.log("result of me", me);
+    return me;
   });
 };
 

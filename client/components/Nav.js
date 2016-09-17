@@ -1,5 +1,4 @@
 import React from 'react';
-import Auth from './Auth';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -13,9 +12,13 @@ export default class App extends React.Component {
     $('#lobby').toggleClass('active');
   }
 
-  loggingIn() {
-    Auth.signin();
-  };
+  toggleSignedIn() {
+    if (this.props.userData) {
+      return <div> { this.props.userData.username } </div>;
+    } else {
+      return <button className="btn btn-default" onClick={this.props.loggingIn}> login </button>
+    }
+  }
 
   render() {
     return (
@@ -36,7 +39,7 @@ export default class App extends React.Component {
               <button className="btn btn-default"> playlist </button>
             </li>
             <li>
-              <button className="btn btn-default" onClick={this.loggingIn}> login </button>
+              { this.toggleSignedIn() }
             </li>
           </ul>
         </div>
