@@ -1,4 +1,5 @@
 import React from 'react';
+import Auth from './Auth';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -11,6 +12,11 @@ export default class App extends React.Component {
   toggleRoom() {
     $('#lobby').toggleClass('active');
   }
+
+  loggingIn() {
+    Auth.signin();
+  };
+
   render() {
     return (
       <nav className="navbar navbar-default">
@@ -30,7 +36,7 @@ export default class App extends React.Component {
               <button className="btn btn-default"> playlist </button>
             </li>
             <li>
-              <button className="btn btn-default"> login </button>
+              <button className="btn btn-default" onClick={this.loggingIn}> login </button>
             </li>
           </ul>
         </div>
