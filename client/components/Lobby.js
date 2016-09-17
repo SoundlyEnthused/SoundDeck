@@ -1,4 +1,5 @@
 import React from 'react';
+import $ from 'jquery';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -28,7 +29,7 @@ export default class App extends React.Component {
                     <li className="row lobby--room list-unstyled" key={room}>
                       <div className="col-sm-10">{room}</div>
                       <div className="col-sm-2 lobby--joinBtn" >
-                        <button className="btn btn-default" onClick={() => { this.joinRoom(room); }}> Join </button>
+                        <button className="btn btn-default joinBtn" onClick={() => { this.joinRoom(room); }}> Join </button>
                       </div>
                     </li>
                   );
