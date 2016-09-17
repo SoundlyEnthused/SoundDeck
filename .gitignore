@@ -4,6 +4,6 @@ client/bower_components/
 .sass-cache/
 client/components/key.js
 .DS_Store
-client/css/style.css
-client/scc/style.css.map
+client/public/css/style.css
+client/public/css/style.css.map
 
