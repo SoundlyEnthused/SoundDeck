@@ -10,7 +10,7 @@
     ]
   },
   "scripts": {
-    "start": "nodemon server/ --ignore client/",
+    "start": "nodemon -r dotenv/config server/ --ignore client/",
     "test": "./scripts/test_client.sh && ./scripts/test_server.sh",
     "test_client": "./scripts/test_client.sh",
     "test_server": "./scripts/test_server.sh",
@@ -27,6 +27,7 @@
     "body-parser": "^1.14.1",
     "bootstrap-sass": "^3.3.7",
     "browserify-middleware": "^7.0.0",
+    "dotenv": "^2.0.0",
     "envify": "^3.4.1",
     "enzyme": "^2.4.1",
     "express": "^4.12.4",

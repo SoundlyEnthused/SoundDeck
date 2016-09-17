@@ -1,11 +1,12 @@
 const SC = require('soundcloud');
-const auth = require('./key');
+
+const clientId = process.env.CLIENT_ID;
 const login = {};
 
 
 login.signin = function (){
   SC.initialize({
-    client_id: auth.CLIENT_ID,
+    client_id: clientId,
     redirect_uri: 'http://localhost:4000/callback.html',
   });
 
