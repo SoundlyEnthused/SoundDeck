@@ -7,7 +7,7 @@ export default class Room extends React.Component {
     super(props);
     this.state = {
       track: 'https://soundcloud.com/logic_official/flexicution-1?in=hennessy/sets/never-stop-never-settle',
-      users: [],
+      users: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
       djs: [],
     };
     this.widget = null;
@@ -37,22 +37,51 @@ export default class Room extends React.Component {
       <div className="room">
         <div className="container">
           <h1> {this.props.room} </h1>
-          <div className="stage row">
+
+          <div className="stage">
             {
               this.state.djs.map((dj) => {
-                return (
-                  <div className="stage--seat col-xs-3" key={dj.id}>
-                    <div className="stage--dj">
-                      <img src={dj.avatar_url} alt={dj.username} title={dj.username} />
+                if (dj.username) {
+                  return (
+                    <div className="stage--seat" key={dj.id}>
+                      <div className="stage--dj">
+                        <img src={dj.avatar_url} alt={dj.username} title={dj.username} />
+                      </div>
                     </div>
-                  </div>
+                  );
+                } else {
+                  return (
+                    <div className="stage--seat empty" key={dj.id}>
+                    </div>
+                  );
+                }
+              })
+            }
+          </div>
+
+          <div id="vote" className="vote row">
+            <div className="col-xs-4"></div>
+            <div className="vote--btns col-xs-4">
+              <button className="btn btn-success">Upvote</button>
+              <button className="btn btn-danger">Downvote</button>
+            </div>
+            <div className="vote--djQueue col-xs-4">
+              <button className="btn btn-default">Queue for DJ</button>
+            </div>
+              
+          </div>
+
+          <div className="crowd">
+            {
+              this.state.users.map((user) => {
+                return (
+                  <div className="crowd--user"></div>
                 );
               })
             }
           </div>
+
           <iframe id="soundcloudPlayer" width="100%" height="166" scrolling="no" frameBorder="no" src="https://w.soundcloud.com/player/?url=" />
-          <div className="crowd">
-          </div>
         </div>
       </div>
     );
