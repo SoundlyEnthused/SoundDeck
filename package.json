@@ -38,6 +38,8 @@
     "react-dom": "^15.1.0",
     "react-soundcloud-widget": "^2.0.4",
     "scssify": "^2.1.0",
+    "socket.io": "^1.4.8",
+    "socket.io-client": "^1.4.8",
     "soundcloud": "^3.1.2",
     "supertest-as-promised": "^3.1.0"
   },
