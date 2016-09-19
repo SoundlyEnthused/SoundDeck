@@ -1,6 +1,12 @@
 // Configure client specific lint rules here
 {
   "env": {
-    "browser": true
+    "browser": true,
+    "es6": true
+  },
+  "rules": {
+    "max-len": 0,
+    "react/forbid-prop-types": 1,
+    "arrow-body-style": 1
   }
 }

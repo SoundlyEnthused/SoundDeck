@@ -8,7 +8,12 @@ export default class Room extends React.Component {
     this.state = {
       track: 'https://soundcloud.com/logic_official/flexicution-1?in=hennessy/sets/never-stop-never-settle',
       users: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
-      djs: [],
+      djs: [
+        { id: 3203, username: 'manyoora', avatar_url: 'https://a1.sndcdn.com/images/default_avatar_large.png' },
+        { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
+        { id: 9509, username: 'compositeone', avatar_url: 'https://i1.sndcdn.com/avatars-000000607500-271hqp-large.jpg' },
+        {},
+      ],
     };
     this.widget = null;
   }
@@ -18,14 +23,6 @@ export default class Room extends React.Component {
       this.widget = window.SC.Widget('soundcloudPlayer'); // eslint-disable-line new-cap
       this.widget.show_artwork = false;
       this.widget.load(this.state.track, { show_artwork: false });
-    });
-
-    const djs = [{ 'id': 3203, 'username': 'manyoora', 'avatar_url': 'https://a1.sndcdn.com/images/default_avatar_large.png' },
-    { 'id': 4973508, 'username': 'Macabre!', 'avatar_url': 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
-    { 'id': 9509, 'username': 'compositeone', 'avatar_url': 'https://i1.sndcdn.com/avatars-000000607500-271hqp-large.jpg' },
-    {}];
-    this.setState({
-      djs,
     });
   }
 
@@ -46,11 +43,11 @@ export default class Room extends React.Component {
                       </div>
                     </div>
                   );
-                } else {
-                  return (
-                    <div className="stage--seat empty" key={dj.id} />
-                  );
                 }
+
+                return (
+                  <div className="stage--seat empty" key={dj.id} />
+                );
               })
             }
           </div>
@@ -68,11 +65,7 @@ export default class Room extends React.Component {
           <iframe id="soundcloudPlayer" width="100%" height="100" scrolling="no" frameBorder="no" src="https://w.soundcloud.com/player/?url=" />
           <div className="crowd">
             {
-              this.state.users.map((user) => {
-                return (
-                  <div className="crowd--user" />
-                );
-              })
+              this.state.users.map(() => <div className="crowd--user" />)
             }
           </div>
         </div>
@@ -80,3 +73,7 @@ export default class Room extends React.Component {
     );
   }
 }
+
+Room.propTypes = {
+  room: React.PropTypes.string,
+};

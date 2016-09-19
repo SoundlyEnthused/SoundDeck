@@ -1,4 +1,6 @@
-@import '../../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss';
+@import 'variables';
+@import 'bootstrap';
+
 body {
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#7a7a7a+0,000000+100 */
   background: #7a7a7a; /* Old browsers */
@@ -23,6 +25,23 @@ body {
     background: none;
     color: #9a9a9a;
   }
+}
+
+.navbar-default .navbar-collapse {
+  border-color: black;
+}
+
+.navbar-brand {
+  padding-left: 57px;
+  position: relative;
+}
+
+.navbar-brand img {
+  display: inline-block;
+  width: 35px;
+  position: absolute;
+  left: 15px;
+  top: 7px;
 }
 
 .lobby {
