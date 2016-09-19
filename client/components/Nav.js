@@ -1,7 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 
-export default class App extends React.Component {
+export default class Nav extends React.Component {
   static toggleRoom() {
     $('#lobby').toggleClass('active');
   }
@@ -16,9 +16,9 @@ export default class App extends React.Component {
   toggleSignedIn() {
     if (this.props.userData) {
       return <div> { this.props.userData.username } </div>;
-    } else {
-      return <button className="btn btn-default" onClick={this.props.loggingIn}> Login </button>
     }
+
+    return <button className="btn btn-default" onClick={this.props.loggingIn}> Login </button>;
   }
 
   render() {
@@ -28,16 +28,16 @@ export default class App extends React.Component {
 
           <div className="nav navbar-nav navbar-left">
             <div className="navbar-header">
-              <a className="navbar-brand"> 
-                <img src="/img/SoundDeck.svg" />
-                {this.state.label} 
+              <a className="navbar-brand">
+                <img src="/img/SoundDeck.svg" alt="SoundDeck" />
+                {this.state.label}
               </a>
 
               <button type="button" className="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
                 <span className="sr-only">Toggle navigation</span>
-                <span className="icon-bar"></span>
-                <span className="icon-bar"></span>
-                <span className="icon-bar"></span>
+                <span className="icon-bar" />
+                <span className="icon-bar" />
+                <span className="icon-bar" />
               </button>
             </div>
           </div>
@@ -45,7 +45,7 @@ export default class App extends React.Component {
           <div className="collapse navbar-collapse" id="navbar-collapse">
             <ul className="nav navbar-nav navbar-right">
               <li>
-                <button className="btn btn-default" disabled={this.props.currentRoom===undefined} onClick={this.toggleRoom}> Lobby </button>
+                <button className="btn btn-default" disabled={this.props.currentRoom === undefined} onClick={this.toggleRoom}> Lobby </button>
               </li>
               <li>
                 <button className="btn btn-default"> Playlist </button>
@@ -60,3 +60,9 @@ export default class App extends React.Component {
     );
   }
 }
+
+Nav.propTypes = {
+  currentRoom: React.PropTypes.string,
+  loggingIn: React.PropTypes.func.isRequired,
+  userData: React.PropTypes.any,
+};

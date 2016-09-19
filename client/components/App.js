@@ -8,7 +8,7 @@ import Room from './Room';
 import Nav from './Nav';
 import Lobby from './Lobby';
 import Auth from './Auth';
-//import Login from './Login';
+// import Login from './Login';
 
 // bootstrap-sass needs jQuery to be global
 window.jQuery = jquery;
