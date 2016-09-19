@@ -1,4 +1,8 @@
+const EventEmitter = require('events');
+
 const Room = {};
+
+Room.emitter = new EventEmitter();
 
 let rooms = [];
 let nextId = 0;
@@ -7,13 +11,8 @@ Room.create = function create(name) {
   const newRoom = { name, id: nextId };
   nextId += 1;
   rooms.push(newRoom);
-  Room.onCreate(newRoom);
+  Room.emitter.emit('create', newRoom);
   return newRoom;
-};
-
-// Replace this with a custom callback
-Room.onCreate = function onCreate() {
-  // Passed room
 };
 
 Room.clearAll = function clearAll() {
@@ -21,12 +20,12 @@ Room.clearAll = function clearAll() {
 };
 
 Room.all = function all() {
-  return rooms;
+  return rooms.slice();
 };
 
 Room.remove = function remove(id) {
   rooms = rooms.filter(room => room.id !== id);
-  return rooms;
+  Room.emitter.emit('remove');
 };
 
 module.exports = Room;

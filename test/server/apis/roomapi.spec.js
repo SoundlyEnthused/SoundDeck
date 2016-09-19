@@ -65,5 +65,20 @@ describe('RoomAPI', () => {
         });
       });
     });
+    it('should return an updated array of rooms whenever one is removed', (done) => {
+      const room1 = Room.create('Blues');
+      const room2 = Room.create('Soul');
+      const room3 = Room.create('Jazz');
+      const client = socketClient.connect(url);
+      client.once('lobbyChange', (data1) => {
+        expect(data1.rooms).to.deep.equal([room1, room2, room3]);
+        Room.remove(room2.id);
+        client.once('lobbyChange', (data2) => {
+          expect(data2.rooms).to.deep.equal([room1, room3]);
+          client.disconnect();
+          done();
+        });
+      });
+    });
   });
 });
