@@ -42,15 +42,27 @@ describe('RoomAPI', () => {
         done();
       });
     });
-    it('should return all current rooms on connection', (done) => {
-      const client = socketClient.connect(url);
+    it('should return an array of all current rooms on connection', (done) => {
       const room1 = Room.create('Blues');
       const room2 = Room.create('Soul');
       const room3 = Room.create('Jazz');
+      const client = socketClient.connect(url);
       client.on('lobbyChange', (data) => {
         expect(data.rooms).to.deep.equal([room1, room2, room3]);
         client.disconnect();
         done();
+      });
+    });
+    it('should return an updated array of rooms whenever ones are created', (done) => {
+      const client = socketClient.connect(url);
+      client.once('lobbyChange', (data1) => {
+        expect(data1.rooms).to.deep.equal([]);
+        const room = Room.create('Zydeco');
+        client.once('lobbyChange', (data2) => {
+          expect(data2.rooms).to.deep.equal([room]);
+          client.disconnect();
+          done();
+        });
       });
     });
   });

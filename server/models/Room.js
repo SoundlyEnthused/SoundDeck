@@ -7,7 +7,13 @@ Room.create = function create(name) {
   const newRoom = { name, id: nextId };
   nextId += 1;
   rooms.push(newRoom);
+  Room.onCreate(newRoom);
   return newRoom;
+};
+
+// Replace this with a custom callback
+Room.onCreate = function onCreate() {
+  // Passed room
 };
 
 Room.clearAll = function clearAll() {
