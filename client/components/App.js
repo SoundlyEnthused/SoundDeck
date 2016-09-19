@@ -1,5 +1,6 @@
 // neded for bootstrap-sass
 import jquery from 'jquery';
+
 // eslint-disable-next-line
 import SC from 'soundcloud'; // don't need to use as SC is global!
 import React from 'react';
