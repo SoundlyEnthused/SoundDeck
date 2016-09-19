@@ -21,6 +21,7 @@ describe('RoomAPI', () => {
   afterEach('Stop client', (done) => {
     client.disconnect();
     client.on('disconnect', done);
+
   });
 
   after('Stop server', () => {
