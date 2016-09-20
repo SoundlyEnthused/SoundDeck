@@ -8,8 +8,20 @@ export default class App extends React.Component {
     };
   }
 
-  toggleRoom() {
+  toggleLobby() {
     $('#lobby').toggleClass('active');
+  }
+
+  togglePlaylist() {
+    $('#playlist').toggleClass('active');
+  }
+
+  showPlaylist() {
+    if (this.props.userData) {
+      return <button className="btn btn-default" onClick={this.togglePlaylist}> playlist </button>
+    } else {
+      return false;
+    }
   }
 
   toggleSignedIn() {
@@ -31,12 +43,12 @@ export default class App extends React.Component {
               </div>
             </li>
             <li>
-              <button className="btn btn-default" disabled={this.props.currentRoom===undefined} onClick={this.toggleRoom}> Lobby </button>
+              <button className="btn btn-default" disabled={this.props.currentRoom===undefined} onClick={this.toggleLobby}> Lobby </button>
             </li>
           </ul>
           <ul className="nav navbar-nav navbar-right">
             <li>
-              <button className="btn btn-default"> playlist </button>
+              { this.showPlaylist() }
             </li>
             <li>
               { this.toggleSignedIn() }

@@ -6,6 +6,7 @@ import React from 'react';
 import Room from './Room';
 import Nav from './Nav';
 import Lobby from './Lobby';
+import Playlist from './Playlist';
 import Auth from './Auth';
 //import Login from './Login';
 
@@ -49,6 +50,7 @@ export default class App extends React.Component {
       <main>
         <Nav currentRoom={this.state.currentRoom} loggingIn={this.loggingIn} userData={this.state.userData} />
         <Lobby rooms={['default', 'pop', 'metal']} joinRoom={this.joinRoom} />
+        <Playlist />
         {
           this.state.currentRoom ? <Room room={this.state.currentRoom} /> : null
         }
