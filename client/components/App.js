@@ -9,7 +9,11 @@ import Room from './Room';
 import Nav from './Nav';
 import Lobby from './Lobby';
 import Auth from './Auth';
+<<<<<<< fbbf9f19a497f67048fe59053eba2be6b68c5984
 // import Login from './Login';
+=======
+import ServerAPI from '../models/ServerAPI';
+>>>>>>> add models
 
 // bootstrap-sass needs jQuery to be global
 window.jQuery = jquery;
@@ -26,6 +30,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      rooms: [],
       currentRoom: undefined,
       userData: false,
       label: 'Cool!',
@@ -33,13 +38,24 @@ export default class App extends React.Component {
     this.joinRoom = this.joinRoom.bind(this);
     this.loggingIn = this.loggingIn.bind(this);
   }
+
+  componentWillMount() {
+    ServerAPI.connect();
+    ServerAPI.onUpdate((data) => {
+      this.setState({
+
+      });
+    });
+  }
   joinRoom(room) {
+    ServerAPI.joinRoom(room.id);
     this.setState({
       currentRoom: room,
     });
   }
   loggingIn() {
     Auth.signin().then((userData) => {
+      ServerAPI.login(userData.id);
       this.setState({ userData });
     }).catch((err) => {
       console.log(err);
@@ -50,8 +66,8 @@ export default class App extends React.Component {
     return (
       <main>
         <Nav currentRoom={this.state.currentRoom} loggingIn={this.loggingIn} userData={this.state.userData} />
-        <Lobby rooms={['default', 'pop', 'metal']} joinRoom={this.joinRoom} />
         <Playlist />
+        <Lobby rooms={this.state.rooms} joinRoom={this.joinRoom} />
         {
           this.state.currentRoom ? <Room room={this.state.currentRoom} /> : null
         }
