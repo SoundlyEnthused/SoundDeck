@@ -1,16 +1,22 @@
 const Playlist = {};
 
 let playlists = {};
-
+/* map of user ids to playlist ids */
+let usersToPlaylists = {};
+let nextId = 0;
 // Playlists are always associated with a user!
 Playlist.create = function create(userId) {
   const playlist = [];
-  playlists[userId] = playlist;
-  return playlist;
+  const id = nextId;
+  nextId += 1;
+  playlists[id] = playlist;
+  usersToPlaylists[userId] = id;
+  return id;
 };
 
 Playlist.clearAll = function clearAll() {
   playlists = {};
+  usersToPlaylists = {};
 };
 
 Playlist.update = function update(userId, list) {
@@ -19,13 +25,13 @@ Playlist.update = function update(userId, list) {
   }
 };
 
-Playlist.get = function get(userId) {
-  return playlists[userId];
+Playlist.get = function get(id) {
+  return playlists[id];
 };
 
-Playlist.rotate = function rotate(userId) {
-  if (userId in playlists) {
-    const list = playlists[userId];
+Playlist.rotate = function rotate(id) {
+  if (id in playlists) {
+    const list = playlists[id];
     if (list.length < 2) {
       return; // Nothing to rotate!
     }
