@@ -17,18 +17,23 @@ describe('ServerAPI', () => {
   });
 
   it('should connect', () => {
-    server.io.on('connection', (socket) => {
-      console.log("user connect");
-      socket.on('AA', () => {
-        console.log("Socket getting AA")
-      })
-    });
 
+    server.io.on('connection', (socket) => {
+      console.log('user connect');
+      socket.on('join', (data) => {
+        console.log('Server getting joinRoom', data);
+      });
+      socket.on('disconntect', (data) => {
+        console.log('user disconnect');
+      });
+      ServerAPI.joinRoom(999);
+      server.io.emit('lobbyChange', 'lobby change data');
+      ServerAPI.disconnect();
+      console.log("END");
+    });
     ServerAPI.connect();
+
     expect(ServerAPI.socket).to.be.a('object');
 
-    ServerAPI.socket.on("XXXX", () => { console.log("GOT XXXX")})
-    server.io.emit("XXXX");
-    ServerAPI.socket.emit('AA')
   });
 });
