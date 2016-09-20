@@ -73,7 +73,7 @@ export default class Room extends React.Component {
               </div>
               <div className="vote--djQueue col-xs-4">
                 <button className="btn btn-default">
-                  <span className="fa fa-list" /> 
+                  <span className="fa fa-list" />
                   DJ List
                 </button>
               </div>

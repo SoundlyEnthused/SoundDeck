@@ -91,6 +91,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: stretch;
+  flex-wrap: wrap;
 }
 
 .dj--seat {
@@ -101,6 +102,7 @@ body {
   border: 3px solid black;
   border-radius: 50%;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .dj--seat:nth-child(3) {
