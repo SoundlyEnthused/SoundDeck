@@ -29,8 +29,8 @@ describe('RoomAPI', () => {
     Room.clearAll();
   });
 
-  after('Stop server', (done) => {
-    server.close(done);
+  after('Stop server', () => {
+    server.close();
   });
 
   describe('lobbyChange', () => {

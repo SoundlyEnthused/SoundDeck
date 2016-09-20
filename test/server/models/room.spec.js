@@ -68,4 +68,39 @@ describe('Room', () => {
       Room.remove(room.id);
     });
   });
+  describe('join', () => {
+    it('should be a function', () => {
+      expect(Room.join).to.be.a('function');
+    });
+    it('should add a user to room', () => {
+      const room = Room.create('Punk');
+      const userId = 123;
+      Room.join(room.id, userId);
+      expect(room.users).to.deep.equal([userId]);
+    });
+    it('should move a user from any current room to another', () => {
+      const room1 = Room.create('Dance');
+      const room2 = Room.create('Ambient');
+      const userId = 1234;
+      Room.join(room1.id, userId);
+      expect(room1.users).to.deep.equal([userId]);
+      expect(room2.users).to.deep.equal([]);
+      Room.join(room2.id, userId);
+      expect(room1.users).to.deep.equal([]);
+      expect(room2.users).to.deep.equal([userId]);
+    });
+  });
+  describe('leave', () => {
+    it('should be a function', () => {
+      expect(Room.leave).to.be.a('function');
+    });
+    it('should remove a user from a room', () => {
+      const room = Room.create('Reggae');
+      const userId = 1337;
+      Room.join(room.id, userId);
+      expect(room.users).to.deep.equal([userId]);
+      Room.leave(room.id, userId);
+      expect(room.users).to.deep.equal([]);
+    });
+  });
 });
