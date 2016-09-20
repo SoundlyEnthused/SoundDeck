@@ -5,6 +5,7 @@ const ServerAPI = {
 };
 
 ServerAPI.connect = () => {
+  console.log("socket connecting");
   ServerAPI.socket = io('http://localhost:' + process.env.PORT);
 };
 
@@ -13,8 +14,8 @@ ServerAPI.disconnect = () => {
 };
 
 ServerAPI.onUpdate = (callback) => {
-  ServerAPI.socket.on('lobbyChange', (data) => {
-    console.log("client getting lobby change ", data)
+  ServerAPI.socket.on('room', (data) => {
+    console.log('Room event', data);
     callback(data);
   });
 };

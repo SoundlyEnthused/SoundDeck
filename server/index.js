@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 // Imports for browserify-middleware
 const browserify = require('browserify-middleware');
 const babelify = require('babelify');
+const MVPAPI = require('./apis/MVPAPI');
 
 const routes = express.Router();
 //
@@ -58,6 +59,7 @@ if (process.env.NODE_ENV !== 'test') {
   const server = app.listen(port);
   console.log('Listening on port', port);
   const io = require('socket.io').listen(server);
+  MVPAPI(io);
 } else {
   // We're in test mode; make this file importable instead.
   module.exports = routes;

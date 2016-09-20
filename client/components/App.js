@@ -40,10 +40,10 @@ export default class App extends React.Component {
   }
 
   componentWillMount() {
-    //ServerAPI.connect();
-    // ServerAPI.onUpdate((data) => {
-    //   console.log("Update", data);
-    // });
+    ServerAPI.connect();
+    ServerAPI.onUpdate((data) => {
+      console.log("Update", data);
+    });
   }
   joinRoom(room) {
     ServerAPI.joinRoom(room.id);
