@@ -3,12 +3,12 @@ import jquery from 'jquery';
 // eslint-disable-next-line
 import SC from 'soundcloud'; // don't need to use as SC is global!
 import React from 'react';
+import Playlist from './Playlist';
 import Room from './Room';
 import Nav from './Nav';
 import Lobby from './Lobby';
-import Playlist from './Playlist';
 import Auth from './Auth';
-//import Login from './Login';
+// import Login from './Login';
 
 // bootstrap-sass needs jQuery to be global
 window.jQuery = jquery;

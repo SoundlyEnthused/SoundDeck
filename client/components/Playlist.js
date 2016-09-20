@@ -1,4 +1,6 @@
 import React from 'react';
+import SC from 'soundcloud';
+import $ from 'jquery';
 
 export default class Room extends React.Component {
   constructor(props) {
@@ -32,15 +34,8 @@ export default class Room extends React.Component {
           <div className="row">
             <div className="playlist--playlist col-sm-6">
               <ul>
-                {
-                  this.state.playlist.map((track) => {
-                    return (
-                      <li className="playlist--playlist--track list-unstyled">
-                        {track.title}
-                      </li>
-                    );
-                  })
-                }
+                {this.state.playlist.map(track =>
+                  (<li className="playlist--playlist--track list-unstyled">{track.title}</li>))}
               </ul>
             </div>
             <div className="playlist--search col-sm-6">
@@ -48,15 +43,8 @@ export default class Room extends React.Component {
                 <input type="text" id="playlist--search--input" />
                 <button onClick={(e) => { this.search(e); }}>Search</button>
                 <ul>
-                  {
-                    this.state.searchResult.map((track) => {
-                      return (
-                        <li className="list-unstyled">
-                          {track.title}
-                        </li>
-                      );
-                    })
-                  }
+                  {this.state.searchResult.map(track =>
+                      (<li className="list-unstyled">{track.title}</li>))}
                 </ul>
               </form>
             </div>
