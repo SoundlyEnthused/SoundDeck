@@ -7,5 +7,6 @@ module.exports = function createServer(port, controllers, done) {
   });
 
   server.listen(port, done);
+  server.io = io;
   return server;
 };

@@ -55,8 +55,9 @@ if (process.env.NODE_ENV !== 'test') {
 
   // Start the server!
   const port = process.env.PORT || 4000;
-  app.listen(port);
+  const server = app.listen(port);
   console.log('Listening on port', port);
+  const io = require('socket.io').listen(server);
 } else {
   // We're in test mode; make this file importable instead.
   module.exports = routes;

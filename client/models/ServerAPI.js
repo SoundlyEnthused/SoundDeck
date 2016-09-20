@@ -5,25 +5,25 @@ const ServerAPI = {
 };
 
 ServerAPI.connect = () => {
-  this.socket = io('process.env.URL');
+  ServerAPI.socket = io('http://localhost:' + process.env.PORT);
 };
 
 ServerAPI.disconntect = () => {
-  this.socket.disconnect();
+  ServerAPI.socket.disconnect();
 };
 
 ServerAPI.onUpdate = (callback) => {
-  this.socket.on('update', (data) => {
+  ServerAPI.socket.on('lobbyChange', (data) => {
     callback(data);
   });
 };
 
 ServerAPI.joinRoom = (roomId) => {
-  this.socket.emit('join', roomId);
+  ServerAPI.socket.emit('join', roomId);
 };
 
 ServerAPI.login = (userId) => {
-  this.socket.emit('login', userId);
+  ServerAPI.socket.emit('login', userId);
 };
 
 module.exports = ServerAPI;
