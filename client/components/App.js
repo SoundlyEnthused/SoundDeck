@@ -3,11 +3,12 @@ import jquery from 'jquery';
 // eslint-disable-next-line
 import SC from 'soundcloud'; // don't need to use as SC is global!
 import React from 'react';
+import Playlist from './Playlist';
 import Room from './Room';
 import Nav from './Nav';
 import Lobby from './Lobby';
 import Auth from './Auth';
-//import Login from './Login';
+// import Login from './Login';
 
 // bootstrap-sass needs jQuery to be global
 window.jQuery = jquery;
@@ -49,6 +50,7 @@ export default class App extends React.Component {
       <main>
         <Nav currentRoom={this.state.currentRoom} loggingIn={this.loggingIn} userData={this.state.userData} />
         <Lobby rooms={['default', 'pop', 'metal']} joinRoom={this.joinRoom} />
+        <Playlist />
         {
           this.state.currentRoom ? <Room room={this.state.currentRoom} /> : null
         }

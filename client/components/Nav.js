@@ -1,4 +1,5 @@
 import React from 'react';
+import $ from 'jquery';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -8,16 +9,26 @@ export default class App extends React.Component {
     };
   }
 
-  toggleRoom() {
+  toggleLobby() {
     $('#lobby').toggleClass('active');
+  }
+
+  togglePlaylist() {
+    $('#playlist').toggleClass('active');
+  }
+
+  showPlaylist() {
+    if (this.props.userData) {
+      return <button className="btn btn-default" onClick={this.togglePlaylist}> playlist </button>;
+    }
+    return false;
   }
 
   toggleSignedIn() {
     if (this.props.userData) {
       return <div> { this.props.userData.username } </div>;
-    } else {
-      return <button className="btn btn-default" onClick={this.props.loggingIn}> login </button>
     }
+    return <button className="btn btn-default" onClick={this.props.loggingIn}> login </button>;
   }
 
   render() {
@@ -31,12 +42,14 @@ export default class App extends React.Component {
               </div>
             </li>
             <li>
-              <button className="btn btn-default" disabled={this.props.currentRoom===undefined} onClick={this.toggleRoom}> Lobby </button>
+              <button className="btn btn-default" disabled={!this.props.currentRoom} onClick={this.toggleLobby}>
+                Lobby
+              </button>
             </li>
           </ul>
           <ul className="nav navbar-nav navbar-right">
             <li>
-              <button className="btn btn-default"> playlist </button>
+              { this.showPlaylist() }
             </li>
             <li>
               { this.toggleSignedIn() }
