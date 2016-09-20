@@ -28,8 +28,8 @@ describe('MVP API', () => {
   describe('room', () => {
     it('should receive initial app state on connection', (done) => {
       const client = socketClient.connect(url);
-      client.on('room', (appState) => {
-        expect(appState).to.be.an('object');
+      client.on('room', (state) => {
+        expect(state).to.be.an('object');
         client.disconnect();
         done();
       });
@@ -40,11 +40,29 @@ describe('MVP API', () => {
       client.once('room', () => {
         // create a room
         const room = MVP.create('Trance');
-        client.on('room', (appState) => {
-          expect(appState[room.id]).to.be.an('object');
-          expect(appState[room.id].name).to.equal('Trance');
+        client.on('room', (state) => {
+          expect(state[room.id]).to.be.an('object');
+          expect(state[room.id].name).to.equal('Trance');
           client.disconnect();
           done();
+        });
+      });
+    });
+    it('should share state between multiple clients', (done) => {
+      const room = MVP.create('Shoegaze');
+      const client1 = socketClient.connect(url);
+      client1.emit('login', { id: 1 });
+      client1.once('login', () => {
+        client1.emit('join', { roomId: room.id });
+        client1.once('room', (state1) => {
+          expect(state1[room.id].users).to.deep.equal([1]);
+          const client2 = socketClient.connect(url);
+          client2.once('room', (state2) => {
+            expect(state2[room.id].users).to.deep.equal([1]);
+            client1.disconnect();
+            client2.disconnect();
+            done();
+          });
         });
       });
     });
@@ -65,9 +83,10 @@ describe('MVP API', () => {
       // create a Room
       const room = MVP.create('Jazz');
       const client = socketClient.connect(url);
+      client.emit('login', { id: 1337 });
       // Initial connection event
       client.once('room', () => {
-        client.emit('join', { userId: 1337, roomId: room.id });
+        client.emit('join', { roomId: room.id });
         client.on('room', (appState) => {
           expect(appState[room.id].users).to.deep.equal([1337]);
           client.disconnect();
@@ -80,9 +99,10 @@ describe('MVP API', () => {
       const room1 = MVP.create('Classical');
       const room2 = MVP.create('Techno');
       const client = socketClient.connect(url);
+      client.emit('login', { id: 1337 });
       // Initial connection event
       client.once('room', () => {
-        client.emit('join', { userId: 1337, roomId: room1.id });
+        client.emit('join', { roomId: room1.id });
         client.once('room', (state1) => {
           expect(state1[room1.id].users).to.deep.equal([1337]);
           expect(state1[room2.id].users).to.deep.equal([]);

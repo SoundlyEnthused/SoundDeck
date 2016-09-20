@@ -21,7 +21,10 @@ module.exports = function createAPI(io) {
 
     socket.on('join', (data) => {
       // Add user to room
-      MVP.join(data.roomId, data.userId);
+      if (!socket.soundcloudId) {
+        return; // What should we do on failure?
+      }
+      MVP.join(data.roomId, socket.soundcloudId);
       // Broadcast updated app state
       io.sockets.emit('room', MVP.get());
     });
