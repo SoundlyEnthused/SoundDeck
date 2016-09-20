@@ -39,12 +39,13 @@ export default class Room extends React.Component {
           <h1> {this.props.room} </h1>
 
           <div className="stage">
+            <div className="stage--djs">
             {
               this.state.djs.map((dj) => {
                 if (dj.username) {
                   return (
-                    <div className="stage--seat" key={dj.id}>
-                      <div className="stage--dj">
+                    <div className="dj--seat" key={dj.id}>
+                      <div className="dj--avatar">
                         <img src={dj.avatar_url} alt={dj.username} title={dj.username} />
                       </div>
                     </div>
@@ -52,23 +53,34 @@ export default class Room extends React.Component {
                 }
 
                 return (
-                  <div className="stage--seat empty" key={dj.id} />
+                  <div className="dj--seat empty" key={dj.id} />
                 );
               })
             }
+            </div>
+
+            <iframe id="soundcloudPlayer" className="soundcloudPlayer" width="100%" height="100" scrolling="no" frameBorder="no" src="https://w.soundcloud.com/player/?url=" />
+
+            <div id="vote" className="vote row">
+              <div className="col-xs-4" />
+              <div className="vote--btns col-xs-4">
+                <button className="btn btn-success btn-round vote--upvote" id="upvote">
+                  <i className="fa fa-check" aria-hidden="true" />
+                </button>
+                <button className="btn btn-danger btn-round vote--downvote" id="downvote">
+                  <i className="fa fa-times" aria-hidden="true" />
+                </button>
+              </div>
+              <div className="vote--djQueue col-xs-4">
+                <button className="btn btn-default">
+                  <span className="fa fa-list" /> 
+                  DJ List
+                </button>
+              </div>
+            </div>
+
           </div>
 
-          <div id="vote" className="vote row">
-            <div className="col-xs-4" />
-            <div className="vote--btns col-xs-4">
-              <button className="btn btn-success">Upvote</button>
-              <button className="btn btn-danger">Downvote</button>
-            </div>
-            <div className="vote--djQueue col-xs-4">
-              <button className="btn btn-default">Queue for DJ</button>
-            </div>
-          </div>
-          <iframe id="soundcloudPlayer" width="100%" height="100" scrolling="no" frameBorder="no" src="https://w.soundcloud.com/player/?url=" />
           <div className="crowd">
             {
               this.state.users.map(() => <div className="crowd--user" />)
