@@ -5,8 +5,7 @@ let playlists = {};
 let usersToPlaylists = {};
 let nextId = 0;
 // Playlists are always associated with a user!
-Playlist.create = function create(userId) {
-  const playlist = [];
+Playlist.create = function create(userId, playlist = []) {
   const id = nextId;
   nextId += 1;
   playlists[id] = playlist;
@@ -27,6 +26,10 @@ Playlist.update = function update(userId, list) {
 
 Playlist.get = function get(id) {
   return playlists[id];
+};
+
+Playlist.getIdByUser = function getIdByUser(userId) {
+  return usersToPlaylists[userId];
 };
 
 Playlist.rotate = function rotate(id) {

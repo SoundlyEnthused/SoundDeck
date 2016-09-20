@@ -18,6 +18,12 @@ describe('Playlist', () => {
       const id = Playlist.create(userId);
       expect(id).to.be.a('number');
     });
+    it('should optionally allow an initial playlist to be set', () => {
+      const userId = 1;
+      const list = [{ songId: 12, duration: 1 }];
+      const id = Playlist.create(userId, list);
+      expect(Playlist.get(id)).to.deep.equal(list);
+    });
   });
   describe('get', () => {
     it('should be a function', () => {
@@ -27,6 +33,19 @@ describe('Playlist', () => {
       const userId = 1;
       const id = Playlist.create(userId);
       expect(Playlist.get(id)).to.deep.equal([]);
+    });
+  });
+  describe('getIdByUser', () => {
+    it('should be a function', () => {
+      expect(Playlist.getIdByUser).to.be.a('function');
+    });
+    it('should return playlist ID associated with a user ID', () => {
+      const userId = 1000;
+      const list = [{ songId: 17, duration: 2000 }];
+      Playlist.create(userId, list); // Association is made on create
+      const id = Playlist.getIdByUser(userId);
+      expect(id).to.be.a('number');
+      expect(Playlist.get(id)).to.deep.equal(list);
     });
   });
   describe('update', () => {

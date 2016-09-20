@@ -1,5 +1,6 @@
 const chai = require('chai');
 const DJ = require('../../../server/models/DJ');
+const Playlist = require('../../../server/models/Playlist');
 
 const expect = chai.expect;
 
@@ -68,6 +69,21 @@ describe('DJ', () => {
     });
     it('should return null if there are no active djs', () => {
       expect(DJ().getNextTrack()).to.equal(null);
+    });
+    it('should return current DJ\'s next playlist entry and rotate tracks', () => {
+      const userId = 1;
+      const list = [{ songId: 12, duration: 134 }, { songId: 15, duration: 121 }];
+      const id = Playlist.create(userId, list);
+      const dj = DJ();
+      dj.addToWaiting(userId);
+      dj.addToWaiting(2);
+      dj.addToWaiting(3);
+      expect(dj.getNextTrack()).to.deep.equal({ songId: 12, duration: 134 });
+      expect(Playlist.get(id)).to.deep.equal([
+        { songId: 15, duration: 121 },
+        { songId: 12, duration: 134 },
+      ]);
+      expect(dj.getDJs()).to.deep.equal([2, 3, 1]);
     });
   });
   describe('removeDJ', () => {
