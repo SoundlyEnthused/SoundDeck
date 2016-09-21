@@ -1,17 +1,20 @@
 import React from 'react';
 import $ from 'jquery';
 
-export default class App extends React.Component {
+export default class Lobby extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       label: 'default room',
     };
+
+    this.handleRoomJoin = this.handleRoomJoin.bind(this);
   }
 
-  joinRoom(room) {
+  handleRoomJoin(room) {
     this.props.joinRoom(room);
     $('#lobby').toggleClass('active');
+    console.log('handle room join');
   }
 
   render() {
@@ -29,8 +32,8 @@ export default class App extends React.Component {
                     <li className="row lobby--room list-unstyled" key={room}>
                       <div className="col-sm-10">{room}</div>
                       <div className="col-sm-2 lobby--joinBtn" >
-                        <button className="btn btn-default joinBtn" onClick={() => { this.joinRoom(room); }}>
-                          Join
+                        <button className="btn btn-default joinBtn" onClick={() => { this.handleRoomJoin(room); }}> 
+                          Join 
                         </button>
                       </div>
                     </li>
@@ -44,3 +47,8 @@ export default class App extends React.Component {
     );
   }
 }
+
+Lobby.propTypes = {
+  rooms: React.PropTypes.array,
+  joinRoom: React.PropTypes.func,
+};
