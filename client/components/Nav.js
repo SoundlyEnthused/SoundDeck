@@ -3,6 +3,7 @@ import $ from 'jquery';
 
 export default class Nav extends React.Component {
   static toggleRoom() {
+    console.log('room is toggling');
     $('#lobby').toggleClass('active');
   }
 
@@ -30,7 +31,7 @@ export default class Nav extends React.Component {
 
   toggleSignedIn() {
     if (this.props.userData) {
-      return <div> { this.props.userData.username } </div>;
+      return <div className="navbar--signedIn"> { this.props.userData.username } </div>;
     }
 
     return <button className="btn btn-default" onClick={this.props.loggingIn}> Login </button>;
@@ -59,7 +60,7 @@ export default class Nav extends React.Component {
           <div className="collapse navbar-collapse" id="navbar-collapse">
             <ul className="nav navbar-nav navbar-right">
               <li>
-                <button className="btn btn-default" disabled={this.props.currentRoom === undefined} onClick={this.toggleRoom}> Lobby </button>
+                <button className="btn btn-default" disabled={this.props.currentRoom === undefined} onClick={Nav.toggleRoom}> Lobby </button>
               </li>
               <li>
                 <button className="btn btn-default"> Playlist </button>

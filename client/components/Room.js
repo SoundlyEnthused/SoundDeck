@@ -1,14 +1,22 @@
 import React from 'react';
 import load from 'load-script';
+import SC from 'soundcloud';
+import $ from 'jquery';
 // let widget = SC.Widget('react-sc-player');
 
 export default class Room extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       track: 'https://soundcloud.com/logic_official/flexicution-1?in=hennessy/sets/never-stop-never-settle',
       users: [],
-      djs: [],
+      djs: [
+        { id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
+        { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
+        { id: 965552, username: 'Floex', avatar_url: 'https://i1.sndcdn.com/avatars-000215636887-z69ica-large.jpg' },
+        {},
+      ],
     };
     this.widget = null;
   }
@@ -19,17 +27,27 @@ export default class Room extends React.Component {
       this.widget.show_artwork = false;
       this.widget.load(this.state.track, { show_artwork: false });
     });
-    const users = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-        {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
-        {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
-    const djs = [{ id: 3203, username: 'manyoora', avatar_url: 'https://a1.sndcdn.com/images/default_avatar_large.png' },
-    { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
-    { id: 9509, username: 'compositeone', avatar_url: 'https://i1.sndcdn.com/avatars-000000607500-271hqp-large.jpg' },
-    {}];
-    this.setState({
-      djs,
-      users,
+
+    const _this = this;
+    SC.get('/users').then(function(res) {
+      let users = res.map(function(user) {
+        return {
+          username: user.username,
+          id: user.id,
+          avatar_url: user.avatar_url,
+        };
+      });
+
+      console.log(users);
+
+      _this.setState({
+        users: users,
+      });
     });
+  }
+
+  componentDidUpdate() {
+    $('.avatar').tooltip();
   }
 
   render() {
@@ -46,7 +64,13 @@ export default class Room extends React.Component {
                   return (
                     <div className="dj--seat" key={dj.id}>
                       <div className="dj--avatar">
-                        <img src={dj.avatar_url} alt={dj.username} title={dj.username} />
+                        <img className="avatar"
+                          src={dj.avatar_url}
+                          alt={dj.username}
+                          title={dj.username}
+                          data-placement="bottom"
+                          data-animation="true"
+                          data-toggle="tooltip" />
                       </div>
                     </div>
                   );
@@ -83,7 +107,20 @@ export default class Room extends React.Component {
 
           <div className="crowd">
             {
-              this.state.users.map(() => <div className="crowd--user" />)
+              this.state.users.map((user) => {
+              return (
+                <div className="crowd--user">
+                  <img className="avatar"
+                    src={user.avatar_url}
+                    title={user.username}
+                    alt={user.username}
+                    data-placement="bottom"
+                    data-animation="true"
+                    data-toggle="tooltip" />
+
+                </div>
+              )
+              })
             }
           </div>
         </div>
