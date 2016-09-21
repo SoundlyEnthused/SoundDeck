@@ -1,7 +1,7 @@
 const Playlist = {};
 
 let playlists = {};
-/* map of user ids to playlist ids */
+// map of user ids to playlist ids
 let usersToPlaylists = {};
 let nextId = 0;
 // Playlists are always associated with a user!

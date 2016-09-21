@@ -7,8 +7,8 @@ const socketClient = require('socket.io-client');
 
 const expect = chai.expect;
 
-/* global describe it after afterEach before beforeEach */
-describe('MVP API', () => {
+/* global xdescribe describe it after afterEach before beforeEach */
+xdescribe('MVP API', () => {
   let server;
   const port = process.env.PORT;
 

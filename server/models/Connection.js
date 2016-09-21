@@ -3,7 +3,7 @@ const Connection = {};
 
 let connectionsByUser = {};
 let usersBySocket = {};
-// Connection.send(userId, data)
+
 Connection.register = function register(userId, socket) {
   if (connectionsByUser[userId]) {
     connectionsByUser[userId].push(socket);
