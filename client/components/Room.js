@@ -15,10 +15,12 @@ export default class Room extends React.Component {
         { id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
         { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
         { id: 965552, username: 'Floex', avatar_url: 'https://i1.sndcdn.com/avatars-000215636887-z69ica-large.jpg' },
-        {},
+        { id: 122536, username: 'mosaik', avatar_url: 'https://i1.sndcdn.com/avatars-000069391431-3mzmfi-large.jpg'}
       ],
+      mute: -1,
     };
     this.widget = null;
+    this.handleMute = this.handleMute.bind(this);
   }
 
   componentDidMount() {
@@ -48,6 +50,24 @@ export default class Room extends React.Component {
 
   componentDidUpdate() {
     $('.avatar').tooltip();
+    $('.crowd--user').each(function(index) {
+      $(this).css({
+        left: (Math.random()*50 - 25) + "px",
+        top: (Math.random()*50 - 25) + "px"
+      });
+    });
+  }
+
+  handleMute() {
+    this.setState({
+      mute: this.state.mute * -1,
+    });
+
+    if (this.state.mute === -1) {
+      this.widget.setVolume(0);
+    } else {
+      this.widget.setVolume(75);
+    }
   }
 
   render() {
@@ -96,9 +116,12 @@ export default class Room extends React.Component {
                 </button>
               </div>
               <div className="vote--djQueue col-xs-4">
-                <button className="btn btn-default">
+                <button className="btn btn-default btn-round">
                   <span className="fa fa-list" />
-                  DJ List
+                </button>
+
+                <button className="vote--muteBtn btn btn-default btn-round" onClick={this.handleMute}>
+                  {this.state.mute === -1 ? <span className="fa fa-volume-up"/> : <span className="fa fa-volume-off" />}
                 </button>
               </div>
             </div>

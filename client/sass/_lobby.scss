@@ -1,0 +1,33 @@
+.lobby {
+  display: none;
+  width: 100%;
+  z-index: 999;
+  color: $text-color;
+  -webkit-backdrop-filter: blur(50px);
+  h1 {
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+  }
+}
+
+.active {
+  display: block;
+  position: absolute;
+  background: rgba(255,255,255,0.8);
+}
+
+.lobby--room {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  font-size: 1.2em;
+  &:after {
+    display: block;
+    content: '';
+    margin: 0 15px;
+    padding-top: 10px;
+    border-bottom: 1px dashed rgba(0,0,0,0.3);
+  }
+}
+
+.lobby--joinBtn {
+  text-align: right;
+}
