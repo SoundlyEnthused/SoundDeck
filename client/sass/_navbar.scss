@@ -1,0 +1,35 @@
+.navbar {
+  background: rgba(0,0,0,0.8);
+  border-radius: 0;
+  margin-bottom: 0;
+  background-color: #2d2d2d;
+  border-color: #000000;
+  button {
+    padding: 16px 12px;
+    border-radius: 0;
+    border: none;
+    background: none;
+    color: #9a9a9a;
+  }
+}
+
+.navbar-default .navbar-collapse {
+  border-color: black;
+}
+
+.navbar-brand {
+  padding-left: 57px;
+  position: relative;
+}
+
+.navbar-brand img {
+  display: inline-block;
+  width: 35px;
+  position: absolute;
+  left: 15px;
+  top: 7px;
+}
+
+.navbar--signedIn {
+  padding: 15px 0 15px 15px;
+}
