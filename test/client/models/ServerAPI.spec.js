@@ -6,10 +6,10 @@ const expect = chai.expect;
 
 describe('ServerAPI', () => {
   let server;
-  const url = `http://127.0.0.1:${process.env.PORT}`;
+  const url = `http://127.0.0.1:${process.env.TESTPORT}`;
 
   before('Start server', () => {
-    server = createServer(process.env.PORT, []);
+    server = createServer(process.env.TESTPORT, []);
   });
 
   after('Stop server', (done) => {

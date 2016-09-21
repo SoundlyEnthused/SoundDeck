@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
-import App from '../../client/components/App';
+import App from '../../../client/components/App';
 import $ from 'jquery';
 
 // describe() is a strictly visual function => it formats output to 

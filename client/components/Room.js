@@ -7,17 +7,13 @@ import $ from 'jquery';
 export default class Room extends React.Component {
   constructor(props) {
     super(props);
-
+    const djArray = new Array((this.props.rooms? this.props.rooms.djMaxNum : 4)).fill(null);
     this.state = {
       track: 'https://soundcloud.com/logic_official/flexicution-1?in=hennessy/sets/never-stop-never-settle',
       users: [],
-      djs: [
-        { id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
-        { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
-        { id: 965552, username: 'Floex', avatar_url: 'https://i1.sndcdn.com/avatars-000215636887-z69ica-large.jpg' },
-        { id: 122536, username: 'mosaik', avatar_url: 'https://i1.sndcdn.com/avatars-000069391431-3mzmfi-large.jpg'}
-      ],
       mute: -1,
+      djs: djArray,
+      currentDj: null,
     };
     this.widget = null;
     this.handleMute = this.handleMute.bind(this);
@@ -25,29 +21,40 @@ export default class Room extends React.Component {
 
   // componentDidMount invoked only once on the client side immediately after the initial rendering
   componentDidMount() {
+    // Load SoundCloud widget
     load('https://w.soundcloud.com/player/api.js', () => {
       this.widget = window.SC.Widget('soundcloudPlayer'); // eslint-disable-line new-cap
       this.widget.show_artwork = false;
       this.widget.load(this.state.track, { show_artwork: false });
     });
-
-    const _this = this;
-    SC.get('/users').then(function(res) {
-      let users = res.map(function(user) {
-        return {
-          username: user.username,
-          id: user.id,
-          avatar_url: user.avatar_url,
-        };
-      });
-
-      console.log(users);
-
-      _this.setState({
-        users: users,
-      });
-    });
+    // Seed the front end
+    // const _this = this;
+    // SC.get('/users').then((res) => {
+    //   const users = res.map((user) => {
+    //     return {
+    //       username: user.username,
+    //       id: user.id,
+    //       avatar_url: user.avatar_url,
+    //     };
+    //   });
+    //   console.log(users);
+    //   _this.setState({
+    //     users,
+    //     djs: [{ id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
+    //       { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
+    //       { id: 965552, username: 'Floex', avatar_url: 'https://i1.sndcdn.com/avatars-000215636887-z69ica-large.jpg' },
+    //       {}],
+    //   });
+    // });
+    // End seeding
   }
+
+  // componentWillReceiveProps(nextProps) {
+  //   console.log("rooms componentWillReceiveProps", nextProps);
+  //   // this.setState({
+
+  //   // });
+  // }
 
   // componentDidUpate invoked immediately after the component's updates are flushed to the DOM
   componentDidUpdate() {
@@ -76,13 +83,12 @@ export default class Room extends React.Component {
     return (
       <div className="room">
         <div className="container">
-          <h1> {this.props.room} </h1>
-
+          <h1> {this.props.room ? this.props.room.name : 'Default'} </h1>
           <div className="stage">
             <div className="stage--djs">
             {
-              this.state.djs.map((dj) => {
-                if (dj.username) {
+              this.state.djs.map((dj, index) => {
+                if (dj && dj.username) {
                   return (
                     <div className="dj--seat" key={dj.id}>
                       <div className="dj--avatar">
@@ -103,9 +109,8 @@ export default class Room extends React.Component {
                     </div>
                   );
                 }
-
                 return (
-                  <div className="dj--seat empty" key={dj.id} />
+                  <div className="dj--seat empty" key={index} />
                 );
               })
             }
@@ -151,7 +156,7 @@ export default class Room extends React.Component {
                     <img src={user.avatar_url} alt={user.username} />
                   </div>
                 </div>
-              )
+              );
               })
             }
           </div>

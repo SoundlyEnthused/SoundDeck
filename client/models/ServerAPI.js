@@ -5,7 +5,7 @@ const ServerAPI = {
 };
 
 ServerAPI.connect = () => {
-  console.log("socket connecting");
+  //console.log("socket connecting");
   ServerAPI.socket = io('http://localhost:' + process.env.PORT);
 };
 
@@ -15,13 +15,13 @@ ServerAPI.disconnect = () => {
 
 ServerAPI.onUpdate = (callback) => {
   ServerAPI.socket.on('room', (data) => {
-    console.log('Room event', data);
+    //console.log('Room event', data);
     callback(data);
   });
 };
 
 ServerAPI.joinRoom = (roomId) => {
-  console.log('client join room', roomId);
+  //console.log('client join room', roomId);
   ServerAPI.socket.emit('join', roomId);
 };
 

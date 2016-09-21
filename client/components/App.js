@@ -29,18 +29,39 @@ export default class App extends React.Component {
       rooms: [],
       currentRoom: undefined,
       userData: false,
-      label: 'Cool!',
+      users: [],
+      dj: [,,,],
+      track: '',
+      currentDj: -1,
     };
     this.joinRoom = this.joinRoom.bind(this);
     this.loggingIn = this.loggingIn.bind(this);
   }
 
-  static componentWillMount() {
+  componentWillMount() {
     ServerAPI.connect();
     ServerAPI.onUpdate((data) => {
-      console.log('Update', data);
+      let state = {};
+      if (data.rooms) {
+        console.log("updateing rooms to ", data.rooms);
+        state.rooms = data.rooms;
+        if (this.state.currentRoom) {
+          state.roomName = data.rooms[this.state.currentRoom].name;
+          state.users = data.rooms[this.state.currentRoom].users;
+          state.dj = data.rooms[this.state.currentRoom].dj;
+          state.track = data.rooms[this.state.currentRoom].track;
+          state.currentDj = data.rooms[this.state.currentRoom].currentDj;
+        }
+      }
+      this.setState(state);
     });
   }
+  componentDidMount() {
+    this.setState({
+      rooms: ['default'],
+    });
+  }
+
   joinRoom(room) {
     ServerAPI.joinRoom(room.id);
     this.setState({
@@ -69,3 +90,7 @@ export default class App extends React.Component {
     );
   }
 }
+
+App.propTypes = {
+  children: React.PropTypes.node,
+};
