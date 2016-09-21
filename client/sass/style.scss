@@ -44,10 +44,16 @@ body {
   top: 7px;
 }
 
+.navbar--signedIn {
+  padding: 15px 0 15px 15px;
+}
+
 .lobby {
   display: none;
   width: 100%;
   z-index: 999;
+  color: $text-color;
+  -webkit-backdrop-filter: blur(50px);
   h1 {
     border-bottom: 1px solid rgba(0,0,0,0.3);
   }
@@ -83,44 +89,98 @@ body {
 
 .stage {
   background: rgba(0,0,0,0.3);
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.stage--djs {
   display: flex;
   justify-content: center;
   align-items: stretch;
+  flex-wrap: wrap;
 }
 
-.stage--seat {
-  width: 25%;
-  margin: 20px;
+.dj--seat {
+  width: 100px;
+  height: 100px;
+  margin: 20px 10px;
   box-sizing: border-box;
   border: 3px solid black;
   border-radius: 50%;
   overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
 }
 
-.stage--seat.empty {
-  background: rgba(0,0,0,0.5);
+.dj--seat:nth-child(3) {
+    box-shadow: 0px 0px 20px #0061ff;
+    border: 1px solid black;
+  &:after {
+    box-sizing: border-box;
+    border-radius: 50%;
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: 4px dashed #009aff;
+    // background: #002a6e;
+    animation: spin 1.5s infinite linear;
+  }
 }
 
-.stage--dj {
+@keyframes spin {
+  from {
+    transform: rotateZ(0);
+  }
+  to {
+    transform: rotateZ(360deg);
+  }
+}
+
+.dj--seat.empty {
+  background: rgba(0,0,0,0.5) url(img/user.svg) bottom center no-repeat;
+}
+
+.dj--avatar {
   img {
     width: 100%;
     height: auto;
   }
 }
 
+.soundcloudPlayer {
+  box-shadow: 0px 0px 50px black;
+}
+
 .vote {
-  padding: 10px;
-  box-sizing: border-box;
-  margin: 0;
-  background: rgba(0,0,0,0.3);
+  // padding: 10px;
+  // box-sizing: border-box;
+  margin-top: 20px;
 }
 
 .vote--btns {
   text-align: center;
 }
 
+.btn-round {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 2.5rem;
+  display: inline-block;
+  margin: 0 10px;
+}
+
 .vote--djQueue {
   text-align: right;
+  button {
+    span {
+      display: inline-block;
+      margin-right: 10px;
+    }
+  }
 }
 
 .crowd {
@@ -139,4 +199,19 @@ body {
   border: 3px solid black;
   flex-shrink: 0;
   margin: 2px;
+  overflow: hidden;
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.tooltip.bottom .tooltip-arrow {
+  border-bottom-color: white;
+  top: 1px;
+}
+
+.tooltip-inner {
+  background: white;
+  color: #222;
 }
