@@ -21,10 +21,11 @@ function DJ(maxDJs = 4) {
       // Get next DJ
       const dj = active.shift();
       // Get DJ's next track
-      const id = Playlist.getIdByUser(dj);
-      const track = Playlist.get(id)[0]; // TODO: Handle case where playlist is empty
-      // Rotate DJ's playlist
-      Playlist.rotate(id);
+      // TODO: Handle case where there is no playlist for DJ?
+      const playlist = Playlist.getByUserId(dj);
+      // TODO: Handle case where playlist is empty
+      const track = playlist.tracks[0];
+      Playlist.rotate(playlist.id);
       // Rotate DJs
       active.push(dj);
       return track;

@@ -73,13 +73,13 @@ describe('DJ', () => {
     it('should return current DJ\'s next playlist entry and rotate tracks', () => {
       const userId = 1;
       const list = [{ songId: 12, duration: 134 }, { songId: 15, duration: 121 }];
-      const id = Playlist.create(userId, list);
+      const id = Playlist.create(userId, list).id;
       const dj = DJ();
       dj.addToWaiting(userId);
       dj.addToWaiting(2);
       dj.addToWaiting(3);
       expect(dj.getNextTrack()).to.deep.equal({ songId: 12, duration: 134 });
-      expect(Playlist.get(id)).to.deep.equal([
+      expect(Playlist.get(id).tracks).to.deep.equal([
         { songId: 15, duration: 121 },
         { songId: 12, duration: 134 },
       ]);

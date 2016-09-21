@@ -1,8 +1,4 @@
-const EventEmitter = require('events');
-
 const Room = {};
-
-Room.emitter = new EventEmitter();
 
 let rooms = {};
 let nextId = 0;
@@ -20,7 +16,6 @@ Room.create = function create(name) {
   };
   rooms[nextId] = newRoom;
   nextId += 1;
-  Room.emitter.emit('create', newRoom);
   return newRoom;
 };
 
@@ -35,7 +30,6 @@ Room.all = function all() {
 
 Room.remove = function remove(id) {
   delete rooms[id];
-  Room.emitter.emit('remove');
 };
 
 Room.join = function join(roomId, userId) {

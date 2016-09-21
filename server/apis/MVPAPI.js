@@ -2,9 +2,9 @@ const MVP = require('../models/MVP');
 
 module.exports = function createAPI(io) {
   // register a handler to send updated state on room creation
-  MVP.emitter.on('create', () => {
-    io.sockets.emit('room', MVP.get());
-  });
+  // MVP.emitter.on('create', () => {
+  //   io.sockets.emit('room', MVP.get());
+  // });
   io.on('connection', (socket) => {
     // Send inital app state on connection
     socket.emit('room', MVP.get());

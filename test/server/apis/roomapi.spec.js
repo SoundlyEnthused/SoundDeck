@@ -7,7 +7,7 @@ const Room = require('../../../server/models/Room');
 const expect = chai.expect;
 
 /* global describe it after afterEach before beforeEach */
-describe('RoomAPI', () => {
+xdescribe('RoomAPI', () => {
   let server;
   // let client;
   const url = `http://127.0.0.1:${process.env.PORT}`;

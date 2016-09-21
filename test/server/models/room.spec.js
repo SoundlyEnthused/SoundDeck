@@ -20,13 +20,6 @@ describe('Room', () => {
       expect(newRoom).to.be.a('object');
       expect(newRoom.name).to.equal(roomName);
     });
-    it('should emit create event whenever a new room is made', (done) => {
-      Room.emitter.once('create', (room) => {
-        expect(room.name).to.equal('Swing');
-        done();
-      });
-      Room.create('Swing');
-    });
   });
 
   describe('all', () => {
@@ -57,15 +50,6 @@ describe('Room', () => {
       expect(Room.all()).to.deep.equal([room1, room2, room3]);
       Room.remove(room2.id);
       expect(Room.all()).to.deep.equal([room1, room3]);
-    });
-    it('should emit a remove even when a room is removed', (done) => {
-      const room = Room.create('Ska');
-      expect(Room.all()).to.deep.equal([room]);
-      Room.emitter.once('remove', () => {
-        expect(Room.all()).to.deep.equal([]);
-        done();
-      });
-      Room.remove(room.id);
     });
   });
   describe('join', () => {
