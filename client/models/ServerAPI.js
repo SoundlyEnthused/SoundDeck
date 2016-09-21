@@ -25,8 +25,8 @@ ServerAPI.joinRoom = (roomId) => {
   ServerAPI.socket.emit('join', roomId);
 };
 
-ServerAPI.login = (userId) => {
-  ServerAPI.socket.emit('login', userId);
+ServerAPI.login = (user) => {
+  ServerAPI.socket.emit('login', { id: user.id });
 };
 
 module.exports = ServerAPI;

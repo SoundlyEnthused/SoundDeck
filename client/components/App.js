@@ -9,11 +9,7 @@ import Room from './Room';
 import Nav from './Nav';
 import Lobby from './Lobby';
 import Auth from './Auth';
-<<<<<<< fbbf9f19a497f67048fe59053eba2be6b68c5984
-// import Login from './Login';
-=======
 import ServerAPI from '../models/ServerAPI';
->>>>>>> add models
 
 // bootstrap-sass needs jQuery to be global
 window.jQuery = jquery;
@@ -39,10 +35,10 @@ export default class App extends React.Component {
     this.loggingIn = this.loggingIn.bind(this);
   }
 
-  componentWillMount() {
+  static componentWillMount() {
     ServerAPI.connect();
     ServerAPI.onUpdate((data) => {
-      console.log("Update", data);
+      console.log('Update', data);
     });
   }
   joinRoom(room) {
@@ -53,7 +49,7 @@ export default class App extends React.Component {
   }
   loggingIn() {
     Auth.signin().then((userData) => {
-      ServerAPI.login(userData.id);
+      ServerAPI.login(userData);
       this.setState({ userData });
     }).catch((err) => {
       console.log(err);
