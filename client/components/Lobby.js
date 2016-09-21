@@ -32,7 +32,9 @@ export default class Lobby extends React.Component {
                     <li className="row lobby--room list-unstyled" key={room}>
                       <div className="col-sm-10">{room}</div>
                       <div className="col-sm-2 lobby--joinBtn" >
-                        <button className="btn btn-default joinBtn" onClick={() => { this.handleRoomJoin(room); }}> Join </button>
+                        <button className="btn btn-default joinBtn" onClick={() => { this.handleRoomJoin(room); }}> 
+                          Join 
+                        </button>
                       </div>
                     </li>
                   );

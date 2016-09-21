@@ -13,6 +13,21 @@ export default class Nav extends React.Component {
     };
   }
 
+  toggleLobby() {
+    $('#lobby').toggleClass('active');
+  }
+
+  togglePlaylist() {
+    $('#playlist').toggleClass('active');
+  }
+
+  showPlaylist() {
+    if (this.props.userData) {
+      return <button className="btn btn-default" onClick={this.togglePlaylist}> playlist </button>;
+    }
+    return false;
+  }
+
   toggleSignedIn() {
     if (this.props.userData) {
       return <div> { this.props.userData.username } </div>;
@@ -25,7 +40,6 @@ export default class Nav extends React.Component {
     return (
       <nav className="navbar navbar-default">
         <div className="container">
-
           <div className="nav navbar-nav navbar-left">
             <div className="navbar-header">
               <a className="navbar-brand">

@@ -7,13 +7,8 @@ export default class Room extends React.Component {
     super(props);
     this.state = {
       track: 'https://soundcloud.com/logic_official/flexicution-1?in=hennessy/sets/never-stop-never-settle',
-      users: [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
-      djs: [
-        { id: 3203, username: 'manyoora', avatar_url: 'https://a1.sndcdn.com/images/default_avatar_large.png' },
-        { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
-        { id: 9509, username: 'compositeone', avatar_url: 'https://i1.sndcdn.com/avatars-000000607500-271hqp-large.jpg' },
-        {},
-      ],
+      users: [],
+      djs: [],
     };
     this.widget = null;
   }
@@ -23,6 +18,17 @@ export default class Room extends React.Component {
       this.widget = window.SC.Widget('soundcloudPlayer'); // eslint-disable-line new-cap
       this.widget.show_artwork = false;
       this.widget.load(this.state.track, { show_artwork: false });
+    });
+    const users = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+        {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
+        {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
+    const djs = [{ id: 3203, username: 'manyoora', avatar_url: 'https://a1.sndcdn.com/images/default_avatar_large.png' },
+    { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
+    { id: 9509, username: 'compositeone', avatar_url: 'https://i1.sndcdn.com/avatars-000000607500-271hqp-large.jpg' },
+    {}];
+    this.setState({
+      djs,
+      users,
     });
   }
 
