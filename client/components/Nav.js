@@ -14,10 +14,12 @@ export default class Nav extends React.Component {
     };
   }
 
+  // Toggles the lobby id element to 'active' in CSS => displays Lobby
   toggleLobby() {
     $('#lobby').toggleClass('active');
   }
 
+  // Toggles the playlist id element to 'active' in CSS => displays Playlist
   togglePlaylist() {
     console.log('the playlist click');
     $('#playlist').toggleClass('active');
@@ -30,11 +32,13 @@ export default class Nav extends React.Component {
     return false;
   }
 
+  // Displays Login button or user's Soundcloud username
   toggleSignedIn() {
+    // If user signs-in, displays their Soundcloud username in the nav bar
     if (this.props.userData) {
       return <div className="navbar--signedIn"> { this.props.userData.username } </div>;
     }
-
+    // Displays the Login button
     return <button className="btn btn-default" id="LoginButton" onClick={this.props.loggingIn}> Login </button>;
   }
 
@@ -77,9 +81,10 @@ export default class Nav extends React.Component {
   }
 }
 
+// Specifies the prop types for es Linting
 Nav.propTypes = {
   currentRoom: React.PropTypes.string,
   loggingIn: React.PropTypes.func.isRequired,
   userData: React.PropTypes.any,
-  togglePlaylist: React.PropTypes.isRequired,
+  togglePlaylist: React.PropTypes.func,
 };

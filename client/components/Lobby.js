@@ -14,7 +14,7 @@ export default class Lobby extends React.Component {
   handleRoomJoin(room) {
     this.props.joinRoom(room);
     $('#lobby').toggleClass('active');
-    console.log('handle room join');
+    //console.log('handle room join');
   }
 
   render() {
