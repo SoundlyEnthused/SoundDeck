@@ -4,10 +4,6 @@ import $ from 'jquery';
 export default class Lobby extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      label: 'default room',
-    };
-
     this.handleRoomJoin = this.handleRoomJoin.bind(this);
   }
 
@@ -27,10 +23,10 @@ export default class Lobby extends React.Component {
           <div className="row">
             <ul className="lobby--roomlist col-sm-12">
               {
-                this.props.rooms.map((room) => {
+                this.props.rooms.map((room, index) => {
                   return (
                     <li className="row lobby--room list-unstyled" key={room}>
-                      <div className="col-sm-10">{room}</div>
+                      <div className="col-sm-10">{this.props.roomNames[index]}</div>
                       <div className="col-sm-2 lobby--joinBtn" >
                         <button className="btn btn-default joinBtn" onClick={() => { this.handleRoomJoin(room); }}> 
                           Join 

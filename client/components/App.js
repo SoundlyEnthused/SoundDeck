@@ -26,40 +26,58 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      rooms: [],
-      currentRoom: undefined,
       userData: false,
-      users: [],
-      dj: [,,,],
+      rooms: [],
+      roomNames: [],
+      currentRoom: undefined,
       track: '',
+      users: [],
+      djs: [],
+      djMaxNum: 4,
       currentDj: -1,
     };
     this.joinRoom = this.joinRoom.bind(this);
     this.loggingIn = this.loggingIn.bind(this);
+    this.update = this.update.bind(this);
   }
 
   componentWillMount() {
     ServerAPI.connect();
     ServerAPI.onUpdate((data) => {
-      let state = {};
-      if (data.rooms) {
-        console.log("updateing rooms to ", data.rooms);
-        state.rooms = data.rooms;
-        if (this.state.currentRoom) {
-          state.roomName = data.rooms[this.state.currentRoom].name;
-          state.users = data.rooms[this.state.currentRoom].users;
-          state.dj = data.rooms[this.state.currentRoom].dj;
-          state.track = data.rooms[this.state.currentRoom].track;
-          state.currentDj = data.rooms[this.state.currentRoom].currentDj;
-        }
-      }
-      this.setState(state);
+      this.update(data);
     });
   }
   componentDidMount() {
     this.setState({
-      rooms: ['default'],
+      rooms: [1, 2, 3],
+      roomNames: ['ROCK', 'POP', 'DANCE'],
     });
+  }
+
+  update(data) {
+    const state = {};
+    if (data.rooms) {
+      /*
+      data.rooms = [{
+        id: 0,
+        name: "",
+        track: "",
+        djs: [{user}],
+        currentDj: user,
+        djMaxNum: 4,
+        users: [{user}],
+      }]
+      */
+      state.rooms = data.rooms.map(room => (room.id));
+      state.roomNames = data.rooms.map(room => (room.name));
+      if (this.state.currentRoom) {
+        state.roomName = data.rooms[this.state.currentRoom].name;
+        state.users = data.rooms[this.state.currentRoom].users;
+        state.dj = data.rooms[this.state.currentRoom].dj;
+        state.track = data.rooms[this.state.currentRoom].track;
+        state.currentDj = data.rooms[this.state.currentRoom].currentDj;
+      }
+    }
   }
 
   joinRoom(room) {
@@ -82,7 +100,7 @@ export default class App extends React.Component {
       <main>
         <Nav currentRoom={this.state.currentRoom} loggingIn={this.loggingIn} userData={this.state.userData} />
         <Playlist />
-        <Lobby rooms={this.state.rooms} joinRoom={this.joinRoom} />
+        <Lobby rooms={this.state.rooms} roomNames={this.state.roomNames} joinRoom={this.joinRoom} />
         {
           this.state.currentRoom ? <Room room={this.state.currentRoom} /> : null
         }

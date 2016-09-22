@@ -7,13 +7,15 @@ import $ from 'jquery';
 export default class Room extends React.Component {
   constructor(props) {
     super(props);
+    console.log("init", this.props);
+
     const djArray = new Array((this.props.rooms? this.props.rooms.djMaxNum : 4)).fill(null);
     this.state = {
-      track: 'https://soundcloud.com/logic_official/flexicution-1?in=hennessy/sets/never-stop-never-settle',
-      users: [],
       mute: -1,
+      track: this.props.room.track,
       djs: djArray,
-      currentDj: null,
+      currentDj: this.props.room.currentDj,
+      users: this.props.room.users,
     };
     this.widget = null;
     this.handleMute = this.handleMute.bind(this);
@@ -49,12 +51,15 @@ export default class Room extends React.Component {
     // End seeding
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   console.log("rooms componentWillReceiveProps", nextProps);
-  //   // this.setState({
-
-  //   // });
-  // }
+  componentWillReceiveProps(nextProps) {
+    console.log("rooms componentWillReceiveProps", nextProps);
+    this.setState({
+      track: this.props.track,
+      djs: this.props.djs,
+      currentDj: this.props.currentDj,
+      users: this.props.users,
+    });
+  }
 
   // componentDidUpate invoked immediately after the component's updates are flushed to the DOM
   componentDidUpdate() {
@@ -83,7 +88,7 @@ export default class Room extends React.Component {
     return (
       <div className="room">
         <div className="container">
-          <h1> {this.props.room ? this.props.room.name : 'Default'} </h1>
+          <h1> {this.props.room.name} </h1>
           <div className="stage">
             <div className="stage--djs">
             {
