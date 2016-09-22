@@ -13,6 +13,10 @@ Connection.register = function register(userId, socket) {
   usersBySocket[socket.id] = userId;
 };
 
+Connection.isRegistered = function isRegistered(socket) {
+  return socket.id in usersBySocket;
+};
+
 Connection.getSockets = function getSockets(userId) {
   return connectionsByUser[userId] ? connectionsByUser[userId].slice() : [];
 };

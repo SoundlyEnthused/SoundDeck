@@ -7,15 +7,11 @@ const expect = chai.expect;
 /* global xdescribe xit describe it after afterEach before beforeEach */
 describe('MvpAPI', () => {
   let sent = [];
-  let roomId;
   const ConnectionSend = Connection.send;
   beforeEach('create Connection mock', () => {
     Connection.send = (userId, eventName, data) => {
       sent.push({ userId, eventName, data });
     };
-  });
-  beforeEach('Create initial app state', () => {
-    roomId = MvpAPI.createRoom('Jazz').id;
   });
   afterEach('Reset models', () => {
     MvpAPI.clearAll();
@@ -24,14 +20,6 @@ describe('MvpAPI', () => {
   });
   after('set Connection.send back', () => {
     Connection.send = ConnectionSend;
-  });
-  xdescribe('room', () => {
-    xit('should receive initial app state on connection', (done) => {
-    });
-    xit('should receive app state when rooms are created', (done) => {
-    });
-    xit('should share state between multiple clients', (done) => {
-    });
   });
   describe('login', () => {
     it('should be a function', () => {
@@ -65,43 +53,159 @@ describe('MvpAPI', () => {
       expect(room.id).to.be.a('number');
     });
   });
-  describe('sendState', () => {
-    it('should be a function', () => {
-      expect(MvpAPI.sendState).to.be.a('function');
-    });
-    it('should send an object representing the state of all rooms', () => {
+  describe('getState', () => {
+    let room1;
+    let room2;
+    beforeEach('Create state to test', () => {
+      // There is an additional Room from outer beforeEach
+      // Create some Rooms to test
+      room1 = MvpAPI.createRoom('Metal');
+      room2 = MvpAPI.createRoom('Industrial');
+      // Create a user to test
       const socket = { id: 1 };
-      const userId = 2;
+      const userId = 12;
       MvpAPI.login(socket, { id: userId });
-      // Swallow login event
-      sent.pop();
-      MvpAPI.sendState();
-      const msg = sent.pop();
-      const state = msg.data;
-      // Should have emitted room event
-      expect(msg.eventName).to.equal('room');
-      expect(state).to.be.an('object');
-      const roomState = state[roomId];
-      expect(roomState).to.be.an('object');
-      expect(roomState.users).to.be.an('array');
-      expect(roomState.djs).to.be.an('array');
+    });
+    it('should be a function', () => {
+      expect(MvpAPI.getState).to.be.a('function');
+    });
+    it('should return an object representing the state of the App', () => {
+      expect(MvpAPI.getState()).to.be.an('object');
+    });
+    it('should return an object of objects, one for each room', () => {
+      expect(Object.keys(MvpAPI.getState()).length).to.equal(2);
+    });
+    it('should return object of objects indexed by room IDs', () => {
+      expect(MvpAPI.getState()[room1.id]).to.be.an('object');
+      expect(MvpAPI.getState()[room2.id]).to.be.an('object');
+    });
+    it('should return object of objects with .name properties', () => {
+      expect(MvpAPI.getState()[room1.id].name).to.equal(room1.name);
+      expect(MvpAPI.getState()[room2.id].name).to.equal(room2.name);
+    });
+    it('should return object of objects with .djs arrays', () => {
+      expect(MvpAPI.getState()[room1.id].djs).to.be.an('array');
+      expect(MvpAPI.getState()[room2.id].djs).to.be.an('array');
+    });
+    it('should return object of objects with .users array', () => {
+      expect(MvpAPI.getState()[room1.id].users).to.be.an('array');
+      expect(MvpAPI.getState()[room2.id].users).to.be.an('array');
+    });
+    it('should return object of objects with .djMaxNum property', () => {
+      expect(MvpAPI.getState()[room1.id].djMaxNum).to.be.a('number');
+      expect(MvpAPI.getState()[room1.id].djMaxNum).to.equal(4);
+    });
+    it('should return object of objects with .currentDj property', () => {
+      expect(MvpAPI.getState()[room1.id].currentDj).not.to.equal(undefined);
+    });
+    it('should return object of objects with .track property', () => {
+      expect(MvpAPI.getState()[room1.id].track).not.to.equal(undefined);
     });
   });
-  xdescribe('join', () => {
-    it('should add user to room and send updated state', () => {
-      const socket = { id: 1 };
-      const userId = 12;
-      MvpAPI.login(socket, { id: userId });
-      MvpAPI.join(socket, { roomId });
-      // const join = MvpAP
+  describe('enqueue', () => {
+    let room;
+    const user1 = 22;
+    const user2 = 23;
+    let socket1;
+    let socket2;
+    beforeEach('Create state to test', () => {
+      // There is an additional Room from outer beforeEach
+      // Create a Room to test
+      room = MvpAPI.createRoom('Metal');
+      // Create two users for tests
+      socket1 = { id: 1 };
+      socket2 = { id: 2 };
+      // Log those users in
+      MvpAPI.login(socket1, { id: user1 });
+      MvpAPI.login(socket2, { id: user2 });
+      // Join Metal Room
+      MvpAPI.join(socket1, { roomId: room.id });
+      MvpAPI.join(socket2, { roomId: room.id });
+      // clear sent so that no login messages remain for easier testing
+      sent = [];
     });
-    it('should move a user to another room if they are in one already', (done) => {
-      const socket = { id: 1 };
-      const userId = 12;
-      MvpAPI.login(socket, { id: userId });
-      MvpAPI.join(socket, { roomId });
-      const room2Id = MvpAPI.createRoom('Punk').id;
-      MvpAPI.join(socket, { roomId: room2Id });
+    it('should be a function', () => {
+      expect(MvpAPI.enqueue).to.be.a('function');
+    });
+    it('should send updated state to all users', () => {
+      MvpAPI.enqueue(socket1);
+      expect(sent.length).to.equal(2);
+      expect(sent[0].eventName).to.equal('room');
+    });
+    it('should make a user an active dj if there are spots available', () => {
+      MvpAPI.enqueue(socket1);
+      const state = sent[0].data;
+      expect(state[room.id].djs.length).to.equal(1);
+      expect(state[room.id].djs[0].id).to.equal(user1);
+    });
+    it('should do and send nothing if user is not logged in', () => {
+      // Create a dummy socket that is not registered
+      const unregisteredSocket = { id: 78969 };
+      MvpAPI.enqueue(unregisteredSocket);
+      expect(sent.length).to.equal(0);
+    });
+  });
+  describe('join', () => {
+    let room1;
+    let room2;
+    const user1 = 22;
+    const user2 = 23;
+    let socket1;
+    let socket2;
+    beforeEach('Create state to test', () => {
+      // There is an additional Room from outer beforeEach
+      // Create some Rooms to test
+      room1 = MvpAPI.createRoom('Metal');
+      room2 = MvpAPI.createRoom('Industrial');
+      // Create two users for tests
+      socket1 = { id: 1 };
+      socket2 = { id: 2 };
+      // Log those users in
+      MvpAPI.login(socket1, { id: user1 });
+      MvpAPI.login(socket2, { id: user2 });
+      // clear sent so that no login messages remain for easier testing
+      sent = [];
+    });
+    it('should be a function', () => {
+      expect(MvpAPI.join).to.be.a('function');
+    });
+    it('should do and send nothing is user is not logged in', () => {
+      // Create a dummy socket that is not registered
+      const unregisteredSocket = { id: 78969 };
+      MvpAPI.join(unregisteredSocket, { roomId: room1.id });
+      expect(sent.length).to.equal(0);
+    });
+    it('should send updated state to all users', () => {
+      MvpAPI.join(socket1, { roomId: room1.id });
+      // There should be a message for both logged in users
+      expect(sent.length).to.equal(2);
+      const msg1 = sent.shift();
+      expect(msg1.eventName).to.equal('room');
+      const msg2 = sent.shift();
+      expect(msg1.data).to.deep.equal(msg2.data);
+    });
+    it('should join a room', () => {
+      MvpAPI.join(socket1, { roomId: room2.id });
+      let msg = sent.shift();
+      let users = (msg.data[room2.id].users);
+      expect(users.length).to.equal(1);
+      expect(users[0].id).to.equal(user1);
+      sent = [];
+      MvpAPI.join(socket2, { roomId: room2.id });
+      msg = sent.shift();
+      users = (msg.data[room2.id].users);
+      expect(users.length).to.equal(2);
+    });
+    it('should move a user to another room if they are in one already', () => {
+      MvpAPI.join(socket1, { roomId: room2.id });
+      let msg = sent.shift();
+      expect(msg.data[room1.id].users.length).to.equal(0);
+      expect(msg.data[room2.id].users.length).to.equal(1);
+      sent = [];
+      MvpAPI.join(socket1, { roomId: room1.id });
+      msg = sent.shift();
+      expect(msg.data[room1.id].users.length).to.equal(1);
+      expect(msg.data[room2.id].users.length).to.equal(0);
     });
   });
 });
