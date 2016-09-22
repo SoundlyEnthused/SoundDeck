@@ -43,7 +43,8 @@ MvpAPI.clearAll = () => {
 MvpAPI.login = (socket, data) => {
   Connection.register(data.id, socket);
   Connection.send(data.id, 'login', { id: data.id });
-  MvpAPI.sendState();
+  Connection.send(data.id, 'room', MvpAPI.getState());
+  // MvpAPI.sendState();
 };
 
 MvpAPI.attachListeners = (io) => {
