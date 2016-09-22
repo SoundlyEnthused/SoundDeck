@@ -1,1 +1,1 @@
-./node_modules/.bin/mocha --recursive ./test/server -r dotenv/config -r test/bootstrap.js "$@"
+NODE_ENV=test ./node_modules/.bin/mocha --recursive ./test/server -r test/bootstrap.js "$@"
