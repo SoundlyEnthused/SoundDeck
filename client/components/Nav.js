@@ -25,6 +25,14 @@ export default class Nav extends React.Component {
     $('#playlist').toggleClass('active');
   }
 
+  // Displays the Lobby button upon user login
+  showLobby(){
+    if(this.props.userData){
+      return <button className="btn btn-default" id="LobbyButton" onClick={this.toggleLobby}> Lobby </button>;
+    }
+    return false;
+  }
+
   showPlaylist() {
     if (this.props.userData) {
       return <button className="btn btn-default" id="PlaylistButton" onClick={this.togglePlaylist}> Playlist </button>;
@@ -65,7 +73,7 @@ export default class Nav extends React.Component {
           <div className="collapse navbar-collapse" id="navbar-collapse">
             <ul className="nav navbar-nav navbar-right">
               <li>
-                <button className="btn btn-default" disabled={this.props.currentRoom === undefined} onClick={Nav.toggleRoom}> Lobby </button>
+                { this.showLobby() }
               </li>
               <li>
                 { this.showPlaylist() }
@@ -88,3 +96,5 @@ Nav.propTypes = {
   userData: React.PropTypes.any,
   togglePlaylist: React.PropTypes.func,
 };
+
+// //!-- <button className="btn btn-default" disabled={this.props.currentRoom === undefined} onClick={Nav.toggleRoom}> Lobby </button>
