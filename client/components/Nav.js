@@ -79,4 +79,5 @@ Nav.propTypes = {
   currentRoom: React.PropTypes.string,
   loggingIn: React.PropTypes.func.isRequired,
   userData: React.PropTypes.any,
+  togglePlaylist: React.PropTypes.isRequired,
 };
