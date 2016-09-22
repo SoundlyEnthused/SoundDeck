@@ -23,6 +23,7 @@ export default class Room extends React.Component {
     this.handleMute = this.handleMute.bind(this);
   }
 
+  // componentDidMount invoked only once on the client side immediately after the initial rendering
   componentDidMount() {
     load('https://w.soundcloud.com/player/api.js', () => {
       this.widget = window.SC.Widget('soundcloudPlayer'); // eslint-disable-line new-cap
@@ -48,6 +49,7 @@ export default class Room extends React.Component {
     });
   }
 
+  // componentDidUpate invoked immediately after the component's updates are flushed to the DOM
   componentDidUpdate() {
     $('.avatar').tooltip();
     $('.crowd--user').each(function(index) {
