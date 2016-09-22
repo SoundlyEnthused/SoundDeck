@@ -19,6 +19,7 @@ export default class Nav extends React.Component {
   }
 
   togglePlaylist() {
+    console.log('the playlist click');
     $('#playlist').toggleClass('active');
   }
 
