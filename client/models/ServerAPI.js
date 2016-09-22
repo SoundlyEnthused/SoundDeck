@@ -26,7 +26,15 @@ ServerAPI.joinRoom = (roomId) => {
 };
 
 ServerAPI.login = (user) => {
+  console.log("Server API login", user);
   ServerAPI.socket.emit('login', { id: user.id });
+};
+
+ServerAPI.onLogin = (callback) => {
+  //console.log('client join room', roomId);
+  ServerAPI.socket.on('login', (data) => {
+    callback(data);
+  });
 };
 
 module.exports = ServerAPI;

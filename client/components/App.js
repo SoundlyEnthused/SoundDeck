@@ -12,9 +12,9 @@ import Auth from './Auth';
 import ServerAPI from '../models/ServerAPI';
 
 // bootstrap-sass needs jQuery to be global
-window.jQuery = jquery;
-window.$ = jquery;
-
+global.jQuery = jquery;
+global.$ = jquery;
+require('bootstrap-sass');  // import doesn't work for some reason
 // Do not include styles if testing
 if (process.env.NODE_ENV !== 'test') {
   // sass doesn't export anything meaninful so disable lint
@@ -40,12 +40,30 @@ export default class App extends React.Component {
   componentWillMount() {
     ServerAPI.connect();
     ServerAPI.onUpdate((data) => {
+      console.log("getting data", data)
       let state = this.update(data);
       this.setState(state);
+    });
+    ServerAPI.onLogin((data) => {
+      console.log("login data", data);
     });
   }
   componentDidMount() {
     // quick seeding data
+    const djs = [
+        { id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
+        { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
+        { id: 965552, username: 'Floex', avatar_url: 'https://i1.sndcdn.com/avatars-000215636887-z69ica-large.jpg' },
+    ];
+    const users = [
+          { id: 1, username: '"alexis"', avatar_url: 'https://i1.sndcdn.com/avatars-000000000141-2d728f-large.jpg' },
+          { id: 2, username: 'Eric 🔥', avatar_url: 'https://i1.sndcdn.com/avatars-000153316546-tqxejr-large.jpg' },
+          { id: 3, username: 'emil', avatar_url: 'https://i1.sndcdn.com/avatars-000019102368-0eum50-large.jpg' },
+          { id: 11, username: 'robert', avatar_url: 'https://i1.sndcdn.com/avatars-000000000050-56eb60-large.jpg' },
+          { id: 46, username: 'bjornjeffery', avatar_url: 'https://a1.sndcdn.com/images/default_avatar_large.png' },
+          { id: 58, username: 'lukas', avatar_url: 'https://i1.sndcdn.com/avatars-000001916005-iinh3e-large.jpg' },
+          { id: 51, username: 'mikaelpersson', avatar_url: 'https://i1.sndcdn.com/avatars-000000000330-627e91-large.jpg' },
+    ];
     this.roomData = {
       1: {
         name: 'ROCK',
@@ -53,26 +71,32 @@ export default class App extends React.Component {
         djs: [
             { id: 1, username: '"alexis"', avatar_url: 'https://i1.sndcdn.com/avatars-000000000141-2d728f-large.jpg' },
             { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' }],
-        currentDj: "user",
+        currentDj: 4973508,
         djMaxNum: 4,
-        users: [{}, {}, {}, {}],
+        users: users,
       },
       2: {
         name: 'POP',
         track: '',
         djs: [
-            { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' }],
-        currentDj: "",
+          { id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
+          { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
+          { id: 965552, username: 'Floex', avatar_url: 'https://i1.sndcdn.com/avatars-000215636887-z69ica-large.jpg' },
+          { id: 24, username: 'Rouzbeh Delavari', avatar_url: 'https://i1.sndcdn.com/avatars-000128836744-w66epn-large.jpg' },
+          ],
+        currentDj: 965552,
         djMaxNum: 4,
-        users: [{}, {}, {}, {}],
+        users: users,
       },
       3: {
         name: 'DANCE',
         track: '',
-        djs: [],
-        currentDj: "",
+        djs: [
+          { id: 52, username: 'Van Rivers', avatar_url: 'https://i1.sndcdn.com/avatars-000204704801-1zqjqs-large.jpg' },
+        ],
+        currentDj: 49,
         djMaxNum: 4,
-        users: [{}, {}, {}, {}],
+        users: users,
       },
     };
     this.setState({
@@ -107,7 +131,9 @@ export default class App extends React.Component {
   }
 
   loggingIn() {
+    console.log("logging in");
     Auth.signin().then((userData) => {
+      console.log("logging in", userData);
       ServerAPI.login(userData);
       this.setState({ userData });
     }).catch((err) => {

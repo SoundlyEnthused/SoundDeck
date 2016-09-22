@@ -111,13 +111,7 @@ export default class Room extends React.Component {
                           data-placement="bottom"
                           data-animation="true"
                           data-toggle="tooltip"
-                        >
-                          <img
-                            className="avatar"
-                            src={dj.avatar_url}
-                            alt={dj.username}
-                          />
-                        </div>
+                        />
                       </div>
                     </div>
                   );

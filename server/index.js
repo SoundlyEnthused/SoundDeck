@@ -59,7 +59,7 @@ if (process.env.NODE_ENV !== 'test') {
   const port = process.env.PORT || 4000;
   const server = app.listen(port);
   console.log('Listening on port', port);
-  api(io(server));
+  api.attachListeners(io(server));
 } else {
   // We're in test mode; make this file importable instead.
   module.exports = routes;
