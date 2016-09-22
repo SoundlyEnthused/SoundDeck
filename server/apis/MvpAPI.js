@@ -44,6 +44,8 @@ MvpAPI.login = (socket, data) => {
 };
 
 MvpAPI.join = (socket, data) => {
+  const userId = Connection.getUserId(socket);
+  Room.join(data.roomId, userId);
   Connection.sendAll('room', MvpAPI.getState());
 };
 

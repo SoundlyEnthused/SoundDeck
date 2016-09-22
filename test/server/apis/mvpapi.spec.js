@@ -134,16 +134,38 @@ describe('MvpAPI', () => {
     it('should be a function', () => {
       expect(MvpAPI.join).to.be.a('function');
     });
-    it('should join room and send updated state to all users', () => {
-      MvpAPI.join(socket1, room1.id);
+    it('should send updated state to all users', () => {
+      MvpAPI.join(socket1, { roomId: room1.id });
       // There should be a message for both logged in users
       console.log(sent);
       expect(sent.length).to.equal(2);
       const msg1 = sent.shift();
       expect(msg1.eventName).to.equal('room');
+      const msg2 = sent.shift();
+      expect(msg1.data).to.deep.equal(msg2.data);
     });
-    xit('should move a user to another room if they are in one already', () => {
-
+    it('should join a room', () => {
+      MvpAPI.join(socket1, { roomId: room2.id });
+      let msg = sent.shift();
+      let users = (msg.data[room2.id].users);
+      expect(users.length).to.equal(1);
+      expect(users[0].id).to.equal(user1);
+      sent = [];
+      MvpAPI.join(socket2, { roomId: room2.id });
+      msg = sent.shift();
+      users = (msg.data[room2.id].users);
+      expect(users.length).to.equal(2);
+    });
+    it('should move a user to another room if they are in one already', () => {
+      MvpAPI.join(socket1, { roomId: room2.id });
+      let msg = sent.shift();
+      expect(msg.data[room1.id].users.length).to.equal(0);
+      expect(msg.data[room2.id].users.length).to.equal(1);
+      sent = [];
+      MvpAPI.join(socket1, { roomId: room1.id });
+      msg = sent.shift();
+      expect(msg.data[room1.id].users.length).to.equal(1);
+      expect(msg.data[room2.id].users.length).to.equal(0);
     });
   });
 });
