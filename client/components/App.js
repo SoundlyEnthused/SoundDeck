@@ -40,7 +40,8 @@ export default class App extends React.Component {
   componentWillMount() {
     ServerAPI.connect();
     ServerAPI.onUpdate((data) => {
-      this.update(data);
+      let state = this.update(data);
+      this.setState(state);
     });
   }
   componentDidMount() {
@@ -49,7 +50,9 @@ export default class App extends React.Component {
       1: {
         name: 'ROCK',
         track: '',
-        djs: [{}, {}, {}, {}],
+        djs: [
+            { id: 1, username: '"alexis"', avatar_url: 'https://i1.sndcdn.com/avatars-000000000141-2d728f-large.jpg' },
+            { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' }],
         currentDj: "user",
         djMaxNum: 4,
         users: [{}, {}, {}, {}],
@@ -57,7 +60,8 @@ export default class App extends React.Component {
       2: {
         name: 'POP',
         track: '',
-        djs: [{}, {}, {}, {}],
+        djs: [
+            { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' }],
         currentDj: "",
         djMaxNum: 4,
         users: [{}, {}, {}, {}],
@@ -65,7 +69,7 @@ export default class App extends React.Component {
       3: {
         name: 'DANCE',
         track: '',
-        djs: [{}, {}, {}, {}],
+        djs: [],
         currentDj: "",
         djMaxNum: 4,
         users: [{}, {}, {}, {}],
@@ -78,24 +82,25 @@ export default class App extends React.Component {
   }
 
   update(data) {
-    const state = {};
+    let state = {};
     if (data.rooms) {
       this.roomData = data.rooms;
-      state.rooms = this.roomData.map(room => (room.id));
+      state.roomIds = this.roomData.map(room => (room.id));
       state.roomNames = this.roomData.map(room => (room.name));
       if (this.state.currentRoom) {
         state.roomName = this.roomData[this.state.currentRoom].name;
         state.users = this.roomData[this.state.currentRoom].users;
         state.dj = this.roomData[this.state.currentRoom].dj;
+        state.djMaxNum = this.roomData[this.state.currentRoom].djMaxNum;
         state.track = this.roomData[this.state.currentRoom].track;
         state.currentDj = this.roomData[this.state.currentRoom].currentDj;
       }
     }
+    return state;
   }
 
   joinRoom(roomId) {
     ServerAPI.joinRoom(roomId);
-    console.log('JOIN ROOM', this.roomData, this.roomData[roomId]);
     this.setState({
       currentRoom: this.roomData[roomId],
     });
@@ -117,7 +122,15 @@ export default class App extends React.Component {
         <Lobby roomIds={this.state.roomIds} roomNames={this.state.roomNames} joinRoom={this.joinRoom} />
         <Playlist />
         {
-          this.state.currentRoom ? <Room room={this.state.currentRoom} /> : null
+          this.state.currentRoom ? (
+            <Room
+              name={this.state.currentRoom.name}
+              track={this.state.currentRoom.track}
+              djs={this.state.currentRoom.djs}
+              djMaxNum={this.state.currentRoom.djMaxNum}
+              currentDj={this.state.currentRoom.currentDj}
+              users={this.state.currentRoom.users}
+            />) : null
         }
       </main>
     );

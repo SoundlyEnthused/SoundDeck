@@ -2,21 +2,12 @@ import React from 'react';
 import load from 'load-script';
 import SC from 'soundcloud';
 import $ from 'jquery';
-// let widget = SC.Widget('react-sc-player');
 
 export default class Room extends React.Component {
   constructor(props) {
     super(props);
-    console.log("init", this.props);
-
-    const djArray = new Array((this.props.rooms? this.props.rooms.djMaxNum : 4)).fill(null);
-    this.state = {
-      mute: -1,
-      track: this.props.room.track,
-      djs: djArray,
-      currentDj: this.props.room.currentDj,
-      users: this.props.room.users,
-    };
+    const state = this.processProps(this.props);
+    this.state = state;
     this.widget = null;
     this.handleMute = this.handleMute.bind(this);
   }
@@ -32,14 +23,15 @@ export default class Room extends React.Component {
     // Seed the front end
     // const _this = this;
     // SC.get('/users').then((res) => {
-    //   const users = res.map((user) => {
-    //     return {
-    //       username: user.username,
-    //       id: user.id,
-    //       avatar_url: user.avatar_url,
-    //     };
+    //   const users = res.forEach((user) => {
+    //     var temp =  (
+    //       " id: " + user.id +
+    //       ", username: '" + user.username +
+    //       "', avatar_url: '" + user.avatar_url +"'     \n"
+    //     );
+    //     console.log(temp)
     //   });
-    //   console.log(users);
+    // });
     //   _this.setState({
     //     users,
     //     djs: [{ id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
@@ -52,13 +44,8 @@ export default class Room extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log("rooms componentWillReceiveProps", nextProps);
-    this.setState({
-      track: this.props.track,
-      djs: this.props.djs,
-      currentDj: this.props.currentDj,
-      users: this.props.users,
-    });
+    const state = this.processProps(nextProps);
+    this.setState(state);
   }
 
   // componentDidUpate invoked immediately after the component's updates are flushed to the DOM
@@ -83,12 +70,31 @@ export default class Room extends React.Component {
       this.widget.setVolume(75);
     }
   }
+  processProps(nextProps) {
+    const djArray = this.processDjs(nextProps.djs, nextProps.djMaxNum);
+    return {
+      name: nextProps.name,
+      track: nextProps.track,
+      timeStamp: nextProps.timeStamp,
+      djs: djArray,
+      currentDj: nextProps.currentDj,
+      users: nextProps.users,
+    };
+  }
+
+  processDjs(djList, djMaxNum) {
+    let djSeats = djList.slice();
+    while (djSeats.length < djMaxNum) {
+      djSeats.push(null);
+    }
+    return djSeats;
+  }
 
   render() {
     return (
       <div className="room">
         <div className="container">
-          <h1> {this.props.room.name} </h1>
+          <h1> {this.state.name} </h1>
           <div className="stage">
             <div className="stage--djs">
             {
@@ -97,8 +103,10 @@ export default class Room extends React.Component {
                   return (
                     <div className="dj--seat" key={dj.id}>
                       <div className="dj--avatar">
-                        <div
+                        <img
                           className="avatar"
+                          src={dj.avatar_url}
+                          alt={dj.username}
                           title={dj.username}
                           data-placement="bottom"
                           data-animation="true"
