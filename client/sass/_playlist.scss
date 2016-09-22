@@ -4,3 +4,9 @@
   z-index: 999;
   color: darkblue;
 }
+
+.playlist.active {
+  display: block;
+  position: absolute;
+  background: rgba(255,255,255,0.8);
+}
