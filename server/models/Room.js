@@ -32,6 +32,10 @@ Room.remove = function remove(id) {
   delete rooms[id];
 };
 
+Room.getByUserId = function getByUserId(userId) {
+  return rooms[usersToRooms[userId]];
+};
+
 Room.join = function join(roomId, userId) {
   const room = rooms[roomId];
   if (!room) {

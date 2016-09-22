@@ -57,6 +57,21 @@ describe('Connection', () => {
       expect(Connection.getSockets(userId)).to.deep.equal([socket2]);
     });
   });
+  describe('isRegistered', () => {
+    it('should be a function', () => {
+      expect(Connection.isRegistered).to.be.a('function');
+    });
+    it('should return true if a socket is registered with a user', () => {
+      const userId = 1;
+      const socket = { id: 2 };
+      Connection.register(userId, socket);
+      expect(Connection.isRegistered(socket)).to.equal(true);
+    });
+    it('should return false if a socket is not registered with a user', () => {
+      const socket = { id: 21 };
+      expect(Connection.isRegistered(socket)).to.equal(false);
+    });
+  });
   describe('send', () => {
     it('should be a function', () => {
       expect(Connection.send).to.be.a('function');

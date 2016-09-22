@@ -87,4 +87,16 @@ describe('Room', () => {
       expect(room.users).to.deep.equal([]);
     });
   });
+  describe('getByUserId', () => {
+    it('should be a function', () => {
+      expect(Room.getByUserId).to.be.a('function');
+    });
+    it('should return the room a user is in', () => {
+      const room = Room.create('Reggae');
+      const userId = 1337;
+      Room.join(room.id, userId);
+      expect(Room.getByUserId(userId).id).to.equal(room.id);
+    });
+
+  });
 });

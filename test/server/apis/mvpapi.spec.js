@@ -21,14 +21,6 @@ describe('MvpAPI', () => {
   after('set Connection.send back', () => {
     Connection.send = ConnectionSend;
   });
-  xdescribe('room', () => {
-    xit('should receive initial app state on connection', (done) => {
-    });
-    xit('should receive app state when rooms are created', (done) => {
-    });
-    xit('should share state between multiple clients', (done) => {
-    });
-  });
   describe('login', () => {
     it('should be a function', () => {
       expect(MvpAPI.login).to.be.a('function');
@@ -110,6 +102,49 @@ describe('MvpAPI', () => {
       expect(MvpAPI.getState()[room1.id].track).not.to.equal(undefined);
     });
   });
+  describe('enqueue', () => {
+    let room;
+    const user1 = 22;
+    const user2 = 23;
+    let socket1;
+    let socket2;
+    beforeEach('Create state to test', () => {
+      // There is an additional Room from outer beforeEach
+      // Create a Room to test
+      room = MvpAPI.createRoom('Metal');
+      // Create two users for tests
+      socket1 = { id: 1 };
+      socket2 = { id: 2 };
+      // Log those users in
+      MvpAPI.login(socket1, { id: user1 });
+      MvpAPI.login(socket2, { id: user2 });
+      // Join Metal Room
+      MvpAPI.join(socket1, { roomId: room.id });
+      MvpAPI.join(socket2, { roomId: room.id });
+      // clear sent so that no login messages remain for easier testing
+      sent = [];
+    });
+    it('should be a function', () => {
+      expect(MvpAPI.enqueue).to.be.a('function');
+    });
+    it('should send updated state to all users', () => {
+      MvpAPI.enqueue(socket1);
+      expect(sent.length).to.equal(2);
+      expect(sent[0].eventName).to.equal('room');
+    });
+    it('should make a user an active dj if there are spots available', () => {
+      MvpAPI.enqueue(socket1);
+      const state = sent[0].data;
+      expect(state[room.id].djs.length).to.equal(1);
+      expect(state[room.id].djs[0].id).to.equal(user1);
+    });
+    it('should do and send nothing if user is not logged in', () => {
+      // Create a dummy socket that is not registered
+      const unregisteredSocket = { id: 78969 };
+      MvpAPI.enqueue(unregisteredSocket);
+      expect(sent.length).to.equal(0);
+    });
+  });
   describe('join', () => {
     let room1;
     let room2;
@@ -134,10 +169,15 @@ describe('MvpAPI', () => {
     it('should be a function', () => {
       expect(MvpAPI.join).to.be.a('function');
     });
+    it('should do and send nothing is user is not logged in', () => {
+      // Create a dummy socket that is not registered
+      const unregisteredSocket = { id: 78969 };
+      MvpAPI.join(unregisteredSocket, { roomId: room1.id });
+      expect(sent.length).to.equal(0);
+    });
     it('should send updated state to all users', () => {
       MvpAPI.join(socket1, { roomId: room1.id });
       // There should be a message for both logged in users
-      console.log(sent);
       expect(sent.length).to.equal(2);
       const msg1 = sent.shift();
       expect(msg1.eventName).to.equal('room');
