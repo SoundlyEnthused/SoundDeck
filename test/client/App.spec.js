@@ -4,8 +4,7 @@ import { mount } from 'enzyme';
 import App from '../../client/components/App';
 import $ from 'jquery';
 
-describe('<App />', () => {
-
+describe('<App>', () => {
   it('renders a nav bar', () => {
     const wrapper = mount(<App />);
     expect(wrapper.find('nav').length).to.equal(1);
@@ -16,7 +15,6 @@ describe('<App />', () => {
     wrapper.setState({ currentRoom: undefined });
     expect(wrapper.find('#lobby').hasClass('active')).to.equal(true);
   });
-
 });
 
 describe('<Lobby>', () => {
@@ -30,5 +28,17 @@ describe('<Lobby>', () => {
     const wrapper = mount(<App />);
     wrapper.find('.joinBtn').first().simulate('click');
     expect(wrapper.find('.room').length).to.equal(1);
+  });
+});
+
+describe('<Navigation Bar>', () => {
+  it ('displays a login button', () => {
+    const wrapper = mount(<App />);
+    expect(wrapper.find('#LoginButton')).to.exist;
+  });
+
+  it ('displays a playlist button', () => {
+    const wrapper = mount(<App />);
+    expect(wrapper.find('#PlaylistButton')).to.exist;
   });
 });

@@ -24,7 +24,7 @@ export default class Nav extends React.Component {
 
   showPlaylist() {
     if (this.props.userData) {
-      return <button className="btn btn-default" onClick={this.togglePlaylist}> playlist </button>;
+      return <button className="btn btn-default" id="PlaylistButton" onClick={this.togglePlaylist}> Playlist </button>;
     }
     return false;
   }
@@ -33,7 +33,8 @@ export default class Nav extends React.Component {
     if (this.props.userData) {
       return <div className="navbar--signedIn"> { this.props.userData.username } </div>;
     }
-    return <button className="btn btn-default" onClick={this.props.loggingIn}> Login </button>;
+
+    return <button className="btn btn-default" id="LoginButton" onClick={this.props.loggingIn}> Login </button>;
   }
 
   render() {
