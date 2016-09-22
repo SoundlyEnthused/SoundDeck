@@ -75,9 +75,11 @@ MvpAPI.attachListeners = (io) => {
   io.on('connection', (socket) => {
     socket.on('login', MvpAPI.login.bind(null, socket));
   });
-  /* TODO handle cases where user in not logged in */
   io.on('join', (socket) => {
     socket.on('join', MvpAPI.join.bind(null, socket));
+  });
+  io.on('enqueue', (socket) => {
+    socket.on('enqueue', MvpAPI.join.bind(null, socket));
   });
 };
 
