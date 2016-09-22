@@ -33,7 +33,6 @@ export default class Nav extends React.Component {
     if (this.props.userData) {
       return <div className="navbar--signedIn"> { this.props.userData.username } </div>;
     }
-
     return <button className="btn btn-default" onClick={this.props.loggingIn}> Login </button>;
   }
 
@@ -63,7 +62,7 @@ export default class Nav extends React.Component {
                 <button className="btn btn-default" disabled={this.props.currentRoom === undefined} onClick={Nav.toggleRoom}> Lobby </button>
               </li>
               <li>
-                <button className="btn btn-default"> Playlist </button>
+                { this.showPlaylist() }
               </li>
               <li>
                 { this.toggleSignedIn() }
