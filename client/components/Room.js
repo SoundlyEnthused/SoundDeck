@@ -52,8 +52,8 @@ export default class Room extends React.Component {
     $('.avatar').tooltip();
     $('.crowd--user').each(function(index) {
       $(this).css({
-        left: (Math.random()*50 - 25) + "px",
-        top: (Math.random()*50 - 25) + "px"
+        left: (Math.random()*40 - 20) + "px",
+        top: (Math.random()*40 - 20) + "px"
       });
     });
   }
@@ -84,13 +84,19 @@ export default class Room extends React.Component {
                   return (
                     <div className="dj--seat" key={dj.id}>
                       <div className="dj--avatar">
-                        <img className="avatar"
-                          src={dj.avatar_url}
-                          alt={dj.username}
+                        <div
+                          className="avatar"
                           title={dj.username}
                           data-placement="bottom"
                           data-animation="true"
-                          data-toggle="tooltip" />
+                          data-toggle="tooltip"
+                        >
+                          <img
+                            className="avatar"
+                            src={dj.avatar_url}
+                            alt={dj.username}
+                          />
+                        </div>
                       </div>
                     </div>
                   );
@@ -132,15 +138,16 @@ export default class Room extends React.Component {
             {
               this.state.users.map((user) => {
               return (
-                <div className="crowd--user">
-                  <img className="avatar"
-                    src={user.avatar_url}
+                <div className="crowd--user" key={user.username}>
+                  <div
+                    className="avatar"
                     title={user.username}
-                    alt={user.username}
                     data-placement="bottom"
                     data-animation="true"
-                    data-toggle="tooltip" />
-
+                    data-toggle="tooltip"
+                  >
+                    <img src={user.avatar_url} alt={user.username} />
+                  </div>
                 </div>
               )
               })

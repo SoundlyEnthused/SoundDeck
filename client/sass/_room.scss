@@ -20,9 +20,8 @@ h1 {
   height: 100px;
   margin: 20px 10px;
   box-sizing: border-box;
-  border: 3px solid black;
+  // border: 3px solid black;
   border-radius: 50%;
-  overflow: hidden;
   flex-shrink: 0;
   position: relative;
 }
@@ -94,20 +93,28 @@ h1 {
   width: 100%;
   justify-content: center;
   flex-wrap: wrap;
-  margin: 50px 0;
+  margin: 20px 0 50px;
+  background: rgba(0,0,0,0.3);
+  padding: 25px;
+  border-radius: 20px;
 }
 
 .crowd--user {
   position: relative;
   width: 50px;
   height: 50px;
-  background: rgba(0,0,0,0.5);
-  border-radius: 50%;
-  border: 3px solid black;
   flex-shrink: 0;
   margin: 2px;
+  &:hover {
+    z-index: 999;
+  }
+}
+
+.avatar {
+  border-radius: 50%;
+  border: 2px solid black;
   overflow: hidden;
-  img {
+    img {
     width: 100%;
     height: auto;
   }

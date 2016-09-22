@@ -1,10 +1,7 @@
 body {
-  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#7a7a7a+0,000000+100 */
-  background: #7a7a7a; /* Old browsers */
-  background: -moz-linear-gradient(top,  #7a7a7a 0%, #000000 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top,  #7a7a7a 0%,#000000 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom,  #7a7a7a 0%,#000000 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7a7a7a', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
+  background: url(img/bg.svg), linear-gradient(to bottom, #485477 0%, #101623 100%) center center no-repeat;
+  background-blend-mode: multiply;
+  background-size: cover;
 }
 
 #app {
