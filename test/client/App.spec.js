@@ -4,6 +4,9 @@ import { mount } from 'enzyme';
 import App from '../../client/components/App';
 import $ from 'jquery';
 
+// describe() is a strictly visual function => it formats output to 
+// be more readable; can organize tests with different describe() functions
+
 describe('<App>', () => {
   it('renders a nav bar', () => {
     const wrapper = mount(<App />);
@@ -15,8 +18,6 @@ describe('<App>', () => {
     wrapper.setState({ currentRoom: undefined });
     expect(wrapper.find('#lobby').hasClass('active')).to.equal(true);
   });
-
- 
 });
 
 describe('joinRoom', () => {
@@ -41,9 +42,7 @@ describe('loggingIn', () => {
     const wrapper = mount (<App />);
     expect(wrapper.props().userData).to.be.defined;
   });
-})
-
-
+});
 
 describe('<Lobby>', () => {
   it('selects a room when the join button is pressed', () => {
