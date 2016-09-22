@@ -1,1 +1,1 @@
-./node_modules/.bin/mocha --recursive ./test/server -r test/bootstrap.js "$@"
+./node_modules/.bin/mocha --recursive ./test/server -r dotenv/config -r test/bootstrap.js "$@"
