@@ -8,7 +8,7 @@ export default class Lobby extends React.Component {
   }
 
   handleRoomJoin(roomId) {
-    //this.props.joinRoom(room);
+    this.props.joinRoom(roomId);
     $('#lobby').toggleClass('active');
     console.log('handle room join', roomId);
   }
@@ -46,6 +46,7 @@ export default class Lobby extends React.Component {
 }
 
 Lobby.propTypes = {
-  rooms: React.PropTypes.array,
+  roomIds: React.PropTypes.array,
+  roomNames: React.PropTypes.array,
   joinRoom: React.PropTypes.func,
 };

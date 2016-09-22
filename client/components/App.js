@@ -45,10 +45,36 @@ export default class App extends React.Component {
   }
   componentDidMount() {
     // quick seeding data
+    this.roomData = {
+      1: {
+        name: 'ROCK',
+        track: '',
+        djs: [{}, {}, {}, {}],
+        currentDj: "user",
+        djMaxNum: 4,
+        users: [{}, {}, {}, {}],
+      },
+      2: {
+        name: 'POP',
+        track: '',
+        djs: [{}, {}, {}, {}],
+        currentDj: "",
+        djMaxNum: 4,
+        users: [{}, {}, {}, {}],
+      },
+      3: {
+        name: 'DANCE',
+        track: '',
+        djs: [{}, {}, {}, {}],
+        currentDj: "",
+        djMaxNum: 4,
+        users: [{}, {}, {}, {}],
+      },
+    };
     this.setState({
-      roomIds: [1, 2, 3],
-      roomNames: ['ROCK', 'POP', 'DANCE']
-    });
+          roomIds: [1, 2, 3],
+          roomNames: ['ROCK', 'POP', 'DANCE'],
+        });
   }
 
   update(data) {
@@ -69,6 +95,7 @@ export default class App extends React.Component {
 
   joinRoom(roomId) {
     ServerAPI.joinRoom(roomId);
+    console.log('JOIN ROOM', this.roomData, this.roomData[roomId]);
     this.setState({
       currentRoom: this.roomData[roomId],
     });
