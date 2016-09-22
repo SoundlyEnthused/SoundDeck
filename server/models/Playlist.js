@@ -8,7 +8,8 @@ let nextId = 0;
 Playlist.create = function create(userId, tracks = []) {
   const id = nextId;
   nextId += 1;
-  const playlist = { tracks, id, userId };
+  // TODO: Validate tracks like in update
+  const playlist = { tracks: tracks.slice(), id, userId };
   playlists[id] = playlist;
   usersToPlaylists[userId] = id;
   return playlist;

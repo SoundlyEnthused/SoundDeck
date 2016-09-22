@@ -70,6 +70,11 @@ MvpAPI.enqueue = (socket) => {
   Connection.sendAll('room', MvpAPI.getState());
 };
 
+/* Handler for event to update a user's playlist */
+// MvpAPI.playlist = (socket, data) => {
+//
+// };
+
 /* Connect all Event Endpoints to Server */
 MvpAPI.attachListeners = (io) => {
   io.on('connection', (socket) => {
