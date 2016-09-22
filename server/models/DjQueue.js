@@ -3,7 +3,7 @@ const Playlist = require('./Playlist');
 // DjQueue are indexed by roomId
 const DjQueue = {};
 let queues = {};
-let queuesByRoom = {};
+let queueIdsByRoom = {};
 let nextId = 0;
 
 DjQueue.create = function create(roomId, maxDjs = 4) {
@@ -17,21 +17,26 @@ DjQueue.create = function create(roomId, maxDjs = 4) {
   };
   nextId += 1;
   queues[queue.id] = queue;
-  queuesByRoom[roomId] = queue;
-  return queue;
+  queueIdsByRoom[roomId] = queue.id;
+  return DjQueue.get(queue.id);
 };
 
 DjQueue.clearAll = function clearAll() {
   queues = {};
-  queuesByRoom = {};
+  queueIdsByRoom = {};
 };
 
+/* Return immutable DjQueue representation or null if there is none */
 DjQueue.get = function get(id) {
-  return queues[id];
+  const q = queues[id];
+  // Copy objects and Array's to make result immutable
+  return id in queues
+    ? Object.assign({}, q, { active: q.active.slice(), waiting: q.waiting.slice() })
+    : null;
 };
 
 DjQueue.getByRoom = function getByRoom(roomId) {
-  return queuesByRoom[roomId];
+  return roomId in queueIdsByRoom ? DjQueue.get(queueIdsByRoom[roomId]) : null;
 };
 
 DjQueue.enqueue = function enqueue(id, userId) {
@@ -46,6 +51,7 @@ DjQueue.enqueue = function enqueue(id, userId) {
   }
 };
 
+/* Return the id of next DJ in line, or null if there are no DJs */
 DjQueue.next = function next(id) {
   const queue = queues[id];
   if (queue.currentDj >= queue.active.length) {
@@ -53,7 +59,32 @@ DjQueue.next = function next(id) {
   }
   const dj = queue.active[queue.currentDj];
   queue.currentDj = ((queue.currentDj + 1) % queue.active.length);
-  return dj;
+  return dj !== undefined ? dj : null;
+};
+
+/* Retrieve the next track for track change events in a room or return null if none are ready */
+DjQueue.nextTrack = function nextTrack(id) {
+  // Get the next DJ
+  const dj = DjQueue.next(id);
+  // If we have no DJ's return null
+  if (dj === null) {
+    return null;
+  }
+  // Grab DJ's playlist
+  const playlist = Playlist.getByUserId(dj);
+  // if playlist is empty...
+  if (playlist.tracks.length === 0) {
+    // remove the DJ from queue
+    DjQueue.removeUser(id, dj);
+    // Set currentDj index back by one in order to keep current position
+    queues[id].currentDj -= 1;
+    // Try again!
+    return DjQueue.nextTrack(id);
+  }
+
+  const track = playlist.tracks[0];
+  Playlist.rotate(playlist.id);
+  return track;
 };
 
 DjQueue.removeUser = function removeUser(id, userId) {

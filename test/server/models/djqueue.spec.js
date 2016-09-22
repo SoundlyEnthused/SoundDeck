@@ -1,6 +1,6 @@
 const chai = require('chai');
 const DjQueue = require('../../../server/models/DjQueue');
-// const Playlist = require('../../../server/models/Playlist');
+const Playlist = require('../../../server/models/Playlist');
 
 const expect = chai.expect;
 
@@ -27,14 +27,36 @@ describe('DjQueue', () => {
       const queue = DjQueue.create(roomId, maxDjs);
       expect(queue.maxDjs).to.equal(12);
     });
+    it('should return an immutable object', () => {
+      const queue = DjQueue.create(1);
+      queue.active[0] = 'No';
+      expect(DjQueue.get(queue.id).active).to.deep.equal([]);
+      queue.waiting[0] = 'Really No!';
+      expect(DjQueue.get(queue.id).waiting).to.deep.equal([]);
+      queue.maxDjs = 99;
+      expect(DjQueue.get(queue.id).maxDjs).to.equal(4);
+    });
   });
   describe('get', () => {
     it('should be a function', () => {
       expect(DjQueue.get).to.be.a('function');
     });
-    it('should return a DjQueue by id', () => {
+    it('should return a DjQueue object by id', () => {
       const queue = DjQueue.create(1);
       expect(DjQueue.get(queue.id)).to.deep.equal(queue);
+    });
+    it('should return an immutable object', () => {
+      const id = DjQueue.create(1).id;
+      const queue = DjQueue.get(id);
+      queue.active[0] = 'No';
+      expect(DjQueue.get(id).active).to.deep.equal([]);
+      queue.waiting[0] = 'Really No!';
+      expect(DjQueue.get(id).waiting).to.deep.equal([]);
+      queue.maxDjs = 99;
+      expect(DjQueue.get(id).maxDjs).to.equal(4);
+    });
+    it('should return null if there is no DjQueue for id', () => {
+      expect(DjQueue.get(123)).to.equal(null);
     });
   });
   describe('getByRoom', () => {
@@ -45,16 +67,19 @@ describe('DjQueue', () => {
       const queue = DjQueue.create(1234);
       expect(DjQueue.getByRoom(1234)).to.deep.equal(queue);
     });
+    it('should return null if there is no DjQueue for Room id', () => {
+      expect(DjQueue.getByRoom(1234)).to.equal(null);
+    });
   });
   describe('clearAll', () => {
     it('should reset all models', () => {
       const q1 = DjQueue.create(1);
       const q2 = DjQueue.create(2);
       DjQueue.clearAll();
-      expect(DjQueue.get(q1.id)).to.equal(undefined);
-      expect(DjQueue.get(q2.id)).to.equal(undefined);
-      expect(DjQueue.getByRoom(q1.roomId)).to.equal(undefined);
-      expect(DjQueue.getByRoom(q2.roomId)).to.equal(undefined);
+      expect(DjQueue.get(q1.id)).to.equal(null);
+      expect(DjQueue.get(q2.id)).to.equal(null);
+      expect(DjQueue.getByRoom(q1.roomId)).to.equal(null);
+      expect(DjQueue.getByRoom(q2.roomId)).to.equal(null);
     });
   });
   describe('enqueue', () => {
@@ -167,6 +192,72 @@ describe('DjQueue', () => {
       expect(DjQueue.next(id)).to.equal(u2);
       DjQueue.removeUser(id, u3);
       expect(DjQueue.next(id)).to.equal(u1);
+    });
+    it('should return null if there are no DJs', () => {
+      const id = DjQueue.create(1, 4).id;
+      expect(DjQueue.next(id)).to.equal(null);
+    });
+  });
+  describe('nextTrack', () => {
+    let queue;
+    const u1 = 1;
+    const u2 = 2;
+    const roomId = 1;
+    const tracks1 = [
+      { songId: 1, duration: 2000 },
+      { songId: 2, duration: 1300 },
+    ];
+    const tracks2 = [
+      { songId: 3, duration: 2200 },
+      { songId: 4, duration: 1700 },
+      { songId: 5, duration: 2300 },
+    ];
+    let p1;
+    let p2;
+    beforeEach(() => {
+      queue = DjQueue.create(roomId);
+      p1 = Playlist.create(u1, tracks1);
+      p2 = Playlist.create(u2, tracks2);
+    });
+    it('should be a function', () => {
+      expect(DjQueue.nextTrack).to.be.a('function');
+    });
+    it('should return null if there is no next track', () => {
+      expect(DjQueue.nextTrack(queue.id)).to.equal(null);
+    });
+    it('should return current DJ\'s next track', () => {
+      DjQueue.enqueue(queue.id, u1);
+      expect(DjQueue.nextTrack(queue.id)).to.deep.equal(tracks1[0]);
+    });
+    it('should rotate tracks', () => {
+      DjQueue.enqueue(queue.id, u1);
+      DjQueue.nextTrack(queue.id);
+      expect(Playlist.get(p1.id).tracks[0]).to.deep.equal(tracks1[1]);
+      DjQueue.nextTrack(queue.id);
+      expect(Playlist.get(p1.id).tracks[0]).to.deep.equal(tracks1[0]);
+    });
+    it('should rotate DJs', () => {
+      DjQueue.enqueue(queue.id, u1);
+      DjQueue.enqueue(queue.id, u2);
+      expect(DjQueue.nextTrack(queue.id)).to.deep.equal(tracks1[0]);
+      expect(DjQueue.nextTrack(queue.id)).to.deep.equal(tracks2[0]);
+      expect(DjQueue.nextTrack(queue.id)).to.deep.equal(tracks1[1]);
+      expect(DjQueue.nextTrack(queue.id)).to.deep.equal(tracks2[1]);
+      expect(DjQueue.nextTrack(queue.id)).to.deep.equal(tracks1[0]);
+      expect(DjQueue.nextTrack(queue.id)).to.deep.equal(tracks2[2]);
+    });
+    it('should remove DJs that have empty playlists', () => {
+      const u3 = 3;
+      Playlist.create(u3); // create an empty playlist
+      DjQueue.enqueue(queue.id, u1);
+      DjQueue.enqueue(queue.id, u3);
+      DjQueue.enqueue(queue.id, u2);
+      expect(DjQueue.nextTrack(queue.id)).to.deep.equal(tracks1[0]);
+      // Should skip u3
+      expect(DjQueue.nextTrack(queue.id)).to.deep.equal(tracks2[0]);
+      // Should reove u3 from active and waiting
+      expect(DjQueue.get(queue.id).active).to.not.include(u3);
+      expect(DjQueue.get(queue.id).waiting).to.not.include(u3);
     });
   });
 });

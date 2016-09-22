@@ -26,16 +26,36 @@ describe('Playlist', () => {
       expect(playlist.id).to.be.a('number');
       expect(playlist.tracks).to.deep.equal(list);
     });
+    it('should return an immutable object', () => {
+      const userId = 12;
+      const playlist = Playlist.create(userId, [{ songId: 1, duration: 1000 }]);
+      playlist.tracks.push('No!');
+      expect(Playlist.get(playlist.id).tracks).to.deep.equal([{ songId: 1, duration: 1000 }]);
+      playlist.tracks[0].songId = 'Bummer';
+      expect(Playlist.get(playlist.id).tracks[0].songId).to.equal(1);
+    });
   });
   describe('get', () => {
     it('should be a function', () => {
       expect(Playlist.get).to.be.a('function');
     });
-    it('should return an empty array for a new user\'s playlist', () => {
+    it('should return an empty array for a new user\'s playlist.tracks', () => {
       const userId = 1;
       const id = Playlist.create(userId).id;
       const playlist = Playlist.get(id);
       expect(playlist.tracks).to.deep.equal([]);
+    });
+    it('should return an immutable object', () => {
+      const userId = 12;
+      const id = Playlist.create(userId, [{ songId: 1, duration: 1000 }]).id;
+      const playlist = Playlist.get(id);
+      playlist.tracks.push('No!');
+      expect(Playlist.get(id).tracks).to.deep.equal([{ songId: 1, duration: 1000 }]);
+      playlist.tracks[0].songId = 'Bummer';
+      expect(Playlist.get(id).tracks[0].songId).to.equal(1);
+    });
+    it('should return null if there is no playlist for a given id', () => {
+      expect(Playlist.get(1337)).to.equal(null);
     });
   });
   describe('getByUserId', () => {
@@ -50,6 +70,18 @@ describe('Playlist', () => {
       expect(playlist.tracks).to.deep.equal(list);
       expect(playlist.userId).to.equal(userId);
       expect(playlist.id).to.be.a('number');
+    });
+    it('should return an immutable object', () => {
+      const userId = 12;
+      Playlist.create(userId, [{ songId: 1, duration: 1000 }]);
+      const playlist = Playlist.getByUserId(userId);
+      playlist.tracks.push('No!');
+      expect(Playlist.getByUserId(userId).tracks).to.deep.equal([{ songId: 1, duration: 1000 }]);
+      playlist.tracks[0].songId = 'Bummer';
+      expect(Playlist.getByUserId(userId).tracks[0].songId).to.equal(1);
+    });
+    it('should return null if there is no Playlist for this user', () => {
+      expect(Playlist.getByUserId(12345)).to.equal(null);
     });
   });
   describe('update', () => {

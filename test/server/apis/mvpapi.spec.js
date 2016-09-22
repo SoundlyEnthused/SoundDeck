@@ -208,4 +208,9 @@ describe('MvpAPI', () => {
       expect(msg.data[room2.id].users.length).to.equal(0);
     });
   });
+  xdescribe('playlist', () => {
+    it('should be a function', () => {
+      expect(MvpAPI.playlist).to.be.a('function');
+    });
+  });
 });

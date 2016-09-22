@@ -8,10 +8,11 @@ let nextId = 0;
 Playlist.create = function create(userId, tracks = []) {
   const id = nextId;
   nextId += 1;
-  const playlist = { tracks, id, userId };
+  // TODO: Validate tracks like in update
+  const playlist = { tracks: tracks.slice(), id, userId };
   playlists[id] = playlist;
   usersToPlaylists[userId] = id;
-  return playlist;
+  return Playlist.get(id);
 };
 
 Playlist.clearAll = function clearAll() {
@@ -26,11 +27,14 @@ Playlist.update = function update(userId, tracks) {
 };
 
 Playlist.get = function get(id) {
-  return playlists[id];
+  const p = playlists[id];
+  return p !== undefined
+  ? Object.assign({}, p, { tracks: p.tracks.map(t => Object.assign({}, t)) })
+  : null;
 };
 
 Playlist.getByUserId = function getIdByUser(userId) {
-  return playlists[usersToPlaylists[userId]];
+  return Playlist.get(usersToPlaylists[userId]);
 };
 
 Playlist.rotate = function rotate(id) {
