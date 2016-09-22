@@ -12,20 +12,16 @@ MvpAPI.getState = () => {
     // Build up the state object entry from related Room and DjQueue models
     state[room.id] = {
       name: room.name,
-      djs: queue.active,
+      djs: queue.active.map(dj => ({ id: dj })),
       currentDj: queue.currentDj,
       // User's array should not include DJ's
-      users: room.users.filter(user => !queue.active.includes(user)),
+      users: room.users.filter(user => !queue.active.includes(user)).map(user => ({ id: user })),
       djMaxNum: queue.maxDjs,
       // TODO: include current track
       track: '',
     };
   });
   return state;
-};
-
-MvpAPI.sendState = () => {
-  Connection.sendAll('room', MvpAPI.getState());
 };
 
 MvpAPI.createRoom = (name) => {
@@ -40,13 +36,18 @@ MvpAPI.clearAll = () => {
   DjQueue.clearAll();
 };
 
+/* Socket.io Event Endpoints */
 MvpAPI.login = (socket, data) => {
   Connection.register(data.id, socket);
   Connection.send(data.id, 'login', { id: data.id });
   Connection.send(data.id, 'room', MvpAPI.getState());
-  // MvpAPI.sendState();
 };
 
+MvpAPI.join = (socket, data) => {
+  Connection.sendAll('room', MvpAPI.getState());
+};
+
+/* Connect all Event Endpoints to Server */
 MvpAPI.attachListeners = (io) => {
   io.on('connection', (socket) => {
     socket.on('login', MvpAPI.login.bind(null, socket));

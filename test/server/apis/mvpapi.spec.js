@@ -110,11 +110,39 @@ describe('MvpAPI', () => {
       expect(MvpAPI.getState()[room1.id].track).not.to.equal(undefined);
     });
   });
-  xdescribe('join', () => {
-    it('should add user to room and send updated state', () => {
-
+  describe('join', () => {
+    let room1;
+    let room2;
+    const user1 = 22;
+    const user2 = 23;
+    let socket1;
+    let socket2;
+    beforeEach('Create state to test', () => {
+      // There is an additional Room from outer beforeEach
+      // Create some Rooms to test
+      room1 = MvpAPI.createRoom('Metal');
+      room2 = MvpAPI.createRoom('Industrial');
+      // Create two users for tests
+      socket1 = { id: 1 };
+      socket2 = { id: 2 };
+      // Log those users in
+      MvpAPI.login(socket1, { id: user1 });
+      MvpAPI.login(socket2, { id: user2 });
+      // clear sent so that no login messages remain for easier testing
+      sent = [];
     });
-    it('should move a user to another room if they are in one already', (done) => {
+    it('should be a function', () => {
+      expect(MvpAPI.join).to.be.a('function');
+    });
+    it('should join room and send updated state to all users', () => {
+      MvpAPI.join(socket1, room1.id);
+      // There should be a message for both logged in users
+      console.log(sent);
+      expect(sent.length).to.equal(2);
+      const msg1 = sent.shift();
+      expect(msg1.eventName).to.equal('room');
+    });
+    xit('should move a user to another room if they are in one already', () => {
 
     });
   });
