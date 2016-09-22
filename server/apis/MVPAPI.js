@@ -1,32 +1,50 @@
-const MVP = require('../models/MVP');
+const Connection = require('../models/Connection');
+const Room = require('../models/Room');
+const DjQueue = require('../models/DjQueue');
 
-module.exports = function createAPI(io) {
-  // register a handler to send updated state on room creation
-  // MVP.emitter.on('create', () => {
-  //   io.sockets.emit('room', MVP.get());
-  // });
+const MvpAPI = {};
+
+MvpAPI.sendState = () => {
+  const state = {};
+  Room.all().forEach((room) => {
+    // Get the DjQueue associated with this room
+    const queue = DjQueue.getByRoom(room.id);
+    // Build up the state object entry from related Room and DjQueue models
+    state[room.id] = {
+      djs: queue.active,
+      currentDj: queue.currentDj,
+      // User's array should not include DJ's
+      users: room.users.filter(user => !queue.active.includes(user)),
+      djMaxNum: queue.maxDjs,
+      // TODO: include current track
+      track: '',
+    };
+  });
+  Connection.sendAll('room', state);
+};
+
+MvpAPI.createRoom = (name) => {
+  const room = Room.create(name);
+  DjQueue.create(room.id);
+  return room;
+};
+
+// Resets all the App's models! -- used for testing
+MvpAPI.clearAll = () => {
+  Room.clearAll();
+  DjQueue.clearAll();
+};
+
+MvpAPI.login = (socket, data) => {
+  Connection.register(data.id, socket);
+  Connection.send(data.id, 'login', { id: data.id });
+  MvpAPI.sendState();
+};
+
+MvpAPI.attachListeners = (io) => {
   io.on('connection', (socket) => {
-    // Send inital app state on connection
-    socket.emit('room', MVP.get());
-
-    socket.on('login', (data) => {
-      if (data.id) {
-        // eslint-disable-next-line
-        socket.soundcloudId = data.id;
-        socket.emit('login', { id: socket.soundcloudId });
-      } else {
-        socket.emit('login', null);
-      }
-    });
-
-    socket.on('join', (data) => {
-      // Add user to room
-      if (!socket.soundcloudId) {
-        return; // What should we do on failure?
-      }
-      MVP.join(data.roomId, socket.soundcloudId);
-      // Broadcast updated app state
-      io.sockets.emit('room', MVP.get());
-    });
+    socket.on('login', MvpAPI.login.bind(null, socket));
   });
 };
+
+module.exports = MvpAPI;

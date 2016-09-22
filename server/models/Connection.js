@@ -17,6 +17,10 @@ Connection.getSockets = function getSockets(userId) {
   return connectionsByUser[userId] ? connectionsByUser[userId].slice() : [];
 };
 
+Connection.getUserId = function getUserId(socket) {
+  return usersBySocket[socket.id];
+};
+
 Connection.clearAll = function reset() {
   connectionsByUser = {};
   usersBySocket = {};
@@ -30,6 +34,12 @@ Connection.remove = function remove(socket) {
 
 Connection.send = function send(userId, eventName, data) {
   connectionsByUser[userId].forEach(socket => socket.emit(eventName, data));
+};
+
+Connection.sendAll = function sendAll(eventName, data) {
+  // TODO: Replace this with a socket room somehow
+  Object.keys(connectionsByUser)
+    .forEach(userId => Connection.send(userId, eventName, data));
 };
 
 module.exports = Connection;

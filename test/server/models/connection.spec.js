@@ -14,6 +14,17 @@ describe('Connection', () => {
       expect(Connection.register).to.be.a('function');
     });
   });
+  describe('getUserId', () => {
+    it('should be a function', () => {
+      expect(Connection.getUserId).to.be.a('function');
+    });
+    it('should return associated User\'s id', () => {
+      const userId = 1;
+      const socket = { id: 2 };
+      Connection.register(userId, socket);
+      expect(Connection.getUserId(socket)).to.equal(userId);
+    });
+  });
   describe('getSockets', () => {
     it('should be a function', () => {
       expect(Connection.getSockets).to.be.a('function');
@@ -58,6 +69,22 @@ describe('Connection', () => {
       Connection.register(userId, socket1);
       Connection.register(userId, socket2);
       Connection.send(userId, 'event', {});
+      expect(called).to.equal(0);
+    });
+  });
+  describe('sendAll', () => {
+    it('should be a function', () => {
+      expect(Connection.sendAll).to.be.a('function');
+    });
+    it('should emit event "room" with data to all registered sockets', () => {
+      let called = 2;
+      const u1 = 1;
+      const u2 = 2;
+      const socket1 = { id: 1, emit: () => { called -= 1; } };
+      const socket2 = { id: 2, emit: () => { called -= 1; } };
+      Connection.register(u1, socket1);
+      Connection.register(u2, socket2);
+      Connection.sendAll('event', {});
       expect(called).to.equal(0);
     });
   });

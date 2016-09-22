@@ -1,120 +1,107 @@
+const MvpAPI = require('../../../server/apis/MvpAPI');
+const Connection = require('../../../server/models/Connection');
 const chai = require('chai');
-const MVPAPI = require('../../../server/apis/MVPAPI');
-const MVP = require('../../../server/models/MVP');
-const createServer = require('../../test_socket_server');
-const socketClient = require('socket.io-client');
-// const Room = require('../../../server/models/Room');
 
 const expect = chai.expect;
 
-/* global xdescribe describe it after afterEach before beforeEach */
-xdescribe('MVP API', () => {
-  let server;
-  const port = process.env.PORT;
-
-  const url = `http://127.0.0.1:${port}`;
-  before('Start server', (done) => {
-    server = createServer(port, [MVPAPI], done);
+/* global xdescribe xit describe it after afterEach before beforeEach */
+describe('MvpAPI', () => {
+  let sent = [];
+  let roomId;
+  const ConnectionSend = Connection.send;
+  beforeEach('create Connection mock', () => {
+    Connection.send = (userId, eventName, data) => {
+      sent.push({ userId, eventName, data });
+    };
   });
-
-  after('Stop server', () => {
-    server.close();
+  beforeEach('Create initial app state', () => {
+    roomId = MvpAPI.createRoom('Jazz').id;
   });
-
   afterEach('Reset models', () => {
-    MVP.reset();
+    MvpAPI.clearAll();
+    Connection.clearAll();
+    sent = [];
   });
-
-  describe('room', () => {
-    it('should receive initial app state on connection', (done) => {
-      const client = socketClient.connect(url);
-      client.on('room', (state) => {
-        expect(state).to.be.an('object');
-        client.disconnect();
-        done();
-      });
+  after('set Connection.send back', () => {
+    Connection.send = ConnectionSend;
+  });
+  xdescribe('room', () => {
+    xit('should receive initial app state on connection', (done) => {
     });
-    it('should receive app state when rooms are created', (done) => {
-      const client = socketClient.connect(url);
-      // initial message from connection
-      client.once('room', () => {
-        // create a room
-        const room = MVP.create('Trance');
-        client.on('room', (state) => {
-          expect(state[room.id]).to.be.an('object');
-          expect(state[room.id].name).to.equal('Trance');
-          client.disconnect();
-          done();
-        });
-      });
+    xit('should receive app state when rooms are created', (done) => {
     });
-    it('should share state between multiple clients', (done) => {
-      const room = MVP.create('Shoegaze');
-      const client1 = socketClient.connect(url);
-      client1.emit('login', { id: 1 });
-      client1.once('login', () => {
-        client1.emit('join', { roomId: room.id });
-        client1.once('room', (state1) => {
-          expect(state1[room.id].users).to.deep.equal([1]);
-          const client2 = socketClient.connect(url);
-          client2.once('room', (state2) => {
-            expect(state2[room.id].users).to.deep.equal([1]);
-            client1.disconnect();
-            client2.disconnect();
-            done();
-          });
-        });
-      });
+    xit('should share state between multiple clients', (done) => {
     });
   });
   describe('login', () => {
-    it('should associate a soundcloud id with a socket session', (done) => {
-      const client = socketClient.connect(url);
-      const soundcloudId = 1;
-      client.emit('login', { id: soundcloudId });
-      client.once('login', (data) => {
-        expect(data.id).to.equal(soundcloudId);
-        done();
-      });
+    it('should be a function', () => {
+      expect(MvpAPI.login).to.be.a('function');
+    });
+    it('Expects a socket, and an id (soundcloudId) and sends back same id', () => {
+      const socket = { id: 1 };
+      const userId = 2;
+      MvpAPI.login(socket, { id: userId });
+      const msg = sent.shift();
+      expect(msg).to.deep.equal({ userId, eventName: 'login', data: { id: userId } });
+    });
+    it('should send inital app state to user', () => {
+      const socket = { id: 1 };
+      const userId = 2;
+      MvpAPI.login(socket, { id: userId });
+      let msg = sent.shift();
+      expect(msg).to.deep.equal({ userId, eventName: 'login', data: { id: userId } });
+      msg = sent.shift();
+      expect(msg.eventName).to.equal('room');
+      expect(msg.data).to.be.an('object');
     });
   });
-  describe('join', () => {
-    it('should add user to room and send updated state', (done) => {
-      // create a Room
-      const room = MVP.create('Jazz');
-      const client = socketClient.connect(url);
-      client.emit('login', { id: 1337 });
-      // Initial connection event
-      client.once('room', () => {
-        client.emit('join', { roomId: room.id });
-        client.on('room', (appState) => {
-          expect(appState[room.id].users).to.deep.equal([1337]);
-          client.disconnect();
-          done();
-        });
-      });
+  describe('createRoom', () => {
+    it('should be a function', () => {
+      expect(MvpAPI.createRoom).to.be.a('function');
+    });
+    it('should create a Room and DjQueue and return the Room', () => {
+      const room = MvpAPI.createRoom('Bluegrass');
+      expect(room.name).to.equal('Bluegrass');
+      expect(room.id).to.be.a('number');
+    });
+  });
+  describe('sendState', () => {
+    it('should be a function', () => {
+      expect(MvpAPI.sendState).to.be.a('function');
+    });
+    it('should send an object representing the state of all rooms', () => {
+      const socket = { id: 1 };
+      const userId = 2;
+      MvpAPI.login(socket, { id: userId });
+      // Swallow login event
+      sent.pop();
+      MvpAPI.sendState();
+      const msg = sent.pop();
+      const state = msg.data;
+      // Should have emitted room event
+      expect(msg.eventName).to.equal('room');
+      expect(state).to.be.an('object');
+      const roomState = state[roomId];
+      expect(roomState).to.be.an('object');
+      expect(roomState.users).to.be.an('array');
+      expect(roomState.djs).to.be.an('array');
+    });
+  });
+  xdescribe('join', () => {
+    it('should add user to room and send updated state', () => {
+      const socket = { id: 1 };
+      const userId = 12;
+      MvpAPI.login(socket, { id: userId });
+      MvpAPI.join(socket, { roomId });
+      // const join = MvpAP
     });
     it('should move a user to another room if they are in one already', (done) => {
-      // create a Room
-      const room1 = MVP.create('Classical');
-      const room2 = MVP.create('Techno');
-      const client = socketClient.connect(url);
-      client.emit('login', { id: 1337 });
-      // Initial connection event
-      client.once('room', () => {
-        client.emit('join', { roomId: room1.id });
-        client.once('room', (state1) => {
-          expect(state1[room1.id].users).to.deep.equal([1337]);
-          expect(state1[room2.id].users).to.deep.equal([]);
-          client.emit('join', { userId: 1337, roomId: room2.id });
-          client.once('room', (state2) => {
-            expect(state2[room1.id].users).to.deep.equal([]);
-            expect(state2[room2.id].users).to.deep.equal([1337]);
-            client.disconnect();
-            done();
-          });
-        });
-      });
+      const socket = { id: 1 };
+      const userId = 12;
+      MvpAPI.login(socket, { id: userId });
+      MvpAPI.join(socket, { roomId });
+      const room2Id = MvpAPI.createRoom('Punk').id;
+      MvpAPI.join(socket, { roomId: room2Id });
     });
   });
 });
