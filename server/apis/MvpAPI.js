@@ -70,21 +70,13 @@ MvpAPI.enqueue = (socket) => {
   Connection.sendAll('room', MvpAPI.getState());
 };
 
-/* Handler for event to update a user's playlist */
-// MvpAPI.playlist = (socket, data) => {
-//
-// };
-
 /* Connect all Event Endpoints to Server */
 MvpAPI.attachListeners = (io) => {
   io.on('connection', (socket) => {
+    // On a connection event, add handlers to socket
     socket.on('login', MvpAPI.login.bind(null, socket));
-  });
-  io.on('join', (socket) => {
     socket.on('join', MvpAPI.join.bind(null, socket));
-  });
-  io.on('enqueue', (socket) => {
-    socket.on('enqueue', MvpAPI.join.bind(null, socket));
+    socket.on('enqueue', MvpAPI.enqueue.bind(null, socket));
   });
 };
 
