@@ -10,3 +10,8 @@
   position: absolute;
   background: rgba(255,255,255,0.8);
 }
+
+.list-unstyled:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}

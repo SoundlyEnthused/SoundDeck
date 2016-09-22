@@ -26,6 +26,34 @@ export default class Room extends React.Component {
     });
   }
 
+  addToPlaylist(track) {
+    const tracks = this.state.searchResult;
+    const currPlaylist = this.state.playlist;
+    // console.log('searchResults: ', tracks);
+    // console.log('playlist: ', currPlaylist);
+    // console.log('clicked track: ', track);
+    if (!(currPlaylist.includes(track))) {
+      currPlaylist.push(track);
+      tracks.splice(tracks.indexOf(track), 1);
+    }
+    // console.log('playlist after push: ', currPlaylist);
+    function trackToAdd(theTracks) {
+      // console.log('theTrack inside trackToAdd filter: ', theTracks);
+      // console.log('tracks inside trackToAdd filter: ', tracks);
+      // console.log('track inside trackToAdd filter: ', track);
+      return theTracks !== track;
+    }
+    const newTrackList = tracks.filter(trackToAdd);
+    const newCurrPlaylist = currPlaylist;
+    // console.log('tracks after filt: ', newTrackList);
+    // console.log('playlist at end: ', currPlaylist);
+    this.setState({
+      playlist: newCurrPlaylist,
+      searchResult: newTrackList,
+    });
+  }
+
+
   render() {
     return (
       <div id="playlist" className="playlist">
@@ -44,7 +72,7 @@ export default class Room extends React.Component {
                 <button onClick={(e) => { this.search(e); }}>Search</button>
                 <ul>
                   {this.state.searchResult.map(track =>
-                      (<li className="list-unstyled">{track.title}</li>))}
+                      (<li className="list-unstyled" onClick={this.addToPlaylist.bind(this, track)}>{track.title}</li>))}
                 </ul>
               </form>
             </div>
