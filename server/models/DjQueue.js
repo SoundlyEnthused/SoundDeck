@@ -3,7 +3,7 @@ const Playlist = require('./Playlist');
 // DjQueue are indexed by roomId
 const DjQueue = {};
 let queues = {};
-let queuesByRoom = {};
+let queueIdsByRoom = {};
 let nextId = 0;
 
 DjQueue.create = function create(roomId, maxDjs = 4) {
@@ -17,21 +17,26 @@ DjQueue.create = function create(roomId, maxDjs = 4) {
   };
   nextId += 1;
   queues[queue.id] = queue;
-  queuesByRoom[roomId] = queue;
-  return queue;
+  queueIdsByRoom[roomId] = queue.id;
+  return DjQueue.get(queue.id);
 };
 
 DjQueue.clearAll = function clearAll() {
   queues = {};
-  queuesByRoom = {};
+  queueIdsByRoom = {};
 };
 
+/* Return immutable DjQueue representation or null if there is none */
 DjQueue.get = function get(id) {
-  return queues[id];
+  const q = queues[id];
+  // Copy objects and Array's to make result immutable
+  return id in queues
+    ? Object.assign({}, q, { active: q.active.slice(), waiting: q.waiting.slice() })
+    : null;
 };
 
 DjQueue.getByRoom = function getByRoom(roomId) {
-  return queuesByRoom[roomId];
+  return roomId in queueIdsByRoom ? DjQueue.get(queueIdsByRoom[roomId]) : null;
 };
 
 DjQueue.enqueue = function enqueue(id, userId) {

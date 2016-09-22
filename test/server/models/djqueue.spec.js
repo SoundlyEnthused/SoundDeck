@@ -27,14 +27,36 @@ describe('DjQueue', () => {
       const queue = DjQueue.create(roomId, maxDjs);
       expect(queue.maxDjs).to.equal(12);
     });
+    it('should return an immutable object', () => {
+      const queue = DjQueue.create(1);
+      queue.active[0] = 'No';
+      expect(DjQueue.get(queue.id).active).to.deep.equal([]);
+      queue.waiting[0] = 'Really No!';
+      expect(DjQueue.get(queue.id).waiting).to.deep.equal([]);
+      queue.maxDjs = 99;
+      expect(DjQueue.get(queue.id).maxDjs).to.equal(4);
+    });
   });
   describe('get', () => {
     it('should be a function', () => {
       expect(DjQueue.get).to.be.a('function');
     });
-    it('should return a DjQueue by id', () => {
+    it('should return a DjQueue object by id', () => {
       const queue = DjQueue.create(1);
       expect(DjQueue.get(queue.id)).to.deep.equal(queue);
+    });
+    it('should return an immutable object', () => {
+      const id = DjQueue.create(1).id;
+      const queue = DjQueue.get(id);
+      queue.active[0] = 'No';
+      expect(DjQueue.get(id).active).to.deep.equal([]);
+      queue.waiting[0] = 'Really No!';
+      expect(DjQueue.get(id).waiting).to.deep.equal([]);
+      queue.maxDjs = 99;
+      expect(DjQueue.get(id).maxDjs).to.equal(4);
+    });
+    it('should return null if there is no DjQueue for id', () => {
+      expect(DjQueue.get(123)).to.equal(null);
     });
   });
   describe('getByRoom', () => {
@@ -45,16 +67,19 @@ describe('DjQueue', () => {
       const queue = DjQueue.create(1234);
       expect(DjQueue.getByRoom(1234)).to.deep.equal(queue);
     });
+    it('should return null if there is no DjQueue for Room id', () => {
+      expect(DjQueue.getByRoom(1234)).to.equal(null);
+    });
   });
   describe('clearAll', () => {
     it('should reset all models', () => {
       const q1 = DjQueue.create(1);
       const q2 = DjQueue.create(2);
       DjQueue.clearAll();
-      expect(DjQueue.get(q1.id)).to.equal(undefined);
-      expect(DjQueue.get(q2.id)).to.equal(undefined);
-      expect(DjQueue.getByRoom(q1.roomId)).to.equal(undefined);
-      expect(DjQueue.getByRoom(q2.roomId)).to.equal(undefined);
+      expect(DjQueue.get(q1.id)).to.equal(null);
+      expect(DjQueue.get(q2.id)).to.equal(null);
+      expect(DjQueue.getByRoom(q1.roomId)).to.equal(null);
+      expect(DjQueue.getByRoom(q2.roomId)).to.equal(null);
     });
   });
   describe('enqueue', () => {
@@ -196,6 +221,9 @@ describe('DjQueue', () => {
     });
     it('should be a function', () => {
       expect(DjQueue.nextTrack).to.be.a('function');
+    });
+    it('should return null if there is no next track', () => {
+      expect(DjQueue.nextTrack(queue.id)).to.equal(null);
     });
     it('should return current DJ\'s next track', () => {
       DjQueue.enqueue(queue.id, u1);
