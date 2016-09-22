@@ -4,13 +4,14 @@ const DjQueue = require('../models/DjQueue');
 
 const MvpAPI = {};
 
-MvpAPI.sendState = () => {
+MvpAPI.getState = () => {
   const state = {};
   Room.all().forEach((room) => {
     // Get the DjQueue associated with this room
     const queue = DjQueue.getByRoom(room.id);
     // Build up the state object entry from related Room and DjQueue models
     state[room.id] = {
+      name: room.name,
       djs: queue.active,
       currentDj: queue.currentDj,
       // User's array should not include DJ's
@@ -20,7 +21,11 @@ MvpAPI.sendState = () => {
       track: '',
     };
   });
-  Connection.sendAll('room', state);
+  return state;
+};
+
+MvpAPI.sendState = () => {
+  Connection.sendAll('room', MvpAPI.getState());
 };
 
 MvpAPI.createRoom = (name) => {

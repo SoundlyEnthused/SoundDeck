@@ -7,15 +7,11 @@ const expect = chai.expect;
 /* global xdescribe xit describe it after afterEach before beforeEach */
 describe('MvpAPI', () => {
   let sent = [];
-  let roomId;
   const ConnectionSend = Connection.send;
   beforeEach('create Connection mock', () => {
     Connection.send = (userId, eventName, data) => {
       sent.push({ userId, eventName, data });
     };
-  });
-  beforeEach('Create initial app state', () => {
-    roomId = MvpAPI.createRoom('Jazz').id;
   });
   afterEach('Reset models', () => {
     MvpAPI.clearAll();
@@ -65,43 +61,61 @@ describe('MvpAPI', () => {
       expect(room.id).to.be.a('number');
     });
   });
-  describe('sendState', () => {
-    it('should be a function', () => {
-      expect(MvpAPI.sendState).to.be.a('function');
-    });
-    it('should send an object representing the state of all rooms', () => {
+  describe('getState', () => {
+    let room1;
+    let room2;
+    beforeEach('Create state to test', () => {
+      // There is an additional Room from outer beforeEach
+      // Create some Rooms to test
+      room1 = MvpAPI.createRoom('Metal');
+      room2 = MvpAPI.createRoom('Industrial');
+      // Create a user to test
       const socket = { id: 1 };
-      const userId = 2;
+      const userId = 12;
       MvpAPI.login(socket, { id: userId });
-      // Swallow login event
-      sent.pop();
-      MvpAPI.sendState();
-      const msg = sent.pop();
-      const state = msg.data;
-      // Should have emitted room event
-      expect(msg.eventName).to.equal('room');
-      expect(state).to.be.an('object');
-      const roomState = state[roomId];
-      expect(roomState).to.be.an('object');
-      expect(roomState.users).to.be.an('array');
-      expect(roomState.djs).to.be.an('array');
+    });
+    it('should be a function', () => {
+      expect(MvpAPI.getState).to.be.a('function');
+    });
+    it('should return an object representing the state of the App', () => {
+      expect(MvpAPI.getState()).to.be.an('object');
+    });
+    it('should return an object of objects, one for each room', () => {
+      expect(Object.keys(MvpAPI.getState()).length).to.equal(2);
+    });
+    it('should return object of objects indexed by room IDs', () => {
+      expect(MvpAPI.getState()[room1.id]).to.be.an('object');
+      expect(MvpAPI.getState()[room2.id]).to.be.an('object');
+    });
+    it('should return object of objects with .name properties', () => {
+      expect(MvpAPI.getState()[room1.id].name).to.equal(room1.name);
+      expect(MvpAPI.getState()[room2.id].name).to.equal(room2.name);
+    });
+    it('should return object of objects with .djs arrays', () => {
+      expect(MvpAPI.getState()[room1.id].djs).to.be.an('array');
+      expect(MvpAPI.getState()[room2.id].djs).to.be.an('array');
+    });
+    it('should return object of objects with .users array', () => {
+      expect(MvpAPI.getState()[room1.id].users).to.be.an('array');
+      expect(MvpAPI.getState()[room2.id].users).to.be.an('array');
+    });
+    it('should return object of objects with .djMaxNum property', () => {
+      expect(MvpAPI.getState()[room1.id].djMaxNum).to.be.a('number');
+      expect(MvpAPI.getState()[room1.id].djMaxNum).to.equal(4);
+    });
+    it('should return object of objects with .currentDj property', () => {
+      expect(MvpAPI.getState()[room1.id].currentDj).not.to.equal(undefined);
+    });
+    it('should return object of objects with .track property', () => {
+      expect(MvpAPI.getState()[room1.id].track).not.to.equal(undefined);
     });
   });
   xdescribe('join', () => {
     it('should add user to room and send updated state', () => {
-      const socket = { id: 1 };
-      const userId = 12;
-      MvpAPI.login(socket, { id: userId });
-      MvpAPI.join(socket, { roomId });
-      // const join = MvpAP
+
     });
     it('should move a user to another room if they are in one already', (done) => {
-      const socket = { id: 1 };
-      const userId = 12;
-      MvpAPI.login(socket, { id: userId });
-      MvpAPI.join(socket, { roomId });
-      const room2Id = MvpAPI.createRoom('Punk').id;
-      MvpAPI.join(socket, { roomId: room2Id });
+
     });
   });
 });
