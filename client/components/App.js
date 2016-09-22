@@ -27,15 +27,11 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       userData: false,
-      rooms: [],
+      roomIds: [],
       roomNames: [],
       currentRoom: undefined,
-      track: '',
-      users: [],
-      djs: [],
-      djMaxNum: 4,
-      currentDj: -1,
     };
+    this.roomData = {};
     this.joinRoom = this.joinRoom.bind(this);
     this.loggingIn = this.loggingIn.bind(this);
     this.update = this.update.bind(this);
@@ -48,44 +44,36 @@ export default class App extends React.Component {
     });
   }
   componentDidMount() {
+    // quick seeding data
     this.setState({
-      rooms: [1, 2, 3],
-      roomNames: ['ROCK', 'POP', 'DANCE'],
+      roomIds: [1, 2, 3],
+      roomNames: ['ROCK', 'POP', 'DANCE']
     });
   }
 
   update(data) {
     const state = {};
     if (data.rooms) {
-      /*
-      data.rooms = [{
-        id: 0,
-        name: "",
-        track: "",
-        djs: [{user}],
-        currentDj: user,
-        djMaxNum: 4,
-        users: [{user}],
-      }]
-      */
-      state.rooms = data.rooms.map(room => (room.id));
-      state.roomNames = data.rooms.map(room => (room.name));
+      this.roomData = data.rooms;
+      state.rooms = this.roomData.map(room => (room.id));
+      state.roomNames = this.roomData.map(room => (room.name));
       if (this.state.currentRoom) {
-        state.roomName = data.rooms[this.state.currentRoom].name;
-        state.users = data.rooms[this.state.currentRoom].users;
-        state.dj = data.rooms[this.state.currentRoom].dj;
-        state.track = data.rooms[this.state.currentRoom].track;
-        state.currentDj = data.rooms[this.state.currentRoom].currentDj;
+        state.roomName = this.roomData[this.state.currentRoom].name;
+        state.users = this.roomData[this.state.currentRoom].users;
+        state.dj = this.roomData[this.state.currentRoom].dj;
+        state.track = this.roomData[this.state.currentRoom].track;
+        state.currentDj = this.roomData[this.state.currentRoom].currentDj;
       }
     }
   }
 
-  joinRoom(room) {
-    ServerAPI.joinRoom(room.id);
+  joinRoom(roomId) {
+    ServerAPI.joinRoom(roomId);
     this.setState({
-      currentRoom: room,
+      currentRoom: this.roomData[roomId],
     });
   }
+
   loggingIn() {
     Auth.signin().then((userData) => {
       ServerAPI.login(userData);
@@ -99,8 +87,8 @@ export default class App extends React.Component {
     return (
       <main>
         <Nav currentRoom={this.state.currentRoom} loggingIn={this.loggingIn} userData={this.state.userData} />
+        <Lobby roomIds={this.state.roomIds} roomNames={this.state.roomNames} joinRoom={this.joinRoom} />
         <Playlist />
-        <Lobby rooms={this.state.rooms} roomNames={this.state.roomNames} joinRoom={this.joinRoom} />
         {
           this.state.currentRoom ? <Room room={this.state.currentRoom} /> : null
         }

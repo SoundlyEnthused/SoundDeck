@@ -7,13 +7,14 @@ export default class Lobby extends React.Component {
     this.handleRoomJoin = this.handleRoomJoin.bind(this);
   }
 
-  handleRoomJoin(room) {
-    this.props.joinRoom(room);
+  handleRoomJoin(roomId) {
+    //this.props.joinRoom(room);
     $('#lobby').toggleClass('active');
-    //console.log('handle room join');
+    console.log('handle room join', roomId);
   }
 
   render() {
+    console.log('LOBBY', this.props);
     return (
       <div id="lobby" className="lobby active">
         <div className="container">
@@ -23,13 +24,13 @@ export default class Lobby extends React.Component {
           <div className="row">
             <ul className="lobby--roomlist col-sm-12">
               {
-                this.props.rooms.map((room, index) => {
+                this.props.roomIds.map((roomId, index) => {
                   return (
-                    <li className="row lobby--room list-unstyled" key={room}>
+                    <li className="row lobby--room list-unstyled" key={roomId}>
                       <div className="col-sm-10">{this.props.roomNames[index]}</div>
                       <div className="col-sm-2 lobby--joinBtn" >
-                        <button className="btn btn-default joinBtn" onClick={() => { this.handleRoomJoin(room); }}> 
-                          Join 
+                        <button className="btn btn-default joinBtn" onClick={() => { this.handleRoomJoin(roomId); }}>
+                          Join
                         </button>
                       </div>
                     </li>
