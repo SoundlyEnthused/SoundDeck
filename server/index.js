@@ -5,8 +5,9 @@ const bodyParser = require('body-parser');
 // Imports for browserify-middleware
 const browserify = require('browserify-middleware');
 const babelify = require('babelify');
-const api = require('./apis/MVPAPI');
+const api = require('./apis/MvpAPI');
 const io = require('socket.io');
+const initialRooms = require('./initialRooms');
 
 const routes = express.Router();
 //
@@ -60,6 +61,9 @@ if (process.env.NODE_ENV !== 'test') {
   const server = app.listen(port);
   console.log('Listening on port', port);
   api.attachListeners(io(server));
+
+  // Seed rooms with initialRooms.json
+  initialRooms.forEach(room => api.createRoom(room));
 } else {
   // We're in test mode; make this file importable instead.
   module.exports = routes;
