@@ -2,51 +2,30 @@ import React from 'react';
 import load from 'load-script';
 import SC from 'soundcloud';
 import $ from 'jquery';
-// let widget = SC.Widget('react-sc-player');
 
 export default class Room extends React.Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      track: 'https://soundcloud.com/logic_official/flexicution-1?in=hennessy/sets/never-stop-never-settle',
-      users: [],
-      djs: [
-        { id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
-        { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
-        { id: 965552, username: 'Floex', avatar_url: 'https://i1.sndcdn.com/avatars-000215636887-z69ica-large.jpg' },
-        { id: 122536, username: 'mosaik', avatar_url: 'https://i1.sndcdn.com/avatars-000069391431-3mzmfi-large.jpg'}
-      ],
-      mute: -1,
-    };
+    const state = this.processProps(this.props);
+    this.state = state;
     this.widget = null;
     this.handleMute = this.handleMute.bind(this);
   }
 
   // componentDidMount invoked only once on the client side immediately after the initial rendering
   componentDidMount() {
+    // Load SoundCloud widget
     load('https://w.soundcloud.com/player/api.js', () => {
       this.widget = window.SC.Widget('soundcloudPlayer'); // eslint-disable-line new-cap
       this.widget.show_artwork = false;
       this.widget.load(this.state.track, { show_artwork: false });
+      this.widget.play();
     });
+  }
 
-    const _this = this;
-    SC.get('/users').then(function(res) {
-      let users = res.map(function(user) {
-        return {
-          username: user.username,
-          id: user.id,
-          avatar_url: user.avatar_url,
-        };
-      });
-
-      console.log(users);
-
-      _this.setState({
-        users: users,
-      });
-    });
+  componentWillReceiveProps(nextProps) {
+    const state = this.processProps(nextProps);
+    this.setState(state);
   }
 
   // componentDidUpate invoked immediately after the component's updates are flushed to the DOM
@@ -71,41 +50,54 @@ export default class Room extends React.Component {
       this.widget.setVolume(75);
     }
   }
+  processProps(nextProps) {
+    const djArray = this.processDjs(nextProps.djs, nextProps.djMaxNum);
+    return {
+      name: nextProps.name,
+      track: nextProps.track,
+      timeStamp: nextProps.timeStamp,
+      djs: djArray,
+      currentDj: nextProps.currentDj,
+      users: nextProps.users,
+    };
+  }
+
+  processDjs(djList, djMaxNum) {
+    let djSeats = djList.slice();
+    while (djSeats.length < djMaxNum) {
+      djSeats.push(null);
+    }
+    return djSeats;
+  }
 
   render() {
     return (
       <div className="room">
         <div className="container">
-          <h1> {this.props.room} </h1>
-
+          <h1> {this.state.name} </h1>
           <div className="stage">
             <div className="stage--djs">
             {
-              this.state.djs.map((dj) => {
-                if (dj.username) {
+              this.state.djs.map((dj, index) => {
+                if (dj && dj.username) {
                   return (
                     <div className="dj--seat" key={dj.id}>
                       <div className="dj--avatar">
-                        <div
+                        <img
                           className="avatar"
+                          src={dj.avatar_url}
+                          alt={dj.username}
                           title={dj.username}
                           data-placement="bottom"
                           data-animation="true"
                           data-toggle="tooltip"
-                        >
-                          <img
-                            className="avatar"
-                            src={dj.avatar_url}
-                            alt={dj.username}
-                          />
-                        </div>
+                        />
                       </div>
                     </div>
                   );
                 }
-
                 return (
-                  <div className="dj--seat empty" key={dj.id} />
+                  <div className="dj--seat empty" key={index} />
                 );
               })
             }
@@ -151,7 +143,7 @@ export default class Room extends React.Component {
                     <img src={user.avatar_url} alt={user.username} />
                   </div>
                 </div>
-              )
+              );
               })
             }
           </div>

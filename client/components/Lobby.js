@@ -4,17 +4,12 @@ import $ from 'jquery';
 export default class Lobby extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      label: 'default room',
-    };
-
     this.handleRoomJoin = this.handleRoomJoin.bind(this);
   }
 
-  handleRoomJoin(room) {
-    this.props.joinRoom(room);
+  handleRoomJoin(roomId) {
+    this.props.joinRoom(roomId);
     $('#lobby').toggleClass('active');
-    //console.log('handle room join');
   }
 
   render() {
@@ -27,13 +22,13 @@ export default class Lobby extends React.Component {
           <div className="row">
             <ul className="lobby--roomlist col-sm-12">
               {
-                this.props.rooms.map((room) => {
+                this.props.roomIds.map((roomId, index) => {
                   return (
-                    <li className="row lobby--room list-unstyled" key={room}>
-                      <div className="col-sm-10">{room}</div>
+                    <li className="row lobby--room list-unstyled" key={roomId}>
+                      <div className="col-sm-10">{this.props.roomNames[index]}</div>
                       <div className="col-sm-2 lobby--joinBtn" >
-                        <button className="btn btn-default joinBtn" onClick={() => { this.handleRoomJoin(room); }}> 
-                          Join 
+                        <button className="btn btn-default joinBtn" onClick={() => { this.handleRoomJoin(roomId); }}>
+                          Join
                         </button>
                       </div>
                     </li>
@@ -49,6 +44,7 @@ export default class Lobby extends React.Component {
 }
 
 Lobby.propTypes = {
-  rooms: React.PropTypes.array,
+  roomIds: React.PropTypes.array,
+  roomNames: React.PropTypes.array,
   joinRoom: React.PropTypes.func,
 };
