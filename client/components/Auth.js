@@ -7,7 +7,7 @@ const login = {};
 login.signin = () => {
   SC.initialize({
     client_id: clientId,
-    redirect_uri: 'http://localhost:4000/callback.html',
+    redirect_uri: process.env.CALLBACK_URI,
   });
 
   return SC.connect()
