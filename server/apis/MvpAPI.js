@@ -73,6 +73,7 @@ MvpAPI.enqueue = (socket) => {
   }
   const userId = Connection.getUserId(socket);
   const room = Room.getByUserId(userId);
+  console.log(room);
   const queue = DjQueue.getByRoom(room.id);
   DjQueue.enqueue(queue.id, userId);
   Connection.sendAll('room', MvpAPI.getState());
