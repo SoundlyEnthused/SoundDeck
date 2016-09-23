@@ -1,17 +1,15 @@
 .playlist {
-  display: none;
+  // display: none;
   width: 100%;
   z-index: 999;
   color: darkblue;
+  position: absolute;
+  background: rgba(255,255,255,0.8);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .playlist.active {
-  display: block;
-  position: absolute;
-  background: rgba(255,255,255,0.8);
-}
-.playlist.active {
-  display: block;
-  position: absolute;
-  background: rgba(255,255,255,0.8);
+  // display: block;
+  // position: absolute;
+  // background: rgba(255,255,255,0.8);
 }

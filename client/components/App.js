@@ -15,6 +15,7 @@ import ServerAPI from '../models/ServerAPI';
 global.jQuery = jquery;
 global.$ = jquery;
 require('bootstrap-sass');  // import doesn't work for some reason
+
 // Do not include styles if testing
 if (process.env.NODE_ENV !== 'test') {
   // sass doesn't export anything meaninful so disable lint
@@ -121,7 +122,12 @@ export default class App extends React.Component {
         });
   }
 
-  // update when rooms event
+  componentDidUpdate() {
+    if (this.state.userData && !this.state.currentRoom) {
+      $('#lobby').collapse('show');
+    }
+  }
+
   updateOnEvent(data) {
     this.roomData = data.rooms;
     let state = {};
@@ -177,6 +183,10 @@ export default class App extends React.Component {
               currentDj={this.state.currentDj}
               users={this.state.users}
             />) : null
+        }
+
+        {
+          this.state.userData === false ? <div className="panel"><h1>Please log in.</h1></div> : null
         }
       </main>
     );

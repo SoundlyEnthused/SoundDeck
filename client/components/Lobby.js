@@ -7,14 +7,21 @@ export default class Lobby extends React.Component {
     this.handleRoomJoin = this.handleRoomJoin.bind(this);
   }
 
-  handleRoomJoin(roomId) {
-    this.props.joinRoom(roomId);
-    $('#lobby').toggleClass('active');
+  handleRoomJoin(room) {
+    var _this = this;
+
+    $('#lobby').collapse('hide', function() {
+      console.log('all hidden now');
+    });
+
+    window.setTimeout(function() {
+      _this.props.joinRoom(room);
+    }, 350);
   }
 
   render() {
     return (
-      <div id="lobby" className="lobby active">
+      <div id="lobby" className="lobby collapse">
         <div className="container">
           <h1 className="lobby--title">
             Lobby

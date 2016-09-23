@@ -39,12 +39,6 @@ export default class Room extends React.Component {
       this.widget.load('https://api.soundcloud.com/tracks/' + this.state.track, { show_artwork: false, auto_play: true });
     }
     $('.avatar').tooltip();
-    $('.crowd--user').each(function (index) {
-      $(this).css({
-        left: (Math.random() * 40 - 20) + 'px',
-        top: (Math.random() * 40 - 20) + 'px',
-      });
-    });
   }
 
   handleMute() {
