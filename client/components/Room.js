@@ -19,28 +19,8 @@ export default class Room extends React.Component {
       this.widget = window.SC.Widget('soundcloudPlayer'); // eslint-disable-line new-cap
       this.widget.show_artwork = false;
       this.widget.load(this.state.track, { show_artwork: false });
+      this.widget.play();
     });
-    // Seed the front end
-    // const _this = this;
-    // SC.get('/users').then((res) => {
-    //   const users = res.forEach((user) => {
-    //     var temp =  (
-    //       " id: " + user.id +
-    //       ", username: '" + user.username +
-    //       "', avatar_url: '" + user.avatar_url +"'     \n"
-    //     );
-    //     console.log(temp)
-    //   });
-    // });
-    //   _this.setState({
-    //     users,
-    //     djs: [{ id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
-    //       { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
-    //       { id: 965552, username: 'Floex', avatar_url: 'https://i1.sndcdn.com/avatars-000215636887-z69ica-large.jpg' },
-    //       {}],
-    //   });
-    // });
-    // End seeding
   }
 
   componentWillReceiveProps(nextProps) {
