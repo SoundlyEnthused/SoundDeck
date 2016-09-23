@@ -102,4 +102,4 @@ Nav.propTypes = {
   userData: React.PropTypes.any,
 };
 
-// //!-- <button className="btn btn-default" disabled={this.props.currentRoom === undefined} onClick={Nav.toggleRoom}> Lobby </button>
+// <button className="btn btn-default" disabled={this.props.currentRoom === undefined} onClick={Nav.toggleRoom}> Lobby </button>
