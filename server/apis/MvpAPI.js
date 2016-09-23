@@ -52,9 +52,14 @@ MvpAPI.join = (socket, data) => {
   if (!Connection.isRegistered(socket)) {
     return;
   }
+  // User must send a roomId
+  if (data === undefined || data.roomId === undefined) {
+    return;
+  }
   const userId = Connection.getUserId(socket);
   Room.join(data.roomId, userId);
   Connection.sendAll('room', MvpAPI.getState());
+  console.log(`User: ${userId} Joined: ${data.roomId}`);
 };
 
 /* Handler for event to enqueue for DJ position */
