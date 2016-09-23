@@ -2,33 +2,23 @@ import React from 'react';
 import $ from 'jquery';
 
 export default class Nav extends React.Component {
+  // Toggles the lobby id element to 'active' in CSS => displays Lobby
   static toggleLobby() {
     $('#lobby').collapse('toggle');
     $('#playlist').collapse('hide');
   }
 
+  // Toggles the playlist id element to 'active' in CSS => displays Playlist
   static togglePlaylist() {
     $('#playlist').collapse('toggle');
     $('#lobby').collapse('hide');
   }
-
 
   constructor(props) {
     super(props);
     this.state = {
       label: 'SoundDeck!',
     };
-  }
-
-  // Toggles the lobby id element to 'active' in CSS => displays Lobby
-  toggleLobby() {
-    $('#lobby').toggleClass('active');
-  }
-
-  // Toggles the playlist id element to 'active' in CSS => displays Playlist
-  togglePlaylist() {
-    console.log('the playlist click');
-    $('#playlist').toggleClass('active');
   }
 
   // Displays the Lobby button upon user login

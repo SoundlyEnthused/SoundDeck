@@ -122,7 +122,12 @@ export default class App extends React.Component {
         });
   }
 
-  // update when rooms event
+  componentDidUpdate() {
+    if (this.state.userData && !this.state.currentRoom) {
+      $('#lobby').collapse('show');
+    }
+  }
+
   updateOnEvent(data) {
     this.roomData = data.rooms;
     let state = {};
@@ -178,6 +183,10 @@ export default class App extends React.Component {
               currentDj={this.state.currentDj}
               users={this.state.users}
             />) : null
+        }
+
+        {
+          this.state.userData === false ? <div className="panel"><h1>Please log in.</h1></div> : null
         }
       </main>
     );

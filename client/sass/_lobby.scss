@@ -3,7 +3,7 @@
   width: 100%;
   z-index: 999;
   color: $text-color;
-  -webkit-backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(10px);
   position: absolute;
   background: rgba(255,255,255,0.8);
   h1 {

@@ -8,6 +8,8 @@ describe('<Lobby>', () => {
   it('selects a room when the join button is pressed', () => {
     const wrapper = mount(<App />);
     wrapper.find('.joinBtn').first().simulate('click');
-    expect(wrapper.state('currentRoom')).to.not.equal(undefined);
+    window.setTimeout(function() {
+      expect(wrapper.state('currentRoom')).to.not.equal(undefined);
+    }, 350);
   });
 });
