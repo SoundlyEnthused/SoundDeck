@@ -14,17 +14,94 @@ export default class Room extends React.Component {
   search(e) {
     e.preventDefault();
     const searchPhrase = $('#playlist--search--input')[0].value;
-    console.log('SEARCH!', searchPhrase);
+    // console.log('SEARCH!', searchPhrase);
     SC.get('/tracks', {
       q: searchPhrase,
     }).then((tracks) => {
       $('#playlist--search--input')[0].value = '';
-      console.log('GETTING BACK: ', tracks);
+      // console.log('GETTING BACK: ', tracks);
       this.setState({
         searchResult: tracks,
       });
     });
   }
+
+  addToPlaylist(track) {
+    const tracks = this.state.searchResult;
+    const currPlaylist = this.state.playlist;
+    // console.log('searchResults: ', tracks);
+    // console.log('playlist: ', currPlaylist);
+    // console.log('clicked track: ', track);
+
+    currPlaylist.push(track);
+    // console.log('after push: ', currPlaylist);
+    tracks.splice(tracks.indexOf(track), 1);
+    // console.log('playlist after push: ', currPlaylist);
+    function trackToAdd(theTracks) {
+      // console.log('theTrack inside trackToAdd filter: ', theTracks);
+      // console.log('tracks inside trackToAdd filter: ', tracks);
+      // console.log('track inside trackToAdd filter: ', track);
+      return theTracks !== track;
+    }
+    const newTrackList = tracks.filter(trackToAdd);
+    const newCurrPlaylist = currPlaylist;
+    // console.log('tracks after filt: ', newTrackList);
+    // console.log('playlist at end: ', currPlaylist);
+    this.setState({
+      playlist: newCurrPlaylist,
+      searchResult: newTrackList,
+    });
+  }
+
+  // checkPlaylist() {
+  //   // look at new search results
+  //   const currPlaylist = this.state.playlist;
+  //
+  //   // compare to existing tracks in playlist
+  //
+  //   // asign indicator (id or classname?) that keeps track of duplicates in searchResult
+  //
+  //   // apply css to modify the appearance and functionality of dupes in searchResult
+  // }
+
+  // removeHandler() {
+  removeFromPlaylist(track) {
+    const newCurrPlaylist = this.state.playlist;
+    function trackToRemove(tracks) {
+      // console.log('tracks', tracks);
+      // console.log('track', track);
+      return tracks !== track;
+    }
+    const updatedPlaylist = newCurrPlaylist.filter(trackToRemove);
+    this.setState({
+      playlist: updatedPlaylist,
+    });
+  }
+  // }
+  // var List = React.createClass({
+  //   render() {
+  //     return (
+  //       <ul>
+  //         {this.props.items.map(item =>
+  //           <ListItem key={item.id} item={item} onItemClick={this.props.onItemClick} />
+  //         )}
+  //       </ul>
+  //     );
+  //   }
+  // });
+  //
+  // var ListItem = React.createClass({
+  //   render() {
+  //     return (
+  //       <li onClick={this._onClick}>
+  //         ...
+  //       </li>
+  //     );
+  //   },
+  //   _onClick() {
+  //     this.props.onItemClick(this.props.item.id);
+  //   }
+  // });
 
   render() {
     return (
@@ -35,7 +112,8 @@ export default class Room extends React.Component {
             <div className="playlist--playlist col-sm-6">
               <ul>
                 {this.state.playlist.map(track =>
-                  (<li className="playlist--playlist--track list-unstyled">{track.title}</li>))}
+                  (<li className="playlist--playlist--track list-unstyled"><button key={track} className="remove-btn" onClick={this.removeFromPlaylist.bind(this, track)}><span className="fa fa-times" /></button>{track.title}</li>)
+                )}
               </ul>
             </div>
             <div className="playlist--search col-sm-6">
@@ -44,7 +122,7 @@ export default class Room extends React.Component {
                 <button onClick={(e) => { this.search(e); }}>Search</button>
                 <ul>
                   {this.state.searchResult.map(track =>
-                      (<li className="list-unstyled">{track.title}</li>))}
+                      (<li className="list-unstyled" onClick={this.addToPlaylist.bind(this, track)}>{track.title}</li>))}
                 </ul>
               </form>
             </div>

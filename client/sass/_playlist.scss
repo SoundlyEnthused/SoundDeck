@@ -13,3 +13,25 @@
   // position: absolute;
   // background: rgba(255,255,255,0.8);
 }
+
+.list-unstyled:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.remove-btn {
+  border: none;
+  background: none;
+  color: red;
+  padding-right: 12px;
+  outline: none;
+}
+
+.remove-btn:hover {
+  cursor: pointer;
+}
+
+.playlist--playlist--track:hover{
+  text-decoration: none;
+  cursor: default;
+}
