@@ -145,6 +145,52 @@ describe('MvpAPI', () => {
       expect(sent.length).to.equal(0);
     });
   });
+  describe('dequeue', () => {
+    let room;
+    const user1 = 22;
+    const user2 = 23;
+    let socket1;
+    let socket2;
+    beforeEach('Create state to test', () => {
+      // There is an additional Room from outer beforeEach
+      // Create a Room to test
+      room = MvpAPI.createRoom('Metal');
+      // Create two users for tests
+      socket1 = { id: 1 };
+      socket2 = { id: 2 };
+      // Log those users in
+      MvpAPI.login(socket1, { id: user1 });
+      MvpAPI.login(socket2, { id: user2 });
+      // Join Metal Room
+      MvpAPI.join(socket1, { roomId: room.id });
+      MvpAPI.join(socket2, { roomId: room.id });
+      // clear sent so that no login messages remain for easier testing
+      sent = [];
+    });
+    it('should be a function', () => {
+      expect(MvpAPI.dequeue).to.be.a('function');
+    });
+    it('should send a room event with updated state', () => {
+      MvpAPI.enqueue(socket1);
+      sent = [];
+      MvpAPI.dequeue(socket1);
+      expect(sent.length).to.equal(2);
+      expect(sent[0].eventName).to.equal('room');
+      expect(sent[0].data).to.be.an('object');
+    });
+    it('should remove a user from active DJ queue', () => {
+      MvpAPI.enqueue(socket1);
+      sent = []; // clear sent messages
+      MvpAPI.enqueue(socket2);
+      let msg = sent[0];
+      expect(msg.data[room.id].djs.length).to.equal(2);
+      sent = []; // clear sent messages
+      MvpAPI.dequeue(socket1);
+      msg = sent[0];
+      expect(msg.eventName).to.equal('room');
+      expect(msg.data[room.id].djs.length).to.equal(1);
+    });
+  });
   describe('join', () => {
     let room1;
     let room2;

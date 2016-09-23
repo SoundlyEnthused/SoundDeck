@@ -20,7 +20,8 @@ MvpAPI.getState = () => {
       users: room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)),
       djMaxNum: queue.maxDjs,
       // TODO: include current track
-      track: '',
+      // track: '',
+      track: '284303461', // TODO: REMOVE THIS
     };
   });
   return state;
@@ -61,7 +62,7 @@ MvpAPI.join = (socket, data) => {
   const userId = Connection.getUserId(socket);
   Room.join(data.roomId, userId);
   Connection.sendAll('room', MvpAPI.getState());
-  console.log(`User: ${JSON.stringify(User.get(userId))} Joined: ${data.roomId}`);
+  // console.log(`User: ${JSON.stringify(User.get(userId))} Joined: ${data.roomId}`);
 };
 
 /* Handler for event to enqueue for DJ position */
@@ -77,6 +78,15 @@ MvpAPI.enqueue = (socket) => {
   Connection.sendAll('room', MvpAPI.getState());
 };
 
+/* Handler for event to dequeue DJ */
+MvpAPI.dequeue = (socket) => {
+  const userId = Connection.getUserId(socket);
+  const roomId = Room.getByUserId(userId).id;
+  const queueId = DjQueue.getByRoom(roomId).id;
+  DjQueue.removeUser(queueId, userId);
+  Connection.sendAll('room', MvpAPI.getState());
+};
+
 /* Connect all Event Endpoints to Server */
 MvpAPI.attachListeners = (io) => {
   io.on('connection', (socket) => {
@@ -84,6 +94,8 @@ MvpAPI.attachListeners = (io) => {
     socket.on('login', MvpAPI.login.bind(null, socket));
     socket.on('join', MvpAPI.join.bind(null, socket));
     socket.on('enqueue', MvpAPI.enqueue.bind(null, socket));
+    socket.on('dequeue', MvpAPI.dequeue.bind(null, socket));
+    // socket.on('disconnect', );
   });
 };
 
