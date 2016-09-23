@@ -21,17 +21,17 @@ ServerAPI.onUpdate = (callback) => {
 };
 
 ServerAPI.joinRoom = (roomId) => {
-  //console.log('client join room', roomId);
+  // console.log('client join room', roomId);
   ServerAPI.socket.emit('join', roomId);
 };
 
 ServerAPI.login = (user) => {
   console.log("Server API login", user);
-  ServerAPI.socket.emit('login', { id: user.id });
+  ServerAPI.socket.emit('login', { id: user.id, username: user.username, avatar_url: user.avatar_url });
 };
 
 ServerAPI.onLogin = (callback) => {
-  //console.log('client join room', roomId);
+  // console.log('client join room', roomId);
   ServerAPI.socket.on('login', (data) => {
     callback(data);
   });
