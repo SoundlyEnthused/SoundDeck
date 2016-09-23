@@ -5,7 +5,7 @@ const ServerAPI = {
 };
 
 ServerAPI.connect = () => {
-  //console.log("socket connecting");
+  // console.log("socket connecting");
   ServerAPI.socket = io('http://localhost:' + process.env.PORT);
 };
 
@@ -22,11 +22,11 @@ ServerAPI.onUpdate = (callback) => {
 
 ServerAPI.joinRoom = (roomId) => {
   // console.log('client join room', roomId);
-  ServerAPI.socket.emit('join', roomId);
+  ServerAPI.socket.emit('join', { roomId });
 };
 
 ServerAPI.login = (user) => {
-  console.log("Server API login", user);
+  console.log('Server API login', user);
   ServerAPI.socket.emit('login', { id: user.id, username: user.username, avatar_url: user.avatar_url });
 };
 
