@@ -1,11 +1,18 @@
 body {
   background: url(img/bg.svg), linear-gradient(to bottom, #485477 0%, #101623 100%) center center no-repeat;
   background-blend-mode: multiply;
+  background-attachment: fixed;
   background-size: cover;
 }
 
 #app {
   color: white;
+}
+
+.navbar-collapse,
+.collapsing {
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 @keyframes spin {
@@ -14,5 +21,16 @@ body {
   }
   to {
     transform: rotateZ(360deg);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }

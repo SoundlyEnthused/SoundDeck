@@ -6,6 +6,7 @@ h1 {
   background: rgba(0,0,0,0.3);
   padding: 20px;
   border-radius: 20px;
+  animation: fade .35s;
 }
 
 .stage--djs {
@@ -40,6 +41,7 @@ h1 {
     height: 100%;
     border: 4px dashed #009aff;
     // background: #002a6e;
+    will-change: transform;
     animation: spin 1.5s infinite linear;
   }
 }
@@ -92,6 +94,8 @@ h1 {
   background: rgba(0,0,0,0.3);
   padding: 25px;
   border-radius: 20px;
+  animation: fade .35s;
+  animation-delay: .35s;
 }
 
 .crowd--user {

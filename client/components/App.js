@@ -15,6 +15,7 @@ import ServerAPI from '../models/ServerAPI';
 global.jQuery = jquery;
 global.$ = jquery;
 require('bootstrap-sass');  // import doesn't work for some reason
+
 // Do not include styles if testing
 if (process.env.NODE_ENV !== 'test') {
   // sass doesn't export anything meaninful so disable lint

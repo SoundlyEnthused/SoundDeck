@@ -28,7 +28,7 @@ export default class Room extends React.Component {
 
   render() {
     return (
-      <div id="playlist" className="playlist">
+      <div id="playlist" className="playlist collapse">
         <div className="container">
           <h1> Playlist </h1>
           <div className="row">

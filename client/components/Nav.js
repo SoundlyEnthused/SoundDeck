@@ -2,10 +2,16 @@ import React from 'react';
 import $ from 'jquery';
 
 export default class Nav extends React.Component {
-  static toggleRoom() {
-    console.log('room is toggling');
-    $('#lobby').toggleClass('active');
+  static toggleLobby() {
+    $('#lobby').collapse('toggle');
+    $('#playlist').collapse('hide');
   }
+
+  static togglePlaylist() {
+    $('#playlist').collapse('toggle');
+    $('#lobby').collapse('hide');
+  }
+
 
   constructor(props) {
     super(props);
@@ -28,14 +34,25 @@ export default class Nav extends React.Component {
   // Displays the Lobby button upon user login
   showLobby(){
     if(this.props.userData){
-      return <button className="btn btn-default" id="LobbyButton" onClick={this.toggleLobby}> Lobby </button>;
+      return (
+        <button
+          className="btn btn-default"
+          disabled={this.props.currentRoom === undefined}
+          onClick={Nav.toggleLobby}
+          data-toggle="collapse"
+          data-target="#lobby"
+          aria-expanded="false"
+        >
+          Lobby
+        </button>
+      );
     }
     return false;
   }
 
   showPlaylist() {
     if (this.props.userData) {
-      return <button className="btn btn-default" id="PlaylistButton" onClick={this.togglePlaylist}> Playlist </button>;
+      return <button className="btn btn-default" id="PlaylistButton" onClick={Nav.togglePlaylist} data-toggle="collapse" data-target="#playlist" aria-expanded="false"> Playlist </button>;
     }
     return false;
   }
@@ -94,7 +111,6 @@ Nav.propTypes = {
   currentRoom: React.PropTypes.string,
   loggingIn: React.PropTypes.func.isRequired,
   userData: React.PropTypes.any,
-  togglePlaylist: React.PropTypes.func,
 };
 
 // //!-- <button className="btn btn-default" disabled={this.props.currentRoom === undefined} onClick={Nav.toggleRoom}> Lobby </button>
