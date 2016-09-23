@@ -8,12 +8,12 @@ global.$ = jquery;
 require('bootstrap-sass');  // import doesn't work for some reason
 
 describe('<Room />', () => {
-  const djs = [
+  let djs = [
         { id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
         { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
         { id: 965552, username: 'Floex', avatar_url: 'https://i1.sndcdn.com/avatars-000215636887-z69ica-large.jpg' },
   ];
-  const users = [
+  let users = [
         { id: 1, username: '"alexis"', avatar_url: 'https://i1.sndcdn.com/avatars-000000000141-2d728f-large.jpg' },
         { id: 2, username: 'Eric 🔥', avatar_url: 'https://i1.sndcdn.com/avatars-000153316546-tqxejr-large.jpg' },
         { id: 3, username: 'emil', avatar_url: 'https://i1.sndcdn.com/avatars-000019102368-0eum50-large.jpg' },
@@ -22,10 +22,10 @@ describe('<Room />', () => {
         { id: 58, username: 'lukas', avatar_url: 'https://i1.sndcdn.com/avatars-000001916005-iinh3e-large.jpg' },
         { id: 51, username: 'mikaelpersson', avatar_url: 'https://i1.sndcdn.com/avatars-000000000330-627e91-large.jpg' },
   ];
-  const name = 'metal';
-  const djMaxNum = 4;
-  const track = 168240777;
-  const currentDj = 4973508;
+  let name = 'metal';
+  let djMaxNum = 4;
+  let track = 168240777;
+  let currentDj = 4973508;
   const wrapper = mount(
     <Room
       name={name}
@@ -58,32 +58,29 @@ describe('<Room />', () => {
   describe('dynamically renders props', () => {
     // it('renders track change', () => {
     //   const nextProps = {
-
     //   };
     //   wrapper.setProps(nextProps);
     // });
     describe('renders DJ list change', () => {
       let nextProps;
       it('drop DJ', () => {
-        nextProps = {
-          djs: [
-            { id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
-            { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
-          ],
-        };
+        djs = [
+          { id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
+          { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
+        ];
+        nextProps = { djs };
         wrapper.setProps(nextProps);
         expect(wrapper.find('.dj--seat').length).to.equal(djMaxNum);
         expect(wrapper.find('.dj--seat.empty').length).to.equal(djMaxNum - nextProps.djs.length);
         // add test to check if dj name match
       });
       it('add DJ', () => {
-        nextProps = {
-          djs: [
-            { id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
-            { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
-            { id: 39, username: 'bruceroos', avatar_url: 'https://i1.sndcdn.com/avatars-000000000155-3ef288-large.jpg' },
-          ],
-        };
+        djs = [
+          { id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
+          { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
+          { id: 39, username: 'bruceroos', avatar_url: 'https://i1.sndcdn.com/avatars-000000000155-3ef288-large.jpg' },
+        ];
+        nextProps = { djs };
         wrapper.setProps(nextProps);
         expect(wrapper.find('.dj--seat').length).to.equal(djMaxNum);
         expect(wrapper.find('.dj--seat.empty').length).to.equal(djMaxNum - nextProps.djs.length);
@@ -94,7 +91,7 @@ describe('<Room />', () => {
           djs: [
             { id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
             { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
-            { id: 39, username: 'bruceroos', avatar_url: 'https://i1.sndcdn.com/avatars-000000000155-3ef288-large.jpg' },
+            { id: 57, username: '@trancepoetry', avatar_url: 'https://i1.sndcdn.com/avatars-000072444692-u66l5c-large.jpg' },
           ],
         };
         wrapper.setProps(nextProps);
@@ -104,22 +101,31 @@ describe('<Room />', () => {
       });
     });
     it('renders current DJ change', () => {
-      const nextProps = {
-
-      };
+      currentDj = 172873;
+      const nextProps = { currentDj };
       wrapper.setProps(nextProps);
+      // add test to check DJ is active
     });
     it('renders crowd change', () => {
-      const nextProps = {
-
-      };
+      users = [
+          { id: 1, username: '"alexis"', avatar_url: 'https://i1.sndcdn.com/avatars-000000000141-2d728f-large.jpg' },
+          { id: 2, username: 'Eric 🔥', avatar_url: 'https://i1.sndcdn.com/avatars-000153316546-tqxejr-large.jpg' },
+          { id: 3, username: 'emil', avatar_url: 'https://i1.sndcdn.com/avatars-000019102368-0eum50-large.jpg' },
+          { id: 11, username: 'robert', avatar_url: 'https://i1.sndcdn.com/avatars-000000000050-56eb60-large.jpg' },
+          { id: 46, username: 'bjornjeffery', avatar_url: 'https://a1.sndcdn.com/images/default_avatar_large.png' },
+          { id: 58, username: 'lukas', avatar_url: 'https://i1.sndcdn.com/avatars-000001916005-iinh3e-large.jpg' },
+          { id: 51, username: 'mikaelpersson', avatar_url: 'https://i1.sndcdn.com/avatars-000000000330-627e91-large.jpg' },
+          { id: 41, username: 'tools', avatar_url: 'https://i1.sndcdn.com/avatars-000000000162-6284df-large.jpg' },
+      ];
+      const nextProps = { users };
       wrapper.setProps(nextProps);
+      expect(wrapper.find('.crowd--user').length).to.equal(users.length);
     });
-    it('renders room change', () => {
-      const nextProps = {
-
-      };
+    it('renders room name change', () => {
+      name = 'CLASSICAL';
+      const nextProps = { name };
       wrapper.setProps(nextProps);
+      expect(wrapper.find('h1').text().trim()).to.equal(name);
     });
   });
 });

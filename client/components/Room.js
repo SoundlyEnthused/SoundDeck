@@ -6,9 +6,11 @@ import $ from 'jquery';
 export default class Room extends React.Component {
   constructor(props) {
     super(props);
+    console.log('room init', this.props)
     const state = this.processProps(this.props);
     this.state = state;
     this.widget = null;
+    this.updataTrack = false;
     this.handleMute = this.handleMute.bind(this);
   }
 
@@ -18,23 +20,29 @@ export default class Room extends React.Component {
     load('https://w.soundcloud.com/player/api.js', () => {
       this.widget = window.SC.Widget('soundcloudPlayer'); // eslint-disable-line new-cap
       this.widget.show_artwork = false;
-      this.widget.load(this.state.track, { show_artwork: false });
-      this.widget.play();
+      this.widget.load('https://api.soundcloud.com/tracks/' + this.state.track, { show_artwork: false, auto_play: true });
     });
   }
 
   componentWillReceiveProps(nextProps) {
     const state = this.processProps(nextProps);
+    this.updataTrack = true;
+    if (this.state.track === state.track) {
+      this.updataTrack = false;
+    }
     this.setState(state);
   }
 
   // componentDidUpate invoked immediately after the component's updates are flushed to the DOM
   componentDidUpdate() {
+    if (this.widget && this.updataTrack) {
+      this.widget.load('https://api.soundcloud.com/tracks/' + this.state.track, { show_artwork: false, auto_play: true });
+    }
     $('.avatar').tooltip();
-    $('.crowd--user').each(function(index) {
+    $('.crowd--user').each(function (index) {
       $(this).css({
-        left: (Math.random()*40 - 20) + "px",
-        top: (Math.random()*40 - 20) + "px"
+        left: (Math.random() * 40 - 20) + 'px',
+        top: (Math.random() * 40 - 20) + 'px',
       });
     });
   }
@@ -63,7 +71,7 @@ export default class Room extends React.Component {
   }
 
   processDjs(djList, djMaxNum) {
-    let djSeats = djList.slice();
+    const djSeats = djList.slice();
     while (djSeats.length < djMaxNum) {
       djSeats.push(null);
     }
@@ -103,7 +111,15 @@ export default class Room extends React.Component {
             }
             </div>
 
-            <iframe id="soundcloudPlayer" className="soundcloudPlayer" width="100%" height="100" scrolling="no" frameBorder="no" src="https://w.soundcloud.com/player/?url=" />
+            <iframe
+              id="soundcloudPlayer"
+              className="soundcloudPlayer"
+              width="100%"
+              height="100"
+              scrolling="no"
+              frameBorder="no"
+              src="https://w.soundcloud.com/player/?url="
+            />
 
             <div id="vote" className="vote row">
               <div className="col-xs-4" />
@@ -121,7 +137,7 @@ export default class Room extends React.Component {
                 </button>
 
                 <button className="vote--muteBtn btn btn-default btn-round" onClick={this.handleMute}>
-                  {this.state.mute === -1 ? <span className="fa fa-volume-up"/> : <span className="fa fa-volume-off" />}
+                  {this.state.mute === -1 ? <span className="fa fa-volume-up" /> : <span className="fa fa-volume-off" />}
                 </button>
               </div>
             </div>
@@ -131,7 +147,7 @@ export default class Room extends React.Component {
           <div className="crowd">
             {
               this.state.users.map((user) => {
-              return (
+                return (
                 <div className="crowd--user" key={user.username}>
                   <div
                     className="avatar"
