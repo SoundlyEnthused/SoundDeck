@@ -1,6 +1,7 @@
 const Connection = require('../models/Connection');
 const Room = require('../models/Room');
 const DjQueue = require('../models/DjQueue');
+const User = require('../models/User');
 
 const MvpAPI = {};
 
@@ -13,10 +14,10 @@ MvpAPI.getState = () => {
     // Build up the state object entry from related Room and DjQueue models
     state[room.id] = {
       name: room.name,
-      djs: queue.active.map(dj => ({ id: dj })),
+      djs: queue.active.map(dj => User.get(dj)),
       currentDj: queue.currentDj,
       // User's array should not include DJ's
-      users: room.users.filter(user => !queue.active.includes(user)).map(user => ({ id: user })),
+      users: room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)),
       djMaxNum: queue.maxDjs,
       // TODO: include current track
       track: '',
@@ -42,6 +43,7 @@ MvpAPI.clearAll = () => {
 /* Handler for event to associate a connection with a soundcloud user */
 MvpAPI.login = (socket, data) => {
   Connection.register(data.id, socket);
+  User.create(data.id, data.username, data.avatar_url);
   Connection.send(data.id, 'login', { id: data.id });
   Connection.send(data.id, 'room', MvpAPI.getState());
 };
@@ -59,7 +61,7 @@ MvpAPI.join = (socket, data) => {
   const userId = Connection.getUserId(socket);
   Room.join(data.roomId, userId);
   Connection.sendAll('room', MvpAPI.getState());
-  console.log(`User: ${userId} Joined: ${data.roomId}`);
+  console.log(`User: ${JSON.stringify(User.get(userId))} Joined: ${data.roomId}`);
 };
 
 /* Handler for event to enqueue for DJ position */
