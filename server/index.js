@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 // Imports for browserify-middleware
 const browserify = require('browserify-middleware');
 const babelify = require('babelify');
-const api = require('./apis/MVPAPI');
+const api = require('./apis/MVPApi');
 const io = require('socket.io');
 
 const routes = express.Router();
