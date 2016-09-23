@@ -15,7 +15,7 @@ ServerAPI.disconnect = () => {
 
 ServerAPI.onUpdate = (callback) => {
   ServerAPI.socket.on('room', (data) => {
-    //console.log('Room event', data);
+    console.log('Room event', data);
     callback(data);
   });
 };
