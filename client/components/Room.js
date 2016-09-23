@@ -35,6 +35,8 @@ export default class Room extends React.Component {
           },
       });
     });
+    $('.avatar').tooltip();
+    this.handleMute();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -57,7 +59,6 @@ export default class Room extends React.Component {
         this.widget.seekTo(timeDiff);
       }
     }
-    $('.avatar').tooltip();
   }
 
   // ********************
@@ -70,9 +71,9 @@ export default class Room extends React.Component {
     // });
     this.mute = !this.mute;
     if (!this.mute) {
-      this.widget.setVolume(0);
+      this.player.volume = 0;
     } else {
-      this.widget.setVolume(75);
+      this.player.volume = 1;
     }
   }
   handleDjQueue() {
@@ -176,18 +177,18 @@ export default class Room extends React.Component {
             {
               this.state.users.map((user) => {
                 return (
-                <div className="crowd--user" key={user.username}>
-                  <div
-                    className="avatar"
-                    title={user.username}
-                    data-placement="bottom"
-                    data-animation="true"
-                    data-toggle="tooltip"
-                  >
-                    <img src={user.avatar_url} alt={user.username} />
+                  <div className="crowd--user" key={user.username}>
+                    <div
+                      className="avatar"
+                      title={user.username}
+                      data-placement="bottom"
+                      data-animation="true"
+                      data-toggle="tooltip"
+                    >
+                      <img src={user.avatar_url} alt={user.username} />
+                    </div>
                   </div>
-                </div>
-              );
+                );
               })
             }
           </div>
