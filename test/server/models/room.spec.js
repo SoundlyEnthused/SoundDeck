@@ -114,5 +114,9 @@ describe('Room', () => {
       Room.join(room.id, userId);
       expect(Room.getByUserId(userId).id).to.equal(room.id);
     });
+    it('should return null if the user is not in a Room', () => {
+      const userId = 42;
+      expect(Room.getByUserId(userId)).to.equal(null);
+    });
   });
 });

@@ -33,7 +33,11 @@ Room.remove = function remove(id) {
 };
 
 Room.getByUserId = function getByUserId(userId) {
-  return rooms[usersToRooms[userId]];
+  const roomId = usersToRooms[userId];
+  if (roomId === undefined) {
+    return null;
+  }
+  return rooms[roomId];
 };
 
 Room.join = function join(roomId, userId) {
