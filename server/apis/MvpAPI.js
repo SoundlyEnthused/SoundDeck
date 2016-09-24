@@ -84,9 +84,17 @@ MvpAPI.dequeue = (socket) => {
     return;
   }
   const userId = Connection.getUserId(socket);
-  const roomId = Room.getByUserId(userId).id;
-  const queueId = DjQueue.getByRoom(roomId).id;
-  DjQueue.removeUser(queueId, userId);
+  const room = Room.getByUserId(userId);
+  if (room === null) {
+    return; // user is not in a room
+  }
+  const queue = DjQueue.getByRoom(room.id);
+  if (queue == null) {
+    // This shouldn't happen as queues should always be associated with rooms
+    console.error('MvpAPI.dequeue error: Room has no corresponding DjQueue');
+    return;
+  }
+  DjQueue.removeUser(queue.id, userId);
   Connection.sendAll('room', MvpAPI.getState());
 };
 
@@ -115,7 +123,7 @@ MvpAPI.attachListeners = (io) => {
     socket.on('join', MvpAPI.join.bind(null, socket));
     socket.on('enqueue', MvpAPI.enqueue.bind(null, socket));
     socket.on('dequeue', MvpAPI.dequeue.bind(null, socket));
-    socket.on('disconnect', MvpAPI.disconnect(null, socket));
+    socket.on('disconnect', MvpAPI.disconnect.bind(null, socket));
   });
 };
 
