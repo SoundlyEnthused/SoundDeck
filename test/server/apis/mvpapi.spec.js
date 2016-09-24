@@ -144,6 +144,14 @@ describe('MvpAPI', () => {
       MvpAPI.enqueue(unregisteredSocket);
       expect(sent.length).to.equal(0);
     });
+    it('should do and send nothing if user is not in a Room', () => {
+      const userId3 = 12;
+      const socket3 = { id: 78969 };
+      MvpAPI.login(socket3, { id: userId3 });
+      sent = [];
+      MvpAPI.enqueue(socket3);
+      expect(sent.length).to.equal(0);
+    });
   });
   describe('dequeue', () => {
     let room;

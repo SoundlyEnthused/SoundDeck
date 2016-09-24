@@ -72,7 +72,16 @@ MvpAPI.enqueue = (socket) => {
   }
   const userId = Connection.getUserId(socket);
   const room = Room.getByUserId(userId);
+  if (room === null) {
+    // User is not in a room!
+    return;
+  }
   const queue = DjQueue.getByRoom(room.id);
+  if (queue == null) {
+    // This shouldn't happen as queues should always be associated with rooms
+    console.error('MvpAPI.enqueue error: Room has no corresponding DjQueue');
+    return;
+  }
   DjQueue.enqueue(queue.id, userId);
   Connection.sendAll('room', MvpAPI.getState());
 };
