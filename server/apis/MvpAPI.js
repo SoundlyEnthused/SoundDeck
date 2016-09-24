@@ -20,7 +20,8 @@ MvpAPI.getState = () => {
       // User's array should not include DJ's
       users: room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)),
       djMaxNum: queue.maxDjs,
-      track: queue.currentTrack,
+      // track: queue.currentTrack,
+      track: queue.currentTrack !== null ? queue.currentTrack.songId : null,
     };
   });
   return state;
@@ -43,7 +44,7 @@ MvpAPI.clearAll = () => {
 /* waitForTrack takes a roomId and sendsTheNext track, waits for it to complete and repeats */
 const waitTime = 5000; // in msec
 function waitForTrack(roomId) {
-  MvpAPI.sendNextTrack();
+  MvpAPI.sendNextTrack(roomId);
   const track = DjQueue.getByRoom(roomId).currentTrack;
   if (track === null) {
     console.log('No track available');
