@@ -15,7 +15,7 @@ ServerAPI.disconnect = () => {
 
 ServerAPI.onUpdate = (callback) => {
   ServerAPI.socket.on('room', (data) => {
-    console.log('Room event', data);
+    // console.log('Room event', data);
     callback(data);
   });
 };
@@ -26,7 +26,7 @@ ServerAPI.joinRoom = (roomId) => {
 };
 
 ServerAPI.login = (user) => {
-  console.log('Server API login', user);
+  // console.log('Server API login', user);
   ServerAPI.socket.emit('login', { id: user.id, username: user.username, avatar_url: user.avatar_url });
 };
 
@@ -35,6 +35,16 @@ ServerAPI.onLogin = (callback) => {
   ServerAPI.socket.on('login', (data) => {
     callback(data);
   });
+};
+
+ServerAPI.enqueue = () => {
+  // console.log('Server API enqueueDJ', user);
+  ServerAPI.socket.emit('enqueue');
+};
+
+ServerAPI.dequeue = () => {
+  // console.log('Server API dequeueDJ', user);
+  ServerAPI.socket.emit('dequeue');
 };
 
 module.exports = ServerAPI;

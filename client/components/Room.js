@@ -6,12 +6,12 @@ import $ from 'jquery';
 export default class Room extends React.Component {
   constructor(props) {
     super(props);
-    console.log('room init', this.props)
     const state = this.processProps(this.props);
     this.state = state;
     this.widget = null;
     this.updataTrack = false;
     this.handleMute = this.handleMute.bind(this);
+    this.handleDjQueue = this.handleDjQueue.bind(this);
   }
 
   // componentDidMount invoked only once on the client side immediately after the initial rendering
@@ -41,6 +41,9 @@ export default class Room extends React.Component {
     $('.avatar').tooltip();
   }
 
+  // ********************
+  // Room functions
+  // ********************
   handleMute() {
     this.setState({
       mute: this.state.mute * -1,
@@ -52,14 +55,27 @@ export default class Room extends React.Component {
       this.widget.setVolume(75);
     }
   }
+  handleDjQueue() {
+    console.log(this.props);
+    if (this.state.isDJ) {
+      this.props.ServerAPI.dequeue();
+      // change button css
+    } else {
+      this.props.ServerAPI.enqueue();
+      // change button css
+    }
+  }
+
   processProps(nextProps) {
     const djArray = this.processDjs(nextProps.djs, nextProps.djMaxNum);
+    const isDJ = nextProps.djs.map(dj => dj.id).includes(this.props.userId);
     return {
       name: nextProps.name,
       track: nextProps.track,
       timeStamp: nextProps.timeStamp,
       djs: djArray,
       currentDj: nextProps.currentDj,
+      isDJ,
       users: nextProps.users,
     };
   }
@@ -126,8 +142,8 @@ export default class Room extends React.Component {
                 </button>
               </div>
               <div className="vote--djQueue col-xs-4">
-                <button className="btn btn-default btn-round">
-                  <span className="fa fa-list" />
+                <button className="btn btn-default btn-round" onClick={this.handleDjQueue}>
+                  {this.state.isDJ ? <img src="img/removeFromList.svg" alt="dequeue" /> : <img src="img/addToList.svg" alt="enqueue" />}
                 </button>
 
                 <button className="vote--muteBtn btn btn-default btn-round" onClick={this.handleMute}>
