@@ -1,4 +1,5 @@
 const seeds = {};
+seeds.user = { id: 1000, username: 'shaka', avatar_url: 'https://i1.sndcdn.com/avatars-000001116755-hhusd1-large.jpg' };
 seeds.djs = [
       { id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
       { id: 4973508, username: 'Macabre!', avatar_url: 'https://i1.sndcdn.com/avatars-000218947088-qgg05p-large.jpg' },
@@ -15,7 +16,6 @@ seeds.users = [
       { id: 58, username: 'lukas', avatar_url: 'https://i1.sndcdn.com/avatars-000001916005-iinh3e-large.jpg' },
       { id: 51, username: 'mikaelpersson', avatar_url: 'https://i1.sndcdn.com/avatars-000000000330-627e91-large.jpg' },
       { id: 1005, username: 'DerTeta', avatar_url: 'https://i1.sndcdn.com/avatars-000000048788-1dabf5-large.jpg' },
-      { id: 1000, username: 'shaka', avatar_url: 'https://i1.sndcdn.com/avatars-000001116755-hhusd1-large.jpg' },
       { id: 1001, username: 'eurokai', avatar_url: 'https://i1.sndcdn.com/avatars-000000026652-044652-large.jpg' },
       { id: 11005, username: 'Leinad Resiak', avatar_url: 'https://i1.sndcdn.com/avatars-000130560775-hqhtaw-large.jpg' },
       { id: 11007, username: 'LUEDFE', avatar_url: 'https://i1.sndcdn.com/avatars-000060914748-pyyg3v-large.jpg' },
@@ -42,6 +42,7 @@ seeds.users = [
 seeds.roomname = 'metal';
 seeds.djMaxNum = 4;
 seeds.ServerAPI = {
+  userId: 1000,
   connect: () => { console.log('socket connecting'); },
   disconnect: () => { console.log('socket connecting'); },
   onUpdate: (callback) => { console.log('Room event'); callback(); },
@@ -53,8 +54,8 @@ seeds.ServerAPI = {
 };
 
 seeds.createRoom = (roomName, djNum, userNum) => {
-  var room = {
-    userId: 0,
+  const room = {
+    userId: 1000,
     name: roomName,
     track: 59102642,
     djs: seeds.djs.slice(0, djNum),
@@ -76,5 +77,5 @@ seeds.rooms = {
 seeds.widget = {
   load: () => {},
   setVolume: () => {},
-}
+};
 module.exports = seeds;
