@@ -42,7 +42,7 @@ export default class App extends React.Component {
   }
 
   componentWillMount() {
-    this.ServerAPI = ServerAPI.connect();
+    ServerAPI.connect();
     ServerAPI.onUpdate(this.updateOnEvent);
     ServerAPI.onLogin((data) => {
       console.log('login data', data);
@@ -108,7 +108,7 @@ export default class App extends React.Component {
               djMaxNum={this.state.djMaxNum}
               currentDj={this.state.currentDj}
               users={this.state.users}
-              ServerAPI={this.ServerAPI}
+              ServerAPI={ServerAPI}
             />) : null
         }
 

@@ -37,12 +37,12 @@ ServerAPI.onLogin = (callback) => {
   });
 };
 
-ServerAPI.enqueueDJ = () => {
+ServerAPI.enqueue = () => {
   // console.log('Server API enqueueDJ', user);
   ServerAPI.socket.emit('enqueue');
 };
 
-ServerAPI.dequeueDJ = () => {
+ServerAPI.dequeue = () => {
   // console.log('Server API dequeueDJ', user);
   ServerAPI.socket.emit('dequeue');
 };

@@ -128,5 +128,8 @@ describe('<Room />', () => {
       expect(wrapper.find('h1').text().trim()).to.equal(name);
     });
   });
+  describe('enqueue and dequeue for DJ', () => {
+    
+  })
 });
 

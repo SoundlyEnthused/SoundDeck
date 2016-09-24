@@ -11,7 +11,7 @@ export default class Room extends React.Component {
     this.widget = null;
     this.updataTrack = false;
     this.handleMute = this.handleMute.bind(this);
-    this.handleDJQueue = this.handleDJQueue.bind(this);
+    this.handleDjQueue = this.handleDjQueue.bind(this);
   }
 
   // componentDidMount invoked only once on the client side immediately after the initial rendering
@@ -55,9 +55,10 @@ export default class Room extends React.Component {
       this.widget.setVolume(75);
     }
   }
-  handdleDjQueue() {
-    if (this.state.djList) {
-      this.props.ServerAPI.dequque();
+  handleDjQueue() {
+    console.log(this.props);
+    if (this.state.isDJ) {
+      this.props.ServerAPI.dequeue();
       // change button css
     } else {
       this.props.ServerAPI.enqueue();
@@ -67,7 +68,7 @@ export default class Room extends React.Component {
 
   processProps(nextProps) {
     const djArray = this.processDjs(nextProps.djs, nextProps.djMaxNum);
-    const isDJ = nextProps.djs.includes(this.props.userId);
+    const isDJ = nextProps.djs.map(dj => dj.id).includes(this.props.userId);
     return {
       name: nextProps.name,
       track: nextProps.track,
@@ -141,7 +142,7 @@ export default class Room extends React.Component {
                 </button>
               </div>
               <div className="vote--djQueue col-xs-4">
-                <button className="btn btn-default btn-round" onClick={this.handleDJQueue}>
+                <button className="btn btn-default btn-round" onClick={this.handleDjQueue}>
                   <span className="fa fa-list" />
                 </button>
 
