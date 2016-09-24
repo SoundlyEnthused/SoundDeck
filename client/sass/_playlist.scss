@@ -17,6 +17,7 @@
 .list-unstyled:hover {
     text-decoration: underline;
     cursor: pointer;
+    color: darkblue;
 }
 
 .remove-btn {
@@ -34,4 +35,12 @@
 .playlist--playlist--track:hover{
   text-decoration: none;
   cursor: default;
+}
+
+.firstTrack {
+  font-weight: bold;
+}
+
+.savePlaylist-btn{
+  font-size: 14px;
 }
