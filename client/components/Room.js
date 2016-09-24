@@ -56,13 +56,11 @@ export default class Room extends React.Component {
     }
   }
   handleDjQueue() {
-    console.log(this.props);
+    console.log('handleDjQqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq', this.state.isDJ)
     if (this.state.isDJ) {
       this.props.ServerAPI.dequeue();
-      // change button css
     } else {
       this.props.ServerAPI.enqueue();
-      // change button css
     }
   }
 
@@ -142,7 +140,7 @@ export default class Room extends React.Component {
                 </button>
               </div>
               <div className="vote--djQueue col-xs-4">
-                <button className="btn btn-default btn-round" onClick={this.handleDjQueue}>
+                <button className="vote--djqueueBtn btn btn-default btn-round" onClick={this.handleDjQueue}>
                   {this.state.isDJ ? <img src="img/removeFromList.svg" alt="dequeue" /> : <img src="img/addToList.svg" alt="enqueue" />}
                 </button>
 
