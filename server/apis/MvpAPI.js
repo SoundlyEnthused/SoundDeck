@@ -39,6 +39,21 @@ MvpAPI.clearAll = () => {
   Playlist.clearAll();
 };
 
+// TODO: Test this!
+/* waitForTrack takes a roomId and sendsTheNext track, waits for it to complete and repeats */
+const waitTime = 5000; // in msec
+function waitForTrack(roomId) {
+  MvpAPI.sendNextTrack();
+  const track = DjQueue.getByRoom(roomId).currentTrack;
+  if (track === null) {
+    console.log('No track available');
+    return;
+  }
+  setTimeout(() => {
+    waitForTrack(roomId);
+  }, track.duration + waitTime);
+}
+
 /* Socket.io Event Endpoints */
 
 /* Handler for event to associate a connection with a soundcloud user */
@@ -131,21 +146,6 @@ MvpAPI.getPlaylist = (socket) => {
     Connection.send(userId, 'playlist', playlist.tracks);
   }
 };
-
-// TODO: Test this!
-/* waitForTrack takes a roomId and sendsTheNext track, waits for it to complete and repeats */
-const waitTime = 5000; // in msec
-function waitForTrack(roomId) {
-  MvpAPI.sendNextTrack();
-  const track = DjQueue.getByRoom(roomId).currentTrack;
-  if (track === null) {
-    console.log('No track available');
-    return;
-  }
-  setTimeout(() => {
-    waitForTrack(roomId);
-  }, track.duration + waitTime);
-}
 
 /* sendNextTrack for a given room -- expects a room.id */
 MvpAPI.sendNextTrack = (roomId) => {
