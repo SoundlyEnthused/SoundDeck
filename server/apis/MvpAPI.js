@@ -144,6 +144,7 @@ MvpAPI.attachListeners = (io) => {
     socket.on('enqueue', MvpAPI.enqueue.bind(null, socket));
     socket.on('dequeue', MvpAPI.dequeue.bind(null, socket));
     socket.on('disconnect', MvpAPI.disconnect.bind(null, socket));
+    socket.on('playlist', MvpAPI.playlist.bind(null, socket));
   });
 };
 
