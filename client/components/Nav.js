@@ -22,12 +22,11 @@ export default class Nav extends React.Component {
   }
 
   // Displays the Lobby button upon user login
-  showLobby(){
-    if(this.props.userData){
+  showLobby() {
+    if (this.props.userData) {
       return (
         <button
           className="btn btn-default"
-          disabled={this.props.currentRoom === undefined}
           onClick={Nav.toggleLobby}
           data-toggle="collapse"
           data-target="#lobby"

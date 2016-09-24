@@ -31,7 +31,7 @@ export default class Room extends React.Component {
     const currPlaylist = this.state.playlist;
     // console.log('searchResults: ', tracks);
     // console.log('playlist: ', currPlaylist);
-    // console.log('clicked track: ', track);
+    console.log('clicked track: ', track);
 
     currPlaylist.push(track);
     // console.log('after push: ', currPlaylist);
@@ -110,9 +110,17 @@ export default class Room extends React.Component {
           <h1> Playlist </h1>
           <div className="row">
             <div className="playlist--playlist col-sm-6">
+              <div className="onDeck">{(this.state.playlist.length === 0) ? false : 'Next Track On Deck: '}</div>
               <ul>
                 {this.state.playlist.map(track =>
-                  (<li className="playlist--playlist--track list-unstyled"><button key={track} className="remove-btn" onClick={this.removeFromPlaylist.bind(this, track)}><span className="fa fa-times" /></button>{track.title}</li>)
+                  (track === this.state.playlist[0] ? (<li className="playlist--playlist--track list-unstyled firstTrack">
+                    <button key={track} className="remove-btn" onClick={this.removeFromPlaylist.bind(this, track)}>
+                      <span className="fa fa-times" /></button>{track.title}</li>)
+                  :
+                    (<li className="playlist--playlist--track list-unstyled">
+                      <button key={track} className="remove-btn" onClick={this.removeFromPlaylist.bind(this, track)}>
+                        <span className="fa fa-times" /></button>{track.title}</li>)
+                  )
                 )}
               </ul>
             </div>
