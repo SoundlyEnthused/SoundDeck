@@ -428,9 +428,21 @@ describe('MvpAPI', () => {
     });
     it('should send the next track from current DJ\'s playlist', () => {
       MvpAPI.sendNextTrack(room1.id);
-      const msg = sent.pop();
-      expect(msg.eventName).to.equal('track');
-      expect(msg.data).to.deep.equal({ songId: 1, duration: 1000 });
+      let msg = sent.pop();
+      expect(msg.eventName).to.equal('room');
+      expect(msg.data[room1.id].track).to.deep.equal({ songId: 1, duration: 1000 });
+      // Grab track from next DJ
+      sent = [];
+      MvpAPI.sendNextTrack(room1.id);
+      msg = sent.pop();
+      expect(msg.eventName).to.equal('room');
+      expect(msg.data[room1.id].track).to.deep.equal({ songId: 3, duration: 3000 });
+      // Test rotation
+      sent = [];
+      MvpAPI.sendNextTrack(room1.id);
+      msg = sent.pop();
+      expect(msg.eventName).to.equal('room');
+      expect(msg.data[room1.id].track).to.deep.equal({ songId: 2, duration: 2000 });
     });
     it('should send rotated playlist to the current DJ', () => {
       // Grab track from first DJ
