@@ -21,22 +21,10 @@ export default class Room extends React.Component {
     load('https://w.soundcloud.com/player/api.js', () => {
       this.widget = window.SC.Widget('soundcloudPlayer'); // eslint-disable-line new-cap
       this.widget.show_artwork = false;
-      this.widget.load(
-        'https://api.soundcloud.com/tracks/' + this.state.track,
-        { show_artwork: false,
-          auto_play: true,
-          callback: () => {
-            // check current time vs. time stamp
-            const timeDiff = Date.now() - this.state.timeStamp;
-            // if current time is larger than time stamp, skip some par of the song
-            if (timeDiff > 0) {
-              this.widget.seekTo(timeDiff);
-            }
-          },
-      });
+      this.widget.load('https://api.soundcloud.com/tracks/' + this.state.track, { show_artwork: false, auto_play: true });
+      this.handleMute();
     });
     $('.avatar').tooltip();
-    this.handleMute();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -184,6 +172,7 @@ export default class Room extends React.Component {
                       data-placement="bottom"
                       data-animation="true"
                       data-toggle="tooltip"
+                      data-likes={5}
                     >
                       <img src={user.avatar_url} alt={user.username} />
                     </div>
