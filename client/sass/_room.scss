@@ -16,6 +16,16 @@ h1 {
   flex-wrap: wrap;
 }
 
+.vote--meter {
+  p {
+    margin: 0;
+  }
+
+  .progress {
+    background: rgba(55, 72, 109, 0.35);
+  }
+}
+
 .dj--seat {
   width: 100px;
   height: 100px;

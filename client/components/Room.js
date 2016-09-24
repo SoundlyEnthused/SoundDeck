@@ -13,6 +13,7 @@ export default class Room extends React.Component {
     this.updataTrack = false;
     this.handleMute = this.handleMute.bind(this);
     this.handleDjQueue = this.handleDjQueue.bind(this);
+    this.downvote = this.downvote.bind(this);
   }
 
   // componentDidMount invoked only once on the client side immediately after the initial rendering
@@ -94,6 +95,16 @@ export default class Room extends React.Component {
     return djSeats;
   }
 
+  upvote() {
+    console.log('upvote!');
+  }
+
+  downvote() {
+    this.setState({
+      downvotes: this.state.downvotes + 1 || 1,
+    });
+  }
+
   render() {
     // console.log('room render', this.state)
     return (
@@ -139,12 +150,24 @@ export default class Room extends React.Component {
             />
 
             <div id="vote" className="vote row">
-              <div className="col-xs-4" />
+              <div className="col-xs-4 vote--meter">
+                <p>Downvotes</p>
+                <div className="progress">
+                  <div
+                    className="progress-bar progress-bar-danger progress-bar-striped active"
+                    role="progressbar"
+                    aria-valuenow={this.state.downvotes}
+                    aria-valuemin="0"
+                    aria-valuemax="5"
+                    style={{ width: `${(this.state.downvotes / 5) * 100}%` }}
+                  />
+                </div>
+              </div>
               <div className="vote--btns col-xs-4">
-                <button className="btn btn-success btn-round vote--upvote" id="upvote">
+                <button className="btn btn-success btn-round vote--upvote" id="upvote" onClick={this.upvote}>
                   <i className="fa fa-check" aria-hidden="true" />
                 </button>
-                <button className="btn btn-danger btn-round vote--downvote" id="downvote">
+                <button className="btn btn-danger btn-round vote--downvote" id="downvote" onClick={this.downvote}>
                   <i className="fa fa-times" aria-hidden="true" />
                 </button>
               </div>
