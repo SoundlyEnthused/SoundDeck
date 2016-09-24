@@ -59,10 +59,7 @@ Room.leave = function leave(roomId, userId) {
     return;
   }
   delete usersToRooms[userId];
-  console.log('BEFORE', rooms[roomId].users);
-  console.log(room.users.filter(user => user === userId));
   rooms[roomId].users = room.users.filter(user => user !== userId);
-  console.log('AFTER', rooms[roomId].users);
 };
 
 module.exports = Room;
