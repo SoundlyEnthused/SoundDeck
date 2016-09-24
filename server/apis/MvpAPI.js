@@ -1,6 +1,7 @@
 const Connection = require('../models/Connection');
 const Room = require('../models/Room');
 const DjQueue = require('../models/DjQueue');
+const Playlist = require('../models/Playlist');
 const User = require('../models/User');
 
 const MvpAPI = {};
@@ -19,9 +20,7 @@ MvpAPI.getState = () => {
       // User's array should not include DJ's
       users: room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)),
       djMaxNum: queue.maxDjs,
-      // TODO: include current track
-      // track: '',
-      track: '284303461', // TODO: REMOVE THIS
+      track: queue.currentTrack,
     };
   });
   return state;
@@ -37,6 +36,7 @@ MvpAPI.createRoom = (name) => {
 MvpAPI.clearAll = () => {
   Room.clearAll();
   DjQueue.clearAll();
+  Playlist.clearAll();
 };
 
 /* Socket.io Event Endpoints */
@@ -107,8 +107,47 @@ MvpAPI.dequeue = (socket) => {
   Connection.sendAll('room', MvpAPI.getState());
 };
 
-MvpAPI.playlist = (socket, data) => {
-  console.log(data);
+/* handler for updating Playlist */
+MvpAPI.updatePlaylist = (socket, tracks) => {
+  const userId = Connection.getUserId(socket);
+  const playlist = Playlist.getByUserId(userId);
+  if (playlist === null) {
+    Playlist.create(userId, tracks);
+  } else {
+    Playlist.update(playlist.id, tracks);
+  }
+};
+/* handler for getting Playlist for user */
+MvpAPI.getPlaylist = (socket) => {
+  const userId = Connection.getUserId(socket);
+  const playlist = Playlist.getByUserId(userId);
+  if (playlist === null) {
+    Connection.send(userId, 'playlist', []);
+  } else {
+    Connection.send(userId, 'playlist', playlist.tracks);
+  }
+};
+
+/* sendNextTrack for a given room -- expects a room.id */
+MvpAPI.sendNextTrack = (roomId) => {
+  console.log('Room: ', roomId);
+  const queue = DjQueue.getByRoom(roomId);
+  if (queue === null) {
+    // This shouldn't happen as queues should always be associated with rooms
+    console.error('MvpAPI.sendNextTrack error: Room has no corresponding DjQueue');
+    return;
+  }
+  const dj = queue.active[queue.currentDj];
+  const track = DjQueue.nextTrack(queue.id);
+  console.log('TRACK: ', track);
+  if (track === null) {
+    // No next track for this room
+    return;
+  }
+  const playlist = Playlist.getByUserId(dj);
+  console.log('DJ: ', dj);
+  Connection.send(dj, 'playlist', playlist.tracks);
+  Connection.sendAll('track', track);
 };
 
 /* Handler for disconnect event */
@@ -144,7 +183,7 @@ MvpAPI.attachListeners = (io) => {
     socket.on('enqueue', MvpAPI.enqueue.bind(null, socket));
     socket.on('dequeue', MvpAPI.dequeue.bind(null, socket));
     socket.on('disconnect', MvpAPI.disconnect.bind(null, socket));
-    socket.on('playlist', MvpAPI.playlist.bind(null, socket));
+    socket.on('playlist', MvpAPI.updatePlaylist.bind(null, socket));
   });
 };
 

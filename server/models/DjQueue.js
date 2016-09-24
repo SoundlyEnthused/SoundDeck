@@ -14,6 +14,7 @@ DjQueue.create = function create(roomId, maxDjs = 4) {
     waiting: [],
     maxDjs,
     currentDj: 0,
+    currentTrack: null,
   };
   nextId += 1;
   queues[queue.id] = queue;
@@ -68,7 +69,8 @@ DjQueue.nextTrack = function nextTrack(id) {
   const dj = DjQueue.next(id);
   // If we have no DJ's return null
   if (dj === null) {
-    return null;
+    queues[id].currentTrack = null;
+    return queues[id].currentTrack;
   }
   // Grab DJ's playlist
   const playlist = Playlist.getByUserId(dj);
@@ -79,12 +81,13 @@ DjQueue.nextTrack = function nextTrack(id) {
     // Set currentDj index back by one in order to keep current position
     queues[id].currentDj -= 1;
     // Try again!
-    return DjQueue.nextTrack(id);
+    queues[id].currentTrack = DjQueue.nextTrack(id);
+    return queues[id].currentTrack;
   }
 
-  const track = playlist.tracks[0];
+  queues[id].currentTrack = playlist.tracks[0];
   Playlist.rotate(playlist.id);
-  return track;
+  return queues[id].currentTrack;
 };
 
 DjQueue.removeUser = function removeUser(id, userId) {
