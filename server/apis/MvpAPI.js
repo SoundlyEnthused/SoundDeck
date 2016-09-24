@@ -107,8 +107,8 @@ MvpAPI.dequeue = (socket) => {
   Connection.sendAll('room', MvpAPI.getState());
 };
 
-MvpAPI.playlist = (socket) => {
-
+MvpAPI.playlist = (socket, data) => {
+  console.log(data);
 };
 
 /* Handler for disconnect event */
