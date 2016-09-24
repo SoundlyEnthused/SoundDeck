@@ -113,9 +113,29 @@ h1 {
   border-radius: 50%;
   border: 2px solid black;
   overflow: hidden;
-    img {
+  img {
     width: 100%;
     height: auto;
+  }
+  &:before {
+    content: attr(data-likes);
+    position: absolute;
+    background: $brand-danger;
+    color: white;
+    border-radius: 10px;
+    left: 65%;
+    bottom: -5px;
+    padding: 0px 6px;
+    font-size: 10px;
+    text-align: center;
+    min-width: 14px;
+    line-height: 17px;
+  }
+}
+
+.avatar[data-likes='0'] {
+  &:before {
+    display: none;
   }
 }
 

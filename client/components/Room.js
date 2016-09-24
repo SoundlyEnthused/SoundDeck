@@ -21,7 +21,9 @@ export default class Room extends React.Component {
       this.widget = window.SC.Widget('soundcloudPlayer'); // eslint-disable-line new-cap
       this.widget.show_artwork = false;
       this.widget.load('https://api.soundcloud.com/tracks/' + this.state.track, { show_artwork: false, auto_play: true });
+      this.handleMute();
     });
+    $('.avatar').tooltip();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -38,12 +40,11 @@ export default class Room extends React.Component {
     if (this.widget && this.updataTrack) {
       this.widget.load('https://api.soundcloud.com/tracks/' + this.state.track, { show_artwork: false, auto_play: true });
     }
-    $('.avatar').tooltip();
   }
 
   handleMute() {
     this.setState({
-      mute: this.state.mute * -1,
+      mute: this.state.mute * -1 || -1,
     });
 
     if (this.state.mute === -1) {
@@ -142,18 +143,19 @@ export default class Room extends React.Component {
             {
               this.state.users.map((user) => {
                 return (
-                <div className="crowd--user" key={user.username}>
-                  <div
-                    className="avatar"
-                    title={user.username}
-                    data-placement="bottom"
-                    data-animation="true"
-                    data-toggle="tooltip"
-                  >
-                    <img src={user.avatar_url} alt={user.username} />
+                  <div className="crowd--user" key={user.username}>
+                    <div
+                      className="avatar"
+                      title={user.username}
+                      data-placement="bottom"
+                      data-animation="true"
+                      data-toggle="tooltip"
+                      data-likes={5}
+                    >
+                      <img src={user.avatar_url} alt={user.username} />
+                    </div>
                   </div>
-                </div>
-              );
+                );
               })
             }
           </div>
