@@ -8,7 +8,7 @@ const expect = chai.expect;
 describe('MvpAPI', () => {
   let sent = [];
   const ConnectionSend = Connection.send;
-  beforeEach('create Connection mock', () => {
+  before('create Connection mock', () => {
     Connection.send = (userId, eventName, data) => {
       sent.push({ userId, eventName, data });
     };
