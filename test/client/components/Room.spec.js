@@ -125,17 +125,10 @@ describe('<Room />', () => {
   });
   describe('enqueue and dequeue for DJ', () => {
     it('enqueue DJ', () => {
-      // sinon.spy(wrapper.props().ServerAPI.enqueue);
       sinon.spy(wrapper.props().ServerAPI, 'enqueue');
-      console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxx', wrapper.props().ServerAPI.enqueue, 'xxxxxxxxxxxxxxxxxxxxxxxxxxxx')
       expect(wrapper.state('isDJ')).to.equal(false);
       wrapper.find('.vote--djqueueBtn').simulate('click');
       expect(wrapper.props().ServerAPI.enqueue.calledOnce).to.equal(true);
-
-      // sinon.spy(Room.prototype, 'handleMute');
-      // console.log(wrapper.find('.vote--muteBtn').html(), 'mmmmmmmmmmmmmmmm')
-      // wrapper.find('.vote--muteBtn').simulate('click');
-      // expect(Room.prototype.handleMute.calledOnce).to.equal(true);
     });
   });
 });

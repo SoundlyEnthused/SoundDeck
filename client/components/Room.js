@@ -56,7 +56,6 @@ export default class Room extends React.Component {
     }
   }
   handleDjQueue() {
-    console.log('handleDjQqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq', this.state.isDJ)
     if (this.state.isDJ) {
       this.props.ServerAPI.dequeue();
     } else {
