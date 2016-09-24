@@ -129,7 +129,9 @@ describe('<Room />', () => {
     });
   });
   describe('enqueue and dequeue for DJ', () => {
-    
+    it('enqueue DJ', () => {
+      wrapper.find('.vote--djQueue').first().simulate('click');
+    })
   })
 });
 
