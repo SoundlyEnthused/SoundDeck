@@ -6,12 +6,12 @@ import $ from 'jquery';
 export default class Room extends React.Component {
   constructor(props) {
     super(props);
-    console.log('room init', this.props)
     const state = this.processProps(this.props);
     this.state = state;
     this.widget = null;
     this.updataTrack = false;
     this.handleMute = this.handleMute.bind(this);
+    this.handleDJQueue = this.handleDJQueue.bind(this);
   }
 
   // componentDidMount invoked only once on the client side immediately after the initial rendering
@@ -41,6 +41,9 @@ export default class Room extends React.Component {
     $('.avatar').tooltip();
   }
 
+  // ********************
+  // Room functions
+  // ********************
   handleMute() {
     this.setState({
       mute: this.state.mute * -1,
@@ -52,14 +55,26 @@ export default class Room extends React.Component {
       this.widget.setVolume(75);
     }
   }
+  handdleDjQueue() {
+    if (this.state.djList) {
+      this.props.ServerAPI.dequque();
+      // change button css
+    } else {
+      this.props.ServerAPI.enqueue();
+      // change button css
+    }
+  }
+
   processProps(nextProps) {
     const djArray = this.processDjs(nextProps.djs, nextProps.djMaxNum);
+    const isDJ = nextProps.djs.includes(this.props.userId);
     return {
       name: nextProps.name,
       track: nextProps.track,
       timeStamp: nextProps.timeStamp,
       djs: djArray,
       currentDj: nextProps.currentDj,
+      isDJ,
       users: nextProps.users,
     };
   }
@@ -126,7 +141,7 @@ export default class Room extends React.Component {
                 </button>
               </div>
               <div className="vote--djQueue col-xs-4">
-                <button className="btn btn-default btn-round">
+                <button className="btn btn-default btn-round" onClick={this.handleDJQueue}>
                   <span className="fa fa-list" />
                 </button>
 

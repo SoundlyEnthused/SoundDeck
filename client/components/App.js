@@ -32,6 +32,8 @@ export default class App extends React.Component {
       roomNames: [],
       currentRoom: undefined,
     };
+    this.me = null;
+    this.ServerAPI = null;
     this.roomData = {};
     this.joinRoom = this.joinRoom.bind(this);
     this.loggingIn = this.loggingIn.bind(this);
@@ -40,13 +42,11 @@ export default class App extends React.Component {
   }
 
   componentWillMount() {
-    ServerAPI.connect();
+    this.ServerAPI = ServerAPI.connect();
     ServerAPI.onUpdate(this.updateOnEvent);
     ServerAPI.onLogin((data) => {
       console.log('login data', data);
     });
-  }
-  componentDidMount() {
   }
 
   componentDidUpdate() {
@@ -56,7 +56,6 @@ export default class App extends React.Component {
   }
 
   updateOnEvent(data) {
-    console.log('update', data)
     this.roomData = data;
     let state = this.getRoomStates();
     state.roomIds = Object.keys(this.roomData);
@@ -78,7 +77,7 @@ export default class App extends React.Component {
   }
 
   joinRoom(roomId) {
-    console.log('join room', roomId);
+    // console.log('join room', roomId);
     ServerAPI.joinRoom(roomId);
     this.state.currentRoom = roomId;
     this.setState(this.getRoomStates());
@@ -94,7 +93,6 @@ export default class App extends React.Component {
   }
 
   render() {
-    console.log('render', this.state)
     return (
       <main>
         <Nav currentRoom={this.state.currentRoom} loggingIn={this.loggingIn} userData={this.state.userData} />
@@ -103,12 +101,14 @@ export default class App extends React.Component {
         {
           this.state.currentRoom ? (
             <Room
+              userId={this.state.userData.id}
               name={this.state.roomName}
               track={this.state.track}
               djs={this.state.djs}
               djMaxNum={this.state.djMaxNum}
               currentDj={this.state.currentDj}
               users={this.state.users}
+              ServerAPI={this.ServerAPI}
             />) : null
         }
 
