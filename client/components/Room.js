@@ -21,9 +21,9 @@ export default class Room extends React.Component {
       this.widget = window.SC.Widget('soundcloudPlayer'); // eslint-disable-line new-cap
       this.widget.show_artwork = false;
       this.widget.load('https://api.soundcloud.com/tracks/' + this.state.track, { show_artwork: false, auto_play: true });
+      this.handleMute();
     });
     $('.avatar').tooltip();
-    this.handleMute();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -150,6 +150,7 @@ export default class Room extends React.Component {
                       data-placement="bottom"
                       data-animation="true"
                       data-toggle="tooltip"
+                      data-likes={5}
                     >
                       <img src={user.avatar_url} alt={user.username} />
                     </div>
