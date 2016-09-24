@@ -73,6 +73,19 @@ describe('Room', () => {
       expect(room1.users).to.deep.equal([]);
       expect(room2.users).to.deep.equal([userId]);
     });
+    it('should move a user from any current room to another and leave current users alone!', () => {
+      const room1 = Room.create('Dance');
+      const room2 = Room.create('Ambient');
+      const userId = 1234;
+      const userId2 = 12;
+      Room.join(room1.id, userId2);
+      Room.join(room1.id, userId);
+      expect(room1.users.sort()).to.deep.equal([userId, userId2].sort());
+      expect(room2.users).to.deep.equal([]);
+      Room.join(room2.id, userId);
+      expect(room1.users).to.deep.equal([userId2]);
+      expect(room2.users).to.deep.equal([userId]);
+    });
   });
   describe('leave', () => {
     it('should be a function', () => {
@@ -81,10 +94,14 @@ describe('Room', () => {
     it('should remove a user from a room', () => {
       const room = Room.create('Reggae');
       const userId = 1337;
+      const userId2 = 13372;
       Room.join(room.id, userId);
-      expect(room.users).to.deep.equal([userId]);
+      Room.join(room.id, userId2);
+      expect(room.users.sort()).to.deep.equal([userId, userId2].sort());
       Room.leave(room.id, userId);
-      expect(room.users).to.deep.equal([]);
+      const updatedRoom = Room.getByUserId(userId2);
+      expect(updatedRoom.id).to.equal(room.id);
+      expect(updatedRoom.users).to.deep.equal([userId2]);
     });
   });
   describe('getByUserId', () => {
@@ -97,6 +114,9 @@ describe('Room', () => {
       Room.join(room.id, userId);
       expect(Room.getByUserId(userId).id).to.equal(room.id);
     });
-
+    it('should return null if the user is not in a Room', () => {
+      const userId = 42;
+      expect(Room.getByUserId(userId)).to.equal(null);
+    });
   });
 });

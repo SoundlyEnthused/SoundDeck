@@ -33,7 +33,11 @@ Room.remove = function remove(id) {
 };
 
 Room.getByUserId = function getByUserId(userId) {
-  return rooms[usersToRooms[userId]];
+  const roomId = usersToRooms[userId];
+  if (roomId === undefined) {
+    return null;
+  }
+  return rooms[roomId];
 };
 
 Room.join = function join(roomId, userId) {
@@ -59,7 +63,7 @@ Room.leave = function leave(roomId, userId) {
     return;
   }
   delete usersToRooms[userId];
-  room.users = room.users.filter(user => user.id === userId);
+  rooms[roomId].users = room.users.filter(user => user !== userId);
 };
 
 module.exports = Room;

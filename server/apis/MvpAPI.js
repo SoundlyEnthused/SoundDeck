@@ -62,7 +62,6 @@ MvpAPI.join = (socket, data) => {
   const userId = Connection.getUserId(socket);
   Room.join(data.roomId, userId);
   Connection.sendAll('room', MvpAPI.getState());
-  // console.log(`User: ${JSON.stringify(User.get(userId))} Joined: ${data.roomId}`);
 };
 
 /* Handler for event to enqueue for DJ position */
@@ -73,18 +72,56 @@ MvpAPI.enqueue = (socket) => {
   }
   const userId = Connection.getUserId(socket);
   const room = Room.getByUserId(userId);
+  if (room === null) {
+    // User is not in a room!
+    return;
+  }
   const queue = DjQueue.getByRoom(room.id);
+  if (queue == null) {
+    // This shouldn't happen as queues should always be associated with rooms
+    console.error('MvpAPI.enqueue error: Room has no corresponding DjQueue');
+    return;
+  }
   DjQueue.enqueue(queue.id, userId);
   Connection.sendAll('room', MvpAPI.getState());
 };
 
 /* Handler for event to dequeue DJ */
 MvpAPI.dequeue = (socket) => {
+  // User must be logged in, in order to dequeue
+  if (!Connection.isRegistered(socket)) {
+    return;
+  }
   const userId = Connection.getUserId(socket);
-  const roomId = Room.getByUserId(userId).id;
-  const queueId = DjQueue.getByRoom(roomId).id;
-  DjQueue.removeUser(queueId, userId);
+  const room = Room.getByUserId(userId);
+  if (room === null) {
+    return; // user is not in a room
+  }
+  const queue = DjQueue.getByRoom(room.id);
+  if (queue == null) {
+    // This shouldn't happen as queues should always be associated with rooms
+    console.error('MvpAPI.dequeue error: Room has no corresponding DjQueue');
+    return;
+  }
+  DjQueue.removeUser(queue.id, userId);
   Connection.sendAll('room', MvpAPI.getState());
+};
+
+MvpAPI.disconnect = (socket) => {
+  if (!Connection.isRegistered(socket)) {
+    return;
+  }
+  const userId = Connection.getUserId(socket);
+  const room = Room.getByUserId(userId);
+  if (room === null) {
+    return; // User is not in a Room
+  }
+  Connection.remove(socket);
+  if (Connection.getSockets(userId).length === 0) {
+    // All open connections have been closed so remove user from Room
+    Room.leave(room.id, userId);
+    Connection.sendAll('room', MvpAPI.getState());
+  }
 };
 
 /* Connect all Event Endpoints to Server */
@@ -95,7 +132,7 @@ MvpAPI.attachListeners = (io) => {
     socket.on('join', MvpAPI.join.bind(null, socket));
     socket.on('enqueue', MvpAPI.enqueue.bind(null, socket));
     socket.on('dequeue', MvpAPI.dequeue.bind(null, socket));
-    // socket.on('disconnect', );
+    socket.on('disconnect', MvpAPI.disconnect.bind(null, socket));
   });
 };
 

@@ -24,6 +24,10 @@ describe('Connection', () => {
       Connection.register(userId, socket);
       expect(Connection.getUserId(socket)).to.equal(userId);
     });
+    it('should return null if the socket is not registered', () => {
+      const socket = { id: 42 };
+      expect(Connection.getUserId(socket)).to.equal(null);
+    });
   });
   describe('getSockets', () => {
     it('should be a function', () => {

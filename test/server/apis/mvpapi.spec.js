@@ -144,6 +144,14 @@ describe('MvpAPI', () => {
       MvpAPI.enqueue(unregisteredSocket);
       expect(sent.length).to.equal(0);
     });
+    it('should do and send nothing if user is not in a Room', () => {
+      const userId3 = 12;
+      const socket3 = { id: 78969 };
+      MvpAPI.login(socket3, { id: userId3 });
+      sent = [];
+      MvpAPI.enqueue(socket3);
+      expect(sent.length).to.equal(0);
+    });
   });
   describe('dequeue', () => {
     let room;
@@ -189,6 +197,20 @@ describe('MvpAPI', () => {
       msg = sent[0];
       expect(msg.eventName).to.equal('room');
       expect(msg.data[room.id].djs.length).to.equal(1);
+    });
+    it('should do and send nothing if user is not logged in', () => {
+      // Create a dummy socket that is not registered
+      const unregisteredSocket = { id: 78969 };
+      MvpAPI.dequeue(unregisteredSocket);
+      expect(sent.length).to.equal(0);
+    });
+    it('should do and send nothing if user is not in a Room', () => {
+      const userId3 = 12;
+      const socket3 = { id: 78969 };
+      MvpAPI.login(socket3, { id: userId3 });
+      sent = [];
+      MvpAPI.dequeue(socket3);
+      expect(sent.length).to.equal(0);
     });
   });
   describe('join', () => {
@@ -252,6 +274,55 @@ describe('MvpAPI', () => {
       msg = sent.shift();
       expect(msg.data[room1.id].users.length).to.equal(1);
       expect(msg.data[room2.id].users.length).to.equal(0);
+    });
+  });
+  describe('disconnect', () => {
+    it('should be a function', () => {
+      expect(MvpAPI.disconnect).to.be.a('function');
+    });
+    it('should remove user from room when all connections are closed', () => {
+      const room = MvpAPI.createRoom('Metal');
+      const socket1 = { id: 1 };
+      const socket2 = { id: 2 };
+      const socket3 = { id: 3 };
+      const userId1 = 22;
+      const userId2 = 23;
+      MvpAPI.login(socket1, { id: userId1 });
+      MvpAPI.login(socket2, { id: userId1 });
+      // Need a second user to watch for changes when first one leaves!
+      MvpAPI.login(socket3, { id: userId2 });
+      // Doesn't matter which socket joins Room
+      MvpAPI.join(socket1, { roomId: room.id });
+      let msg = sent.pop(); // get last message
+      expect(msg.eventName).to.equal('room');
+      expect(msg.data[room.id].users.length).to.equal(1);
+      sent = []; // clear sent messages
+      MvpAPI.disconnect(socket1);
+      expect(sent.length).to.equal(0); // Should be no update as 1 socket still connects user
+      MvpAPI.disconnect(socket2);
+      expect(sent.length).to.equal(1);
+      msg = sent.pop();
+      expect(msg.data[room.id].users.length).to.equal(0);
+    });
+    it('should do and send nothing if socket is unregistered', () => {
+      const socket1 = { id: 1 };
+      const socket2 = { id: 2 };
+      const userId = 22;
+      MvpAPI.login(socket1, { id: userId });
+      sent = []; // clear all messages
+      MvpAPI.disconnect(socket2);
+      expect(sent.length).to.equal(0);
+    });
+    it('should do and send nothing if user disconnects without joining a room', () => {
+      const socket1 = { id: 1 };
+      const socket2 = { id: 2 };
+      const userId1 = 22;
+      const userId2 = 23;
+      MvpAPI.login(socket1, { id: userId1 });
+      MvpAPI.login(socket2, { id: userId2 });
+      sent = []; // clear all messages
+      MvpAPI.disconnect(socket2);
+      expect(sent.length).to.equal(0);
     });
   });
   xdescribe('playlist', () => {

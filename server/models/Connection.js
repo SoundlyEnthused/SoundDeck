@@ -22,7 +22,7 @@ Connection.getSockets = function getSockets(userId) {
 };
 
 Connection.getUserId = function getUserId(socket) {
-  return usersBySocket[socket.id];
+  return usersBySocket[socket.id] !== undefined ? usersBySocket[socket.id] : null;
 };
 
 Connection.clearAll = function reset() {
@@ -43,7 +43,7 @@ Connection.send = function send(userId, eventName, data) {
 Connection.sendAll = function sendAll(eventName, data) {
   // TODO: Replace this with a socket room somehow
   Object.keys(connectionsByUser)
-    .forEach(userId => Connection.send(userId, eventName, data));
+    .forEach(userId => connectionsByUser[userId].length && Connection.send(userId, eventName, data));
 };
 
 module.exports = Connection;
