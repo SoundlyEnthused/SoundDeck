@@ -324,8 +324,29 @@ describe('MvpAPI', () => {
       MvpAPI.disconnect(socket2);
       expect(sent.length).to.equal(0);
     });
+    it('should remove user from DjQueue on disconnect', () => {
+      const room = MvpAPI.createRoom('Sludge');
+      const socket1 = { id: 1 };
+      const socket2 = { id: 2 };
+      const userId1 = 22;
+      const userId2 = 23;
+      MvpAPI.login(socket1, { id: userId1 });
+      MvpAPI.login(socket2, { id: userId2 });
+      MvpAPI.join(socket1, { roomId: room.id });
+      MvpAPI.join(socket2, { roomId: room.id });
+      MvpAPI.enqueue(socket1);
+      sent = []; // clear sent messages
+      MvpAPI.enqueue(socket2);
+      let msg = sent.pop();
+      expect(msg.data[room.id].djs.length).to.equal(2);
+      sent = []; // clear sent messages
+      MvpAPI.disconnect(socket1);
+      msg = sent.pop();
+      expect(msg.data[room.id].djs.length).to.equal(1);
+      expect(msg.data[room.id].djs[0].id).to.equal(userId2);
+    });
   });
-  xdescribe('playlist', () => {
+  describe('playlist', () => {
     it('should be a function', () => {
       expect(MvpAPI.playlist).to.be.a('function');
     });

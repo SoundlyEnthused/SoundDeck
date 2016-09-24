@@ -107,6 +107,11 @@ MvpAPI.dequeue = (socket) => {
   Connection.sendAll('room', MvpAPI.getState());
 };
 
+MvpAPI.playlist = (socket) => {
+
+};
+
+/* Handler for disconnect event */
 MvpAPI.disconnect = (socket) => {
   if (!Connection.isRegistered(socket)) {
     return;
@@ -118,7 +123,13 @@ MvpAPI.disconnect = (socket) => {
   }
   Connection.remove(socket);
   if (Connection.getSockets(userId).length === 0) {
-    // All open connections have been closed so remove user from Room
+    // All open connections have been closed so remove user!
+    const queue = DjQueue.getByRoom(room.id);
+    // Remove user from DjQueue if it exists
+    if (queue !== null) {
+      DjQueue.removeUser(queue.id, userId);
+    }
+    // Remove user from Room
     Room.leave(room.id, userId);
     Connection.sendAll('room', MvpAPI.getState());
   }
