@@ -47,4 +47,16 @@ ServerAPI.dequeue = () => {
   ServerAPI.socket.emit('dequeue');
 };
 
+// tracks => [{ songId: ele.songId, duration: ele.duration }, etc...]
+ServerAPI.updatePlaylist = (tracks) => {
+  ServerAPI.socket.emit('playlist', tracks);
+};
+
+ServerAPI.onPlaylistUpdate = (callback) => {
+  ServerAPI.socket.on('playlist', (tracks) => {
+    // tracks => [{ songId: ele.songId, duration: ele.duration }, etc...]
+    callback(tracks);
+  });
+};
+
 module.exports = ServerAPI;

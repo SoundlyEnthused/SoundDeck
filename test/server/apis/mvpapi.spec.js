@@ -8,7 +8,7 @@ const expect = chai.expect;
 describe('MvpAPI', () => {
   let sent = [];
   const ConnectionSend = Connection.send;
-  beforeEach('create Connection mock', () => {
+  before('create Connection mock', () => {
     Connection.send = (userId, eventName, data) => {
       sent.push({ userId, eventName, data });
     };
@@ -346,9 +346,129 @@ describe('MvpAPI', () => {
       expect(msg.data[room.id].djs[0].id).to.equal(userId2);
     });
   });
-  describe('playlist', () => {
+  describe('updatePlaylist', () => {
+    const socket = { id: 2 };
+    const userId = 22;
+    beforeEach(() => {
+      MvpAPI.login(socket, { id: userId });
+      sent = [];
+    });
     it('should be a function', () => {
-      expect(MvpAPI.playlist).to.be.a('function');
+      expect(MvpAPI.updatePlaylist).to.be.a('function');
+    });
+    it('should create a Playlist for the user if one does not exist', () => {
+      MvpAPI.updatePlaylist(socket, [{ songId: 12, duration: 1000 }]);
+      MvpAPI.getPlaylist(socket);
+      const msg = sent.pop();
+      expect(msg.eventName).to.equal('playlist');
+      expect(msg.data).to.deep.equal([{ songId: 12, duration: 1000 }]);
+    });
+    it('should update an existing Playlist', () => {
+      MvpAPI.updatePlaylist(socket, [{ songId: 12, duration: 1000 }]);
+      MvpAPI.updatePlaylist(socket, [{ songId: 12, duration: 1000 },
+        { songId: 14, duration: 2000 }]);
+      MvpAPI.getPlaylist(socket);
+      const msg = sent.pop();
+      expect(msg.data).to.deep.equal([{ songId: 12, duration: 1000 },
+        { songId: 14, duration: 2000 }]);
+    });
+  });
+  describe('getPlaylist', () => {
+    it('should be a function', () => {
+      expect(MvpAPI.getPlaylist).to.be.a('function');
+    });
+    it('should send an empty array if the user has no Playlist', () => {
+      const socket = { id: 2 };
+      const userId = 22;
+      MvpAPI.login(socket, { id: userId });
+      sent = [];
+      MvpAPI.getPlaylist(socket);
+      const msg = sent.pop();
+      expect(msg.eventName).to.equal('playlist');
+      expect(msg.data).to.deep.equal([]);
+    });
+  });
+  describe('sendNextTrack', () => {
+    let room1;
+    let room2;
+    const user1 = 22;
+    const user2 = 23;
+    let socket1;
+    let socket2;
+    const tracks1 = [{ songId: 1, duration: 1000 }, { songId: 2, duration: 2000 }];
+    const tracks2 = [{ songId: 3, duration: 3000 }, { songId: 4, duration: 4000 }];
+    beforeEach('Create state to test', () => {
+      // Create a Room to test
+      room1 = MvpAPI.createRoom('Metal');
+      room2 = MvpAPI.createRoom('Punk');
+      // Create two users for tests
+      socket1 = { id: 1 };
+      socket2 = { id: 2 };
+      // Log those users in
+      MvpAPI.login(socket1, { id: user1 });
+      MvpAPI.login(socket2, { id: user2 });
+      // Join Metal Room
+      MvpAPI.join(socket1, { roomId: room1.id });
+      MvpAPI.join(socket2, { roomId: room1.id });
+      // Create playlists
+      MvpAPI.updatePlaylist(socket1, tracks1);
+      MvpAPI.updatePlaylist(socket2, tracks2);
+      // Become djs
+      MvpAPI.enqueue(socket1);
+      MvpAPI.enqueue(socket2);
+      // clear sent so that no login messages remain for easier testing
+      sent = [];
+    });
+    it('should be a function', () => {
+      expect(MvpAPI.sendNextTrack).to.be.a('function');
+    });
+    it('should not send anything if there are no next tracks for a room', () => {
+      MvpAPI.sendNextTrack(room2.id);
+      expect(sent.length).to.equal(0);
+    });
+    it('should send the next track from current DJ\'s playlist', () => {
+      MvpAPI.sendNextTrack(room1.id);
+      let msg = sent.pop();
+      expect(msg.eventName).to.equal('room');
+      expect(msg.data[room1.id].track).to.deep.equal({ songId: 1, duration: 1000 });
+      // Grab track from next DJ
+      sent = [];
+      MvpAPI.sendNextTrack(room1.id);
+      msg = sent.pop();
+      expect(msg.eventName).to.equal('room');
+      expect(msg.data[room1.id].track).to.deep.equal({ songId: 3, duration: 3000 });
+      // Test rotation
+      sent = [];
+      MvpAPI.sendNextTrack(room1.id);
+      msg = sent.pop();
+      expect(msg.eventName).to.equal('room');
+      expect(msg.data[room1.id].track).to.deep.equal({ songId: 2, duration: 2000 });
+    });
+    it('should send rotated playlist to the current DJ', () => {
+      // Grab track from first DJ
+      MvpAPI.sendNextTrack(room1.id);
+      let msg = sent.shift();
+      expect(msg.userId).to.equal(user1);
+      expect(msg.eventName).to.equal('playlist');
+      expect(msg.data).to.deep.equal([{ songId: 2, duration: 2000 },
+        { songId: 1, duration: 1000 }]);
+      sent = [];
+      // Grab track from second DJ
+      MvpAPI.sendNextTrack(room1.id);
+      msg = sent.shift();
+      expect(msg.userId).to.equal(user2);
+      expect(msg.eventName).to.equal('playlist');
+      expect(msg.data).to.deep.equal([{ songId: 4, duration: 4000 },
+        { songId: 3, duration: 3000 }]);
+      // Make sure that we can loop DJs
+      sent = [];
+      MvpAPI.sendNextTrack(room1.id);
+      msg = sent.shift();
+      expect(msg.userId).to.equal(user1);
+      expect(msg.eventName).to.equal('playlist');
+      expect(msg.data).to.deep.equal([{ songId: 1, duration: 1000 },
+        { songId: 2, duration: 2000 }]);
+      sent = [];
     });
   });
 });

@@ -1,6 +1,7 @@
 const Connection = require('../models/Connection');
 const Room = require('../models/Room');
 const DjQueue = require('../models/DjQueue');
+const Playlist = require('../models/Playlist');
 const User = require('../models/User');
 
 const MvpAPI = {};
@@ -19,9 +20,8 @@ MvpAPI.getState = () => {
       // User's array should not include DJ's
       users: room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)),
       djMaxNum: queue.maxDjs,
-      // TODO: include current track
-      // track: '',
-      track: '284303461', // TODO: REMOVE THIS
+      // track: queue.currentTrack,
+      track: queue.currentTrack !== null ? queue.currentTrack.songId : null,
     };
   });
   return state;
@@ -37,7 +37,23 @@ MvpAPI.createRoom = (name) => {
 MvpAPI.clearAll = () => {
   Room.clearAll();
   DjQueue.clearAll();
+  Playlist.clearAll();
 };
+
+// TODO: Test this!
+/* waitForTrack takes a roomId and sendsTheNext track, waits for it to complete and repeats */
+const waitTime = 5000; // in msec
+function waitForTrack(roomId) {
+  MvpAPI.sendNextTrack(roomId);
+  const track = DjQueue.getByRoom(roomId).currentTrack;
+  if (track === null) {
+    console.log('No track available');
+    return;
+  }
+  setTimeout(() => {
+    waitForTrack(roomId);
+  }, track.duration + waitTime);
+}
 
 /* Socket.io Event Endpoints */
 
@@ -83,6 +99,10 @@ MvpAPI.enqueue = (socket) => {
     return;
   }
   DjQueue.enqueue(queue.id, userId);
+  // !!!
+  if (queue.active.length === 0) {
+    waitForTrack(room.id);
+  }
   Connection.sendAll('room', MvpAPI.getState());
 };
 
@@ -107,8 +127,44 @@ MvpAPI.dequeue = (socket) => {
   Connection.sendAll('room', MvpAPI.getState());
 };
 
-MvpAPI.playlist = (socket) => {
+/* handler for updating Playlist */
+MvpAPI.updatePlaylist = (socket, tracks) => {
+  const userId = Connection.getUserId(socket);
+  const playlist = Playlist.getByUserId(userId);
+  if (playlist === null) {
+    Playlist.create(userId, tracks);
+  } else {
+    Playlist.update(playlist.id, tracks);
+  }
+};
+/* handler for getting Playlist for user */
+MvpAPI.getPlaylist = (socket) => {
+  const userId = Connection.getUserId(socket);
+  const playlist = Playlist.getByUserId(userId);
+  if (playlist === null) {
+    Connection.send(userId, 'playlist', []);
+  } else {
+    Connection.send(userId, 'playlist', playlist.tracks);
+  }
+};
 
+/* sendNextTrack for a given room -- expects a room.id */
+MvpAPI.sendNextTrack = (roomId) => {
+  const queue = DjQueue.getByRoom(roomId);
+  if (queue === null) {
+    // This shouldn't happen as queues should always be associated with rooms
+    console.error('MvpAPI.sendNextTrack error: Room has no corresponding DjQueue');
+    return;
+  }
+  const dj = queue.active[queue.currentDj];
+  const track = DjQueue.nextTrack(queue.id);
+  if (track === null) {
+    // No next track for this room
+    return;
+  }
+  const playlist = Playlist.getByUserId(dj);
+  Connection.send(dj, 'playlist', playlist.tracks);
+  Connection.sendAll('room', MvpAPI.getState());
 };
 
 /* Handler for disconnect event */
@@ -141,9 +197,11 @@ MvpAPI.attachListeners = (io) => {
     // On a connection event, add handlers to socket
     socket.on('login', MvpAPI.login.bind(null, socket));
     socket.on('join', MvpAPI.join.bind(null, socket));
+    // socket.on('enqueue', MvpAPI.enqueue.bind(null, socket));
     socket.on('enqueue', MvpAPI.enqueue.bind(null, socket));
     socket.on('dequeue', MvpAPI.dequeue.bind(null, socket));
     socket.on('disconnect', MvpAPI.disconnect.bind(null, socket));
+    socket.on('playlist', MvpAPI.updatePlaylist.bind(null, socket));
   });
 };
 

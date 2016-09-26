@@ -1,6 +1,7 @@
 import React from 'react';
 import SC from 'soundcloud';
 import $ from 'jquery';
+import ServerAPI from '../models/ServerAPI';
 
 export default class Room extends React.Component {
   constructor(props) {
@@ -24,6 +25,11 @@ export default class Room extends React.Component {
         searchResult: tracks,
       });
     });
+  }
+
+  sendPlaylistToServer() {
+    const updated = this.state.playlist.map(track => ({ songId: track.id, duration: track.duration }));
+    ServerAPI.updatePlaylist(updated);
   }
 
   addToPlaylist(track) {
@@ -51,6 +57,7 @@ export default class Room extends React.Component {
       playlist: newCurrPlaylist,
       searchResult: newTrackList,
     });
+    this.sendPlaylistToServer();
   }
 
   // checkPlaylist() {

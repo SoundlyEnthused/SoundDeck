@@ -229,6 +229,17 @@ describe('DjQueue', () => {
       DjQueue.enqueue(queue.id, u1);
       expect(DjQueue.nextTrack(queue.id)).to.deep.equal(tracks1[0]);
     });
+    it('should set currentTrack to null if there is no next track', () => {
+      DjQueue.nextTrack(queue.id);
+      const updated = DjQueue.get(queue.id);
+      expect(updated.currentTrack).to.equal(null);
+    });
+    it('should set currentTrack to current DJ\'s next track', () => {
+      DjQueue.enqueue(queue.id, u1);
+      DjQueue.nextTrack(queue.id);
+      const updated = DjQueue.get(queue.id);
+      expect(updated.currentTrack).to.deep.equal(tracks1[0]);
+    });
     it('should rotate tracks', () => {
       DjQueue.enqueue(queue.id, u1);
       DjQueue.nextTrack(queue.id);
