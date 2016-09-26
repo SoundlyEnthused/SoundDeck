@@ -101,6 +101,9 @@ describe('MvpAPI', () => {
     it('should return object of objects with .track property', () => {
       expect(MvpAPI.getState()[room1.id].track).not.to.equal(undefined);
     });
+    it('should return oboject of objects with a .timeStamp propert', () => {
+      expect(MvpAPI.getState()[room1.id].timeStamp).not.to.equal(undefined);
+    });
   });
   describe('enqueue', () => {
     let room;
@@ -426,23 +429,29 @@ describe('MvpAPI', () => {
       MvpAPI.sendNextTrack(room2.id);
       expect(sent.length).to.equal(0);
     });
+    it('should send updated timeStamp of when track started + trackDelay', () => {
+      MvpAPI.sendNextTrack(room1.id);
+      const msg = sent.pop();
+      expect(msg.eventName).to.equal('room');
+      expect(msg.data[room1.id].timeStamp).to.be.closeTo(Date.now() + MvpAPI.trackDelay, 100);
+    });
     it('should send the next track from current DJ\'s playlist', () => {
       MvpAPI.sendNextTrack(room1.id);
       let msg = sent.pop();
       expect(msg.eventName).to.equal('room');
-      expect(msg.data[room1.id].track).to.deep.equal({ songId: 1, duration: 1000 });
+      expect(msg.data[room1.id].track).to.equal(tracks1[0].songId);
       // Grab track from next DJ
       sent = [];
       MvpAPI.sendNextTrack(room1.id);
       msg = sent.pop();
       expect(msg.eventName).to.equal('room');
-      expect(msg.data[room1.id].track).to.deep.equal({ songId: 3, duration: 3000 });
+      expect(msg.data[room1.id].track).to.equal(tracks2[0].songId);
       // Test rotation
       sent = [];
       MvpAPI.sendNextTrack(room1.id);
       msg = sent.pop();
       expect(msg.eventName).to.equal('room');
-      expect(msg.data[room1.id].track).to.deep.equal({ songId: 2, duration: 2000 });
+      expect(msg.data[room1.id].track).to.equal(tracks1[1].songId);
     });
     it('should send rotated playlist to the current DJ', () => {
       // Grab track from first DJ
