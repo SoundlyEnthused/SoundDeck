@@ -21,7 +21,7 @@ MvpAPI.getState = () => {
       users: room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)),
       djMaxNum: queue.maxDjs,
       track: queue.currentTrack !== null ? queue.currentTrack.songId : null,
-      timestamp: queue.currentTrack !== null ? queue.currentTrack.startTime : 0,
+      timeStamp: queue.currentTrack !== null ? queue.currentTrack.startTime : 0,
     };
   });
   return state;
