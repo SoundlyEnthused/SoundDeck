@@ -21,11 +21,11 @@ TBD
 - Mocha/Chai for testing
 
 ### Authors
-- [Aaron](https://github.com/)
-- [CC](https://github.com/)
-- [Chris](https://github.com/)
-- [Joe](https://github.com/)
-- [Robert](https://github.com/)
+- [Aaron](https://github.com/Macabre1)
+- [CC](https://github.com/siliconion)
+- [Chris](https://github.com/no-fi)
+- [Joe](https://github.com/jstowers)
+- [Robert](https://github.com/rewfergu)
 
 ## Usage
 
@@ -49,6 +49,7 @@ Now visit [localhost:4000](http://localhost:4000/)
 
 For a new feature, do:
 > git checkout -b <featureName>
+
 then work on the feature on the local branch.
 
 To make a pull request:
@@ -56,6 +57,8 @@ To make a pull request:
 > git pull
 > git checkout <featureName>
 > git rebase master
+
 Resolve all conflicts, then
 > git push -u origin <featureName>
+
 Then submit the pull request to master.
