@@ -20,7 +20,16 @@ export default class Room extends React.Component {
     load('https://w.soundcloud.com/player/api.js', () => {
       this.widget = window.SC.Widget('soundcloudPlayer'); // eslint-disable-line new-cap
       this.widget.show_artwork = false;
-      this.widget.load('https://api.soundcloud.com/tracks/' + this.state.track, { show_artwork: false, auto_play: true });
+      this.widget.load(
+        'https://api.soundcloud.com/tracks/' + this.state.track,
+        { show_artwork: false, auto_play: true, callback: () => {
+          // check current time vs. time stamp
+          const timeDiff = Date.now() - this.state.timeStamp;
+          // if current time is larger than time stamp, skip some par of the song
+          if (timeDiff > 0) {
+            this.widget.seekTo(timeDiff); 
+          }
+        } });
     });
   }
 
@@ -37,6 +46,12 @@ export default class Room extends React.Component {
   componentDidUpdate() {
     if (this.widget && this.updataTrack) {
       this.widget.load('https://api.soundcloud.com/tracks/' + this.state.track, { show_artwork: false, auto_play: true });
+      // check current time vs. time stamp
+      const timeDiff = Date.now() - this.state.timeStamp;
+      // if current time is larger than time stamp, skip some par of the song
+      if (timeDiff > 0) {
+        this.widget.seekTo(timeDiff);
+      }
     }
     $('.avatar').tooltip();
   }
@@ -48,7 +63,6 @@ export default class Room extends React.Component {
     this.setState({
       mute: this.state.mute * -1,
     });
-
     if (this.state.mute === -1) {
       this.widget.setVolume(0);
     } else {

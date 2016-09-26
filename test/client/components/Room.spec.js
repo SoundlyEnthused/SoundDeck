@@ -18,7 +18,7 @@ describe('<Room />', () => {
   const djMaxNum = roomData.djMaxNum;
   const track = roomData.track;
   const currentDj = roomData.currentDj;
-  Room.widget = roomData.widget;
+  //Room.widget = roomData.widget;
 
   let wrapper = null;
 
@@ -62,6 +62,12 @@ describe('<Room />', () => {
     });
   });
 
+  describe('Player', () => {
+    it('should load a soundcloud widget', () => {
+      console.log(Room.widget);
+      expect(Room.widget).to.not.equal(undefined);
+    });
+  });
 
   describe('DJs', () => {
     describe('renders DJ list change', () => {
