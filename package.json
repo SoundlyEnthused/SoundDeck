@@ -36,6 +36,7 @@
     "react": "^15.1.0",
     "react-addons-test-utils": "^15.3.1",
     "react-dom": "^15.1.0",
+    "react-sortable": "^1.1.0",
     "react-soundcloud-widget": "^2.0.4",
     "scssify": "^2.1.0",
     "socket.io": "^1.4.8",

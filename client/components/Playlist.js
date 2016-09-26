@@ -1,6 +1,8 @@
 import React from 'react';
 import SC from 'soundcloud';
 import $ from 'jquery';
+//import Sortable from './Sortable';
+import ListItem from './ListItem';
 
 export default class Room extends React.Component {
   constructor(props) {
@@ -103,6 +105,10 @@ export default class Room extends React.Component {
   //   }
   // });
 
+
+// <div className="listTracks">{ListItem(this.state.playlist)}}</div>   
+// <SortableList data={data} />,  
+
   render() {
     return (
       <div id="playlist" className="playlist collapse">
@@ -111,18 +117,7 @@ export default class Room extends React.Component {
           <div className="row">
             <div className="playlist--playlist col-sm-6">
               <div className="onDeck">{(this.state.playlist.length === 0) ? false : 'Next Track On Deck: '}</div>
-              <ul>
-                {this.state.playlist.map(track =>
-                  (track === this.state.playlist[0] ? (<li className="playlist--playlist--track list-unstyled firstTrack">
-                    <button key={track} className="remove-btn" onClick={this.removeFromPlaylist.bind(this, track)}>
-                      <span className="fa fa-times" /></button>{track.title}</li>)
-                  :
-                    (<li className="playlist--playlist--track list-unstyled">
-                      <button key={track} className="remove-btn" onClick={this.removeFromPlaylist.bind(this, track)}>
-                        <span className="fa fa-times" /></button>{track.title}</li>)
-                  )
-                )}
-              </ul>
+              <ListItem tracks={this.state.playlist} handleRemoveTrack={this.removeFromPlaylist} />
             </div>
             <div className="playlist--search col-sm-6">
               <form>
@@ -140,3 +135,19 @@ export default class Room extends React.Component {
     );
   }
 }
+
+
+/*
+   <ul>
+                {this.state.playlist.map(track =>
+                  (track === this.state.playlist[0] ? (<li className="playlist--playlist--track list-unstyled firstTrack">
+                    <button key={track} className="remove-btn" onClick={this.removeFromPlaylist.bind(this, track)}>
+                      <span className="fa fa-times" /></button>{track.title}</li>)
+                  :
+                    (<li className="playlist--playlist--track list-unstyled">
+                      <button key={track} className="remove-btn" onClick={this.removeFromPlaylist.bind(this, track)}>
+                        <span className="fa fa-times" /></button>{track.title}</li>)
+                  )
+                )}
+              </ul>
+*/

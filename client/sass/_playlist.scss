@@ -14,7 +14,7 @@
   // background: rgba(255,255,255,0.8);
 }
 
-.list-unstyled:hover {
+.list-unstyled {
     text-decoration: underline;
     cursor: pointer;
     color: darkblue;
@@ -32,9 +32,9 @@
   cursor: pointer;
 }
 
-.playlist--playlist--track:hover{
+.playlist--playlist--track:hover {
   text-decoration: none;
-  cursor: default;
+  cursor: pointer;
 }
 
 .firstTrack {
