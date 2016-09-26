@@ -123,7 +123,7 @@ describe('<Room />', () => {
         wrapper.setState({ isDJ: true });
         expect(wrapper.state('isDJ')).to.equal(true);
         wrapper.find('.vote--djqueueBtn').simulate('click');
-        expect(wrapper.props().ServerAPI.enqueue.calledOnce).to.equal(true);
+        expect(wrapper.props().ServerAPI.dequeue.calledOnce).to.equal(true);
       });
     });
   });
