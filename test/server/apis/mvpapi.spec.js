@@ -429,11 +429,11 @@ describe('MvpAPI', () => {
       MvpAPI.sendNextTrack(room2.id);
       expect(sent.length).to.equal(0);
     });
-    it('should send updated timeStamp of when track started', () => {
+    it('should send updated timeStamp of when track started + trackDelay', () => {
       MvpAPI.sendNextTrack(room1.id);
       const msg = sent.pop();
       expect(msg.eventName).to.equal('room');
-      expect(msg.data[room1.id].timeStamp).to.be.closeTo(Date.now(), 100);
+      expect(msg.data[room1.id].timeStamp).to.be.closeTo(Date.now() + MvpAPI.trackDelay, 100);
     });
     it('should send the next track from current DJ\'s playlist', () => {
       MvpAPI.sendNextTrack(room1.id);

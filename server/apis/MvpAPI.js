@@ -6,6 +6,9 @@ const User = require('../models/User');
 
 const MvpAPI = {};
 
+/* Delay to insert between tracks times */
+MvpAPI.trackDelay = 1000;
+
 /* Bundle the state of all Rooms and DjQueues into one Object */
 MvpAPI.getState = () => {
   const state = {};
@@ -21,7 +24,7 @@ MvpAPI.getState = () => {
       users: room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)),
       djMaxNum: queue.maxDjs,
       track: queue.currentTrack !== null ? queue.currentTrack.songId : null,
-      timeStamp: queue.currentTrack !== null ? queue.currentTrack.startTime : 0,
+      timeStamp: queue.currentTrack !== null ? queue.currentTrack.startTime + MvpAPI.trackDelay : 0,
     };
   });
   return state;
