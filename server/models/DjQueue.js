@@ -84,8 +84,8 @@ DjQueue.nextTrack = function nextTrack(id) {
     queues[id].currentTrack = DjQueue.nextTrack(id);
     return queues[id].currentTrack;
   }
-
-  queues[id].currentTrack = playlist.tracks[0];
+  // Return startTime of track
+  queues[id].currentTrack = Object.assign({ startTime: Date.now() }, playlist.tracks[0]);
   Playlist.rotate(playlist.id);
   return queues[id].currentTrack;
 };
