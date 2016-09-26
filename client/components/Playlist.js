@@ -110,14 +110,20 @@ export default class Room extends React.Component {
           <h1> Playlist </h1>
           <div className="row">
             <div className="playlist--playlist col-sm-6">
-              <div className="onDeck">{(this.state.playlist.length === 0) ? false : 'Next Track On Deck: '}</div>
+              <div className="onDeck">{(this.state.playlist.length === 0) ? false : 'Track On Deck: '}</div>
               <ul>
-                {this.state.playlist.map(track =>
-                  (track === this.state.playlist[0] ? (<li className="playlist--playlist--track list-unstyled firstTrack">
+                {this.state.playlist.map((track, i) =>
+                  (track === this.state.playlist[0] ? (<li
+                    key={i}
+                    className="playlist--playlist--track list-unstyled firstTrack"
+                  >
                     <button key={track} className="remove-btn" onClick={this.removeFromPlaylist.bind(this, track)}>
                       <span className="fa fa-times" /></button>{track.title}</li>)
                   :
-                    (<li className="playlist--playlist--track list-unstyled">
+                    (<li
+                      key={i}
+                      className="playlist--playlist--track list-unstyled"
+                    >
                       <button key={track} className="remove-btn" onClick={this.removeFromPlaylist.bind(this, track)}>
                         <span className="fa fa-times" /></button>{track.title}</li>)
                   )
