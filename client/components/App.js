@@ -89,8 +89,8 @@ export default class App extends React.Component {
 
   joinRoom(roomId) {
     // console.log('join room', roomId);
-    ServerAPI.joinRoom(roomId);
     this.state.currentRoom = roomId;
+    ServerAPI.joinRoom(roomId);
     this.setState(this.getRoomStates());
   }
 

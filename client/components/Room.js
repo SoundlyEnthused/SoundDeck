@@ -8,6 +8,7 @@ export default class Room extends React.Component {
     super(props);
     const state = this.processProps(this.props);
     this.state = state;
+    this.mute = false;  // can't set this.mute as state, otherwise it will render iframe for some reason
     this.widget = null;
     this.updataTrack = false;
     this.handleMute = this.handleMute.bind(this);
@@ -60,10 +61,12 @@ export default class Room extends React.Component {
   // Room functions
   // ********************
   handleMute() {
-    this.setState({
-      mute: this.state.mute * -1,
-    });
-    if (this.state.mute === -1) {
+    // toggle mute state. Inital mute state is false.
+    // this.setState({
+    //   mute: !this.mute,
+    // });
+    this.mute = !this.mute;
+    if (!this.mute) {
       this.widget.setVolume(0);
     } else {
       this.widget.setVolume(75);
@@ -100,6 +103,7 @@ export default class Room extends React.Component {
   }
 
   render() {
+    console.log('room render', this.state)
     return (
       <div className="room">
         <div className="container">
@@ -158,7 +162,7 @@ export default class Room extends React.Component {
                 </button>
 
                 <button className="vote--muteBtn btn btn-default btn-round" onClick={this.handleMute}>
-                  {this.state.mute === -1 ? <span className="fa fa-volume-up" /> : <span className="fa fa-volume-off" />}
+                  {this.mute ? <span className="fa fa-volume-off" /> : <span className="fa fa-volume-up" /> }
                 </button>
               </div>
             </div>
