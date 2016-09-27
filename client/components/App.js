@@ -65,7 +65,7 @@ export default class App extends React.Component {
   }
 
   updateOnEvent(data) {
-    console.log("app event", data)
+    console.log("app event", data);
     // this.roomData = data;
     // let state = this.getRoomStates();
     // state.roomIds = Object.keys(this.roomData);
@@ -96,6 +96,7 @@ export default class App extends React.Component {
 
   loggingIn() {
     Auth.signin().then((userData) => {
+      console.log(userData);
       ServerAPI.login(userData);
       this.setState({ userData });
     }).catch((err) => {

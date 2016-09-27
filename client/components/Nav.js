@@ -31,6 +31,7 @@ export default class Nav extends React.Component {
           data-toggle="collapse"
           data-target="#lobby"
           aria-expanded="false"
+          id="LobbyButton"
         >
           Lobby
         </button>
