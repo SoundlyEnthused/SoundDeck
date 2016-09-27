@@ -10,6 +10,11 @@ body {
   color: white;
 }
 
+.btn:focus, .btn.focus, .btn:active:focus, .btn:active.focus, .btn.active:focus, .btn.active.focus {
+    outline: none;
+    outline-offset: 0;
+}
+
 .navbar-collapse,
 .collapsing {
   will-change: transform;
@@ -22,6 +27,7 @@ body {
   max-width: 400px;
   margin: 50px auto;
   padding: 50px;
+  background: linear-gradient(135deg, #ffffff 0%,#c4d7ed 100%);
 }
 
 @keyframes spin {
