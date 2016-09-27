@@ -49,6 +49,33 @@ describe('<App>', () => {
       });
     });
   });
+
+  describe('<Lobby>', () => {
+    before(() => {
+      wrapper = mount(<App />);
+    });
+    describe('not signed in', () => {
+      it('Lobby should be collapse', () => {
+        expect(wrapper.find('#lobby').hasClass('in')).to.equal(false);
+      });
+    });
+    describe('singed in', () => {
+      let me = null;
+      before(() => {
+        me = seeds.user;
+        wrapper.setState({ userData: me });
+      });
+
+      // describe('before room select', () => {
+      //   it('Lobby should NOT be collapse', () => {
+      //     expect(wrapper.find('#lobby').hasClass('in')).to.equal(true);
+      //   });
+      // });
+      // describe('after room select', () => {
+
+      // });
+    })
+  });
 });
 
 // describe('App functions', () => {
