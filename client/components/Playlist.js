@@ -64,8 +64,6 @@ export default class Playlist extends React.Component {
     });
     this.sendPlaylistToServer();
   }
-
-
   removeFromPlaylist(trackId) {
     const newCurrPlaylist = this.state.playlist;
     const updatedPlaylist = newCurrPlaylist.filter(tracks => tracks.id !== trackId);
