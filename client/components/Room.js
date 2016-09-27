@@ -9,23 +9,56 @@ export default class Room extends React.Component {
     const state = this.processProps(this.props);
     this.state = state;
     this.mute = false;  // can't set this.mute as state, otherwise it will render iframe for some reason
-    this.widget = null;
+    this.player = null; // new html5 audio player
+    this.infoImage = null;
+    this.infoArtist = null;
+    this.infoTrack = null;
+    this.trackProgress = null;
     this.updataTrack = false;
     this.handleMute = this.handleMute.bind(this);
     this.handleDjQueue = this.handleDjQueue.bind(this);
     this.downvote = this.downvote.bind(this);
+    this.upvote = this.upvote.bind(this);
+    this.initPlayer = this.initPlayer.bind(this);
   }
 
   // componentDidMount invoked only once on the client side immediately after the initial rendering
   componentDidMount() {
-    // Load SoundCloud widget
-    load('https://w.soundcloud.com/player/api.js', () => {
-      this.widget = window.SC.Widget('soundcloudPlayer'); // eslint-disable-line new-cap
-      this.widget.show_artwork = false;
-      this.widget.load('https://api.soundcloud.com/tracks/' + this.state.track, { show_artwork: false, auto_play: true });
-      this.handleMute();
-    });
+    this.player = document.getElementById('player');
+    this.infoImage = document.getElementById('infoImage');
+    this.infoArtist = document.getElementById('infoArtist');
+    this.infoTrack = document.getElementById('infoTrack');
+    this.trackProgress = document.getElementById('progressBar');
+
+    this.initPlayer();
+
+    this.highlightDj();
     $('.avatar').tooltip();
+  }
+
+  initPlayer() {
+    const _this = this;
+    SC.get(`/tracks/${this.state.track}`).then(function(sound) {
+      if (sound.errors) {
+        console.log("Error", sound.errors);
+      } else {
+        console.log('sound object', sound);
+
+        player.crossOrigin = "anonymous";
+        player.setAttribute('src', sound.stream_url + '?client_id=' + process.env.CLIENT_ID);
+        player.play();
+
+        window.setInterval(function() {
+            _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
+        }, 250);
+
+        var image = sound.artwork_url ? sound.artwork_url : sound.user.avatar_url; // if no track artwork exists, use the user's avatar.
+        _this.infoImage.setAttribute('src', image);
+        _this.infoImage.setAttribute('alt', sound.user.username);
+        _this.infoArtist.innerHTML = sound.user.username;
+        _this.infoTrack.innerHTML = sound.title;
+      }
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -39,15 +72,10 @@ export default class Room extends React.Component {
 
   // componentDidUpate invoked immediately after the component's updates are flushed to the DOM
   componentDidUpdate() {
-    if (this.widget && this.updataTrack) {
-      this.widget.load('https://api.soundcloud.com/tracks/' + this.state.track, { show_artwork: false, auto_play: true });
-      // check current time vs. time stamp
-      const timeDiff = Date.now() - this.state.timeStamp;
-      // if current time is larger than time stamp, skip some par of the song
-      if (timeDiff > 0) {
-        this.widget.seekTo(timeDiff);
-      }
+    if (this.player && this.updataTrack) {
+      this.initPlayer();
     }
+    this.highlightDj();
   }
 
   // ********************
@@ -65,11 +93,20 @@ export default class Room extends React.Component {
       this.player.volume = 1;
     }
   }
+
   handleDjQueue() {
     if (this.state.isDJ) {
       this.props.ServerAPI.dequeue();
     } else {
       this.props.ServerAPI.enqueue();
+    }
+  }
+
+  highlightDj() {
+    $('.dj--seat').removeClass('current');
+
+    if (this.props.djs.length > 0) {
+      $(`.dj--seat:nth-child(${this.state.currentDj + 1})`).addClass('current');
     }
   }
 
@@ -96,7 +133,11 @@ export default class Room extends React.Component {
   }
 
   upvote() {
-    console.log('upvote!');
+    var djList = this.state.djs;
+    djList[this.state.currentDj].likes = djList[this.state.currentDj].likes + 1 || 1;
+    this.setState({
+      djs: djList,
+    });
   }
 
   downvote() {
@@ -119,7 +160,7 @@ export default class Room extends React.Component {
                   return (
                     <div className="dj--seat" key={dj.id}>
                       <div className="dj--avatar">
-                        <img
+                        <div
                           className="avatar"
                           src={dj.avatar_url}
                           alt={dj.username}
@@ -127,7 +168,10 @@ export default class Room extends React.Component {
                           data-placement="bottom"
                           data-animation="true"
                           data-toggle="tooltip"
-                        />
+                          data-likes={dj.likes || 0}
+                        >
+                          <img src={dj.avatar_url} alt={dj.username} />
+                        </div>
                       </div>
                     </div>
                   );
@@ -139,15 +183,24 @@ export default class Room extends React.Component {
             }
             </div>
 
-            <iframe
-              id="soundcloudPlayer"
-              className="soundcloudPlayer"
-              width="100%"
-              height="100"
-              scrolling="no"
-              frameBorder="no"
-              src="https://w.soundcloud.com/player/?url="
-            />
+
+            <div className="player">
+              <img src="" alt="" id="infoImage" className="player--image" />
+              <h2 id="infoArtist" className="player--artist" />
+              <h3 id="infoTrack" className="player--track" />
+              <audio id="player" autoPlay preload></audio>
+              <div className="progress player--progress">
+                <div
+                  className="progress-bar progress-bar-primary progress-bar-striped active"
+                  role="progressbar"
+                  aria-valuenow="0"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  style={{ width: '0%' }}
+                  id="progressBar"
+                />
+              </div>
+            </div>
 
             <div id="vote" className="vote row">
               <div className="col-xs-4 vote--meter">
@@ -211,5 +264,4 @@ export default class Room extends React.Component {
 }
 
 Room.propTypes = {
-  room: React.PropTypes.string,
 };

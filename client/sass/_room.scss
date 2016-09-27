@@ -45,6 +45,7 @@ h1 {
     border-radius: 50%;
     content: '';
     position: absolute;
+    z-index: 998;
     left: 0;
     top: 0;
     width: 100%;
@@ -67,14 +68,39 @@ h1 {
   }
 }
 
-.soundcloudPlayer {
-  box-shadow: 0px 0px 50px black;
+.player {
+  overflow: auto;
 }
+
+.player--image {
+  max-width: 100%;
+  height: auto;
+  float: left;
+  margin: 0 15px 0 0;
+}
+
+.player--artist {
+  font-size: 1.3em;
+}
+
+.player--track {
+  font-size: 1em;
+  margin-top: 0;
+}
+
+.player--progress {
+  background: rgba(55, 72, 109, 0.35);
+  height: 10px;
+  margin-bottom: 0;
+}
+
+
 
 .vote {
   // padding: 10px;
   // box-sizing: border-box;
   margin-top: 20px;
+  clear: both;
 }
 
 .vote--btns {
@@ -140,7 +166,14 @@ h1 {
     text-align: center;
     min-width: 14px;
     line-height: 17px;
+    z-index: 999;
   }
+}
+
+.dj--avatar .avatar:before {
+    padding: 1px 8px;
+    font-size: 12px;
+    line-height: 18px;
 }
 
 .avatar[data-likes='0'] {
