@@ -38,6 +38,9 @@ export default class Room extends React.Component {
 
   initPlayer() {
     const _this = this;
+    // check current time vs. time stamp
+    const timeDiff = (Date.now() - this.state.timeStamp) / 1000;
+
     SC.get(`/tracks/${this.state.track}`).then(function(sound) {
       if (sound.errors) {
         console.log("Error", sound.errors);
@@ -47,6 +50,12 @@ export default class Room extends React.Component {
         player.crossOrigin = "anonymous";
         player.setAttribute('src', sound.stream_url + '?client_id=' + process.env.CLIENT_ID);
         player.play();
+
+        // if current time is larger than time stamp, skip some par of the song
+        console.log('time diff', timeDiff);
+        if (timeDiff > 0) {
+          _this.player.currentTime = timeDiff;
+        }
 
         window.setInterval(function() {
             _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
