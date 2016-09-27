@@ -1,28 +1,47 @@
 import React from 'react';
 import SC from 'soundcloud';
-import $ from 'jquery';
 import ServerAPI from '../models/ServerAPI';
+import PlaylistTrack from './PlaylistTrack';
+import SearchResult from './SearchResult';
 
-export default class Room extends React.Component {
+function trackStatus(tracks, filterBy) {
+  const setlist = {};
+  filterBy.forEach((track) => { setlist[track.id] = true; });
+  return tracks.map(track => Object.assign({}, track, { inPlaylist: !!setlist[track.id] }));
+}
+
+export default class Playlist extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      playlist: [],
       searchResult: [],
+      searchPhrase: '',
+      playlist: [],
+      draggingIndex: null,
     };
+    this.addToPlaylist = this.addToPlaylist.bind(this);
+    this.removeFromPlaylist = this.removeFromPlaylist.bind(this);
+    this.moveToTop = this.moveToTop.bind(this);
+    this.updateState = this.updateState.bind(this);
+  }
+
+  updateState(obj) {
+    this.setState(obj);
+    if (obj.draggingIndex === null) {
+      this.sendPlaylistToServer();
+    }
   }
 
   search(e) {
     e.preventDefault();
-    const searchPhrase = $('#playlist--search--input')[0].value;
-    // console.log('SEARCH!', searchPhrase);
     SC.get('/tracks', {
-      q: searchPhrase,
-    }).then((tracks) => {
-      $('#playlist--search--input')[0].value = '';
-      // console.log('GETTING BACK: ', tracks);
+      q: this.state.searchPhrase,
+    })
+    .then(tracks => trackStatus(tracks, this.state.playlist))
+    .then((tracks) => {
       this.setState({
         searchResult: tracks,
+        searchPhrase: '',
       });
     });
   }
@@ -32,83 +51,40 @@ export default class Room extends React.Component {
     ServerAPI.updatePlaylist(updated);
   }
 
-  addToPlaylist(track) {
-    const tracks = this.state.searchResult;
-    const currPlaylist = this.state.playlist;
-    // console.log('searchResults: ', tracks);
-    // console.log('playlist: ', currPlaylist);
-    console.log('clicked track: ', track);
-
-    currPlaylist.push(track);
-    // console.log('after push: ', currPlaylist);
-    tracks.splice(tracks.indexOf(track), 1);
-    // console.log('playlist after push: ', currPlaylist);
-    function trackToAdd(theTracks) {
-      // console.log('theTrack inside trackToAdd filter: ', theTracks);
-      // console.log('tracks inside trackToAdd filter: ', tracks);
-      // console.log('track inside trackToAdd filter: ', track);
-      return theTracks !== track;
+  addToPlaylist(trackId) {
+    const track = this.state.searchResult.find(t => t.id === trackId);
+    if (track.inPlaylist) {
+      return;
     }
-    const newTrackList = tracks.filter(trackToAdd);
-    const newCurrPlaylist = currPlaylist;
-    // console.log('tracks after filt: ', newTrackList);
-    // console.log('playlist at end: ', currPlaylist);
+    const newPlaylist = this.state.playlist.concat([track]);
+    const newSearchResults = trackStatus(this.state.searchResult, newPlaylist);
     this.setState({
-      playlist: newCurrPlaylist,
-      searchResult: newTrackList,
+      playlist: newPlaylist,
+      searchResult: newSearchResults,
     });
     this.sendPlaylistToServer();
   }
 
-  // checkPlaylist() {
-  //   // look at new search results
-  //   const currPlaylist = this.state.playlist;
-  //
-  //   // compare to existing tracks in playlist
-  //
-  //   // asign indicator (id or classname?) that keeps track of duplicates in searchResult
-  //
-  //   // apply css to modify the appearance and functionality of dupes in searchResult
-  // }
 
-  // removeHandler() {
-  removeFromPlaylist(track) {
+  removeFromPlaylist(trackId) {
     const newCurrPlaylist = this.state.playlist;
-    function trackToRemove(tracks) {
-      // console.log('tracks', tracks);
-      // console.log('track', track);
-      return tracks !== track;
-    }
-    const updatedPlaylist = newCurrPlaylist.filter(trackToRemove);
+    const updatedPlaylist = newCurrPlaylist.filter(tracks => tracks.id !== trackId);
+    const updateSearchResult = trackStatus(this.state.searchResult, updatedPlaylist);
     this.setState({
+      searchResult: updateSearchResult,
       playlist: updatedPlaylist,
     });
+    this.sendPlaylistToServer();
   }
-  // }
-  // var List = React.createClass({
-  //   render() {
-  //     return (
-  //       <ul>
-  //         {this.props.items.map(item =>
-  //           <ListItem key={item.id} item={item} onItemClick={this.props.onItemClick} />
-  //         )}
-  //       </ul>
-  //     );
-  //   }
-  // });
-  //
-  // var ListItem = React.createClass({
-  //   render() {
-  //     return (
-  //       <li onClick={this._onClick}>
-  //         ...
-  //       </li>
-  //     );
-  //   },
-  //   _onClick() {
-  //     this.props.onItemClick(this.props.item.id);
-  //   }
-  // });
+
+  moveToTop(trackId) {
+    const newCurrPlaylist = [];
+    this.state.playlist.forEach(track => (track.id === trackId ? newCurrPlaylist.unshift(track) : newCurrPlaylist.push(track)));
+    this.setState({
+      playlist: newCurrPlaylist,
+    });
+    this.sendPlaylistToServer();
+  }
 
   render() {
     return (
@@ -118,32 +94,45 @@ export default class Room extends React.Component {
           <div className="row">
             <div className="playlist--playlist col-sm-6">
               <div className="onDeck">{(this.state.playlist.length === 0) ? false : 'Track On Deck: '}</div>
-              <ul>
+              <ul className="list">
                 {this.state.playlist.map((track, i) =>
-                  (track === this.state.playlist[0] ? (<li
-                    key={i}
-                    className="playlist--playlist--track list-unstyled firstTrack"
-                  >
-                    <button key={track} className="remove-btn" onClick={this.removeFromPlaylist.bind(this, track)}>
-                      <span className="fa fa-times" /></button>{track.title}</li>)
-                  :
-                    (<li
-                      key={i}
-                      className="playlist--playlist--track list-unstyled"
-                    >
-                      <button key={track} className="remove-btn" onClick={this.removeFromPlaylist.bind(this, track)}>
-                        <span className="fa fa-times" /></button>{track.title}</li>)
-                  )
+                  <PlaylistTrack
+                    key={track.id}
+                    updateState={this.updateState}
+                    items={this.state.playlist}
+                    draggingIndex={this.state.draggingIndex}
+                    sortId={i}
+                    outline="list"
+                    childProps={{
+                      title: track.title,
+                      clickToRem: this.removeFromPlaylist,
+                      clickToTop: this.moveToTop,
+                      isFirst: i === 0,
+                      id: track.id,
+                    }}
+                  />
                 )}
               </ul>
             </div>
             <div className="playlist--search col-sm-6">
               <form>
-                <input type="text" id="playlist--search--input" />
+                <input
+                  type="text"
+                  value={this.state.searchPhrase}
+                  id="playlist--search--input"
+                  onChange={(e) => { this.setState({ searchPhrase: e.target.value }); }}
+                />
                 <button onClick={(e) => { this.search(e); }}>Search</button>
                 <ul>
                   {this.state.searchResult.map(track =>
-                      (<li className="list-unstyled" onClick={this.addToPlaylist.bind(this, track)}>{track.title}</li>))}
+                    <SearchResult
+                      key={track.id}
+                      id={track.id}
+                      title={track.title}
+                      clickToAdd={this.addToPlaylist}
+                      inPlaylist={track.inPlaylist}
+                    />
+                  )}
                 </ul>
               </form>
             </div>
