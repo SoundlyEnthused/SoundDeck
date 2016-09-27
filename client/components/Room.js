@@ -23,14 +23,17 @@ export default class Room extends React.Component {
       this.widget.show_artwork = false;
       this.widget.load(
         'https://api.soundcloud.com/tracks/' + this.state.track,
-        { show_artwork: false, auto_play: true, callback: () => {
-          // check current time vs. time stamp
-          const timeDiff = Date.now() - this.state.timeStamp;
-          // if current time is larger than time stamp, skip some par of the song
-          if (timeDiff > 0) {
-            this.widget.seekTo(timeDiff); 
-          }
-        } });
+        { show_artwork: false,
+          auto_play: true,
+          callback: () => {
+            // check current time vs. time stamp
+            const timeDiff = Date.now() - this.state.timeStamp;
+            // if current time is larger than time stamp, skip some par of the song
+            if (timeDiff > 0) {
+              this.widget.seekTo(timeDiff);
+            }
+          },
+      });
     });
   }
 
@@ -103,7 +106,7 @@ export default class Room extends React.Component {
   }
 
   render() {
-    console.log('room render', this.state)
+    // console.log('room render', this.state)
     return (
       <div className="room">
         <div className="container">

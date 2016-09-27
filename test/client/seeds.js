@@ -1,4 +1,5 @@
 const seeds = {};
+
 seeds.user = { id: 1000, username: 'shaka', avatar_url: 'https://i1.sndcdn.com/avatars-000001116755-hhusd1-large.jpg' };
 seeds.djs = [
       { id: 172873, username: 'Mr. Bill', avatar_url: 'https://i1.sndcdn.com/avatars-000244632868-hkkhs2-large.jpg' },
@@ -82,4 +83,5 @@ seeds.widget = {
   seekTo: (timeStamp) => { seeds.widget.songLoc = timeStamp; },
   getPosition: () => seeds.widget.songLoc,
 };
+
 module.exports = seeds;

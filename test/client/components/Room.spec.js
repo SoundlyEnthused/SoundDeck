@@ -63,9 +63,10 @@ describe('<Room />', () => {
   });
 
   describe('Player', () => {
-    it('should load a soundcloud widget', () => {
-      console.log(Room.widget);
-      expect(Room.widget).to.not.equal(undefined);
+    it('should have an iframe element', ()=> {
+      const iframe = wrapper.find('iframe');
+      expect(iframe).to.be.defined;
+      expect(wrapper.find('#soundcloudPlayer').is('iframe')).to.equal(true);
     });
   });
 
