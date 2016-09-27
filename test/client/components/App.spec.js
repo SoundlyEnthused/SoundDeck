@@ -10,37 +10,45 @@ import seeds from '../seeds';
 
 describe('<App>', () => {
   let wrapper = null;
-  beforeEach('Clear', () => {
-    wrapper = mount(<App />);
-  });
-
   describe('<Nav>', () => {
-    it('renders a nav bar', () => {
-      expect(wrapper.find('nav').length).to.equal(1);
+    before(() => {
+      wrapper = mount(<App />);
     });
-    it('renders a login button when user is not signed in', () => {
-      expect(wrapper.find('#LoginButton').length).to.equal(1);
+    describe('not signed in', () => {
+      it('renders a nav bar', () => {
+        expect(wrapper.find('nav').length).to.equal(1);
+      });
+      it('renders a login button when user is not signed in', () => {
+        expect(wrapper.find('#LoginButton').length).to.equal(1);
+      });
+      it('does NOT render lobby button when user is not signed in', () => {
+        expect(wrapper.find('#LobbyButton').length).to.equal(0);
+      });
+      it('does NOT render playlist button when user is not signed in', () => {
+        expect(wrapper.find('#PlaylistButton').length).to.equal(0);
+      });
     });
-    it('does NOT render lobby button when user is not signed in', () => {
-      expect(wrapper.find('#LobbyButton').length).to.equal(0);
-    });
-    it('does NOT render playlist button when user is not signed in', () => {
-      expect(wrapper.find('#PlaylistButton').length).to.equal(0);
-    });
-    const me = seeds.user;
-    wrapper.setState({ userData: me });
-
-    it('does NOT render a login button when user is signed in', () => {
-      expect(wrapper.find('#LoginButton').length).to.equal(0);
-    });
-    it('does NOT render lobby button when user is signed in', () => {
-      expect(wrapper.find('#LobbyButton').length).to.equal(1);
-    });
-    it('does NOT render playlist button when user is signed in', () => {
-      expect(wrapper.find('#PlaylistButton').length).to.equal(1);
+    describe('signed in', () => {
+      let me = null;
+      before(() => {
+        me = seeds.user;
+        wrapper.setState({ userData: me });
+      });
+      it('does NOT render a login button when user is signed in', () => {
+        expect(wrapper.find('#LoginButton').length).to.equal(0);
+      });
+      it('renders the username when user is signed in', () => {
+        expect(wrapper.find('.navbar--signedIn').length).to.equal(1);
+        expect(wrapper.find('.navbar--signedIn').html()).to.include(me.username);
+      });
+      it('renders lobby button when user is signed in', () => {
+        expect(wrapper.find('#LobbyButton').length).to.equal(1);
+      });
+      it('renders playlist button when user is signed in', () => {
+        expect(wrapper.find('#PlaylistButton').length).to.equal(1);
+      });
     });
   });
-
 });
 
 // describe('App functions', () => {
