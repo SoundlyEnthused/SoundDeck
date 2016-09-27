@@ -104,9 +104,10 @@ MvpAPI.enqueue = (socket) => {
   }
   DjQueue.enqueue(queue.id, userId);
   // !!!
-  if (queue.active.length === 0) {
-    waitForTrack(room.id);
-  }
+  // if (queue.active.length === 0) {
+  //   waitForTrack(room.id);
+  // }
+  // !!!
   Connection.sendAll('room', MvpAPI.getState());
 };
 
@@ -164,6 +165,8 @@ MvpAPI.sendNextTrack = (roomId) => {
   const track = DjQueue.nextTrack(queue.id);
   if (track === null) {
     // No next track for this room
+    // Send state in case dj was removed
+    Connection.sendAll('room', MvpAPI.getState());
     return;
   }
   const playlist = Playlist.getByUserId(dj);
