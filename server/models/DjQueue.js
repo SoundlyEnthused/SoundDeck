@@ -59,7 +59,14 @@ DjQueue.next = function next(id) {
     queue.currentDj = 0;
   }
   const dj = queue.active[queue.currentDj];
-  queue.currentDj = ((queue.currentDj + 1) % queue.active.length);
+  console.log('DjQueue.next before modulus: ', queue.currentDj);
+  if (queue.active.length === 0) {
+    // We can't mod by zero...
+    queue.currentDj = 0;
+  } else {
+    queue.currentDj = ((queue.currentDj + 1) % queue.active.length);
+  }
+  console.log('DjQueue.next after modulus: ', queue.currentDj);
   return dj !== undefined ? dj : null;
 };
 
@@ -79,7 +86,7 @@ DjQueue.nextTrack = function nextTrack(id) {
     // remove the DJ from queue
     DjQueue.removeUser(id, dj);
     // Set currentDj index back by one in order to keep current position
-    queues[id].currentDj -= 1;
+    queues[id].currentDj = Math.max(0, queues[id].currentDj - 1);
     // Try again!
     queues[id].currentTrack = DjQueue.nextTrack(id);
     return queues[id].currentTrack;
