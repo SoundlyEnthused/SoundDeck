@@ -53,11 +53,12 @@ seeds.ServerAPI = {
   dequeue: () => { console.log('SEEDS: Server API dequeue for DJ'); },
 };
 
-seeds.createRoom = (roomName, djNum, userNum) => {
+seeds.createRoom = (roomName, djNum, userNum, track) => {
   const room = {
     userId: 1000,
     name: roomName,
-    track: 59102642,
+    track: track,
+    timeStamp: Date.now() - 120000,
     djs: seeds.djs.slice(0, djNum),
     currentDj: 2,
     djMaxNum: 4,
@@ -68,14 +69,17 @@ seeds.createRoom = (roomName, djNum, userNum) => {
 };
 
 seeds.rooms = {
-  0: seeds.createRoom('POP', 0, 5),
-  1: seeds.createRoom('ROCK', 1, 10),
-  2: seeds.createRoom('METAL', 2, 15),
-  4: seeds.createRoom('POLITICAL', 4, 0),
+  0: seeds.createRoom('MIKU', 0, 5, 63029752),
+  1: seeds.createRoom('BABYMETAL', 1, 10, 168240777),
+  2: seeds.createRoom('Chthonic', 2, 15, 256295090),
+  4: seeds.createRoom('SANTANA', 4, 0, 71841625),
 };
 
 seeds.widget = {
+  songLoc: 0,
   load: () => {},
   setVolume: () => {},
+  seekTo: (timeStamp) => { seeds.widget.songLoc = timeStamp; },
+  getPosition: () => seeds.widget.songLoc,
 };
 module.exports = seeds;

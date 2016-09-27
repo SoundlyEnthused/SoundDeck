@@ -49,6 +49,15 @@ export default class App extends React.Component {
     });
   }
 
+  componentDidMount(){
+    let seeds = require('../../test/client/seeds');
+    this.roomData = seeds.rooms;
+    let state = this.getRoomStates();
+    state.roomIds = Object.keys(this.roomData);
+    state.roomNames = Object.keys(this.roomData).map(roomId => (this.roomData[roomId].name));
+    this.setState(state);
+  }
+
   componentDidUpdate() {
     if (this.state.userData && !this.state.currentRoom) {
       $('#lobby').collapse('show');
@@ -56,11 +65,12 @@ export default class App extends React.Component {
   }
 
   updateOnEvent(data) {
-    this.roomData = data;
-    let state = this.getRoomStates();
-    state.roomIds = Object.keys(this.roomData);
-    state.roomNames = Object.keys(this.roomData).map(roomId => (this.roomData[roomId].name));
-    this.setState(state);
+    console.log("app event", data)
+    // this.roomData = data;
+    // let state = this.getRoomStates();
+    // state.roomIds = Object.keys(this.roomData);
+    // state.roomNames = Object.keys(this.roomData).map(roomId => (this.roomData[roomId].name));
+    // this.setState(state);
   }
 
   getRoomStates() {
@@ -71,6 +81,7 @@ export default class App extends React.Component {
       state.djs = this.roomData[this.state.currentRoom].djs;
       state.djMaxNum = this.roomData[this.state.currentRoom].djMaxNum;
       state.track = this.roomData[this.state.currentRoom].track;
+      state.timeStamp = this.roomData[this.state.currentRoom].timeStamp;
       state.currentDj = this.roomData[this.state.currentRoom].currentDj;
     }
     return state;
@@ -78,8 +89,8 @@ export default class App extends React.Component {
 
   joinRoom(roomId) {
     // console.log('join room', roomId);
-    ServerAPI.joinRoom(roomId);
     this.state.currentRoom = roomId;
+    ServerAPI.joinRoom(roomId);
     this.setState(this.getRoomStates());
   }
 
@@ -105,6 +116,7 @@ export default class App extends React.Component {
               name={this.state.roomName}
               track={this.state.track}
               djs={this.state.djs}
+              timeStamp={this.state.timeStamp}
               djMaxNum={this.state.djMaxNum}
               currentDj={this.state.currentDj}
               users={this.state.users}
