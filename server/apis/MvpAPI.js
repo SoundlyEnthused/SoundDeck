@@ -85,6 +85,7 @@ MvpAPI.join = (socket, data) => {
 
 /* Handler for event to enqueue for DJ position */
 MvpAPI.enqueue = (socket) => {
+  console.log('Mvp.API.enqueue event');
   // User must be logged in, in order to become a DJ
   if (!Connection.isRegistered(socket)) {
     return;
@@ -102,10 +103,10 @@ MvpAPI.enqueue = (socket) => {
     return;
   }
   DjQueue.enqueue(queue.id, userId);
-  // // !!!
-  // if (queue.active.length === 0) {
-  //   waitForTrack(room.id);
-  // }
+  // !!!
+  if (queue.active.length === 0) {
+    waitForTrack(room.id);
+  }
   Connection.sendAll('room', MvpAPI.getState());
 };
 
@@ -200,7 +201,6 @@ MvpAPI.attachListeners = (io) => {
     // On a connection event, add handlers to socket
     socket.on('login', MvpAPI.login.bind(null, socket));
     socket.on('join', MvpAPI.join.bind(null, socket));
-    // socket.on('enqueue', MvpAPI.enqueue.bind(null, socket));
     socket.on('enqueue', MvpAPI.enqueue.bind(null, socket));
     socket.on('dequeue', MvpAPI.dequeue.bind(null, socket));
     socket.on('disconnect', MvpAPI.disconnect.bind(null, socket));

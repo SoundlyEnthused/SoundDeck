@@ -75,7 +75,7 @@ DjQueue.nextTrack = function nextTrack(id) {
   // Grab DJ's playlist
   const playlist = Playlist.getByUserId(dj);
   // if playlist is empty...
-  if (playlist.tracks.length === 0) {
+  if (playlist === null || playlist.tracks.length === 0) {
     // remove the DJ from queue
     DjQueue.removeUser(id, dj);
     // Set currentDj index back by one in order to keep current position
