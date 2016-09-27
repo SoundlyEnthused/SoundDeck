@@ -47,20 +47,17 @@ MvpAPI.clearAll = () => {
 /* waitForTrack takes a roomId and sendsTheNext track, waits for it to complete and repeats */
 const waitTime = 5000; // in msec
 function waitForTrack(roomId) {
-  console.log('waitForTrack');
   const queue = DjQueue.getByRoom(roomId);
   if (queue === null) {
     console.error('Error in waitForTrack. No DjQueue associated with Room.');
     return;
   }
   if (queue.currentTrack !== null) {
-    console.log('waitForTrack: We already have a track.')
     return; // Already have a song and should have a setTimeout event for next track
   }
   MvpAPI.sendNextTrack(roomId);
   const track = DjQueue.getByRoom(roomId).currentTrack;
   if (track === null) {
-    console.log('No track available');
     return;
   }
   setTimeout(() => {
@@ -95,7 +92,6 @@ MvpAPI.join = (socket, data) => {
 
 /* Handler for event to enqueue for DJ position */
 MvpAPI.enqueue = (socket) => {
-  console.log('Mvp.API.enqueue event');
   // User must be logged in, in order to become a DJ
   if (!Connection.isRegistered(socket)) {
     return;
@@ -172,9 +168,6 @@ MvpAPI.sendNextTrack = (roomId) => {
     return;
   }
   const dj = queue.active[queue.currentDj];
-  console.log('sendNextTrack queue: ', queue);
-  console.log('sendNextTrack current dj index: ', queue.currentDj);
-  console.log('sendNextTrack current dj: ', dj);
   const track = DjQueue.nextTrack(queue.id);
   if (track === null) {
     // No next track for this room

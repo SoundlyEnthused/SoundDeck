@@ -59,14 +59,12 @@ DjQueue.next = function next(id) {
     queue.currentDj = 0;
   }
   const dj = queue.active[queue.currentDj];
-  console.log('DjQueue.next before modulus: ', queue.currentDj);
   if (queue.active.length === 0) {
     // We can't mod by zero...
     queue.currentDj = 0;
   } else {
     queue.currentDj = ((queue.currentDj + 1) % queue.active.length);
   }
-  console.log('DjQueue.next after modulus: ', queue.currentDj);
   return dj !== undefined ? dj : null;
 };
 
