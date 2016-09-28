@@ -1,11 +1,4 @@
-.playlist.active {
-  // display: block;
-  // position: absolute;
-  // background: rgba(255,255,255,0.8);
-}
-
 .playlist {
-  // display: none;
   width: 100%;
   z-index: 999;
   color: darkblue;
@@ -56,4 +49,18 @@
 
 .savePlaylist-btn {
   font-size: 14px;
+}
+
+.inPL {
+  color: gray;
+  text-decoration: none;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.inPL:hover {
+  color: gray;
+  text-decoration: none;
+  cursor: not-allowed;
+  pointer-events: none;
 }
