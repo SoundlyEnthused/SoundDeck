@@ -1,5 +1,4 @@
 .playlist {
-  // display: none;
   width: 100%;
   z-index: 999;
   color: darkblue;
@@ -7,12 +6,6 @@
   // background: rgba(255,255,255,0.8);
   background: linear-gradient(135deg, #ffffff 0%,#c4d7ed 100%);
   -webkit-backdrop-filter: blur(10px);
-}
-
-.playlist.active {
-  // display: block;
-  // position: absolute;
-  // background: rgba(255,255,255,0.8);
 }
 
 .list-unstyled:hover {
@@ -25,11 +18,23 @@
   border: none;
   background: none;
   color: red;
-  padding-right: 12px;
+  padding-right: 5px;
   outline: none;
 }
 
 .remove-btn:hover {
+  cursor: pointer;
+}
+
+.moveTop-btn {
+  border: none;
+  background: none;
+  color: darkblue;
+  padding-right: 7px;
+  outline: none;
+}
+
+.moveTop-btn:hover {
   cursor: pointer;
 }
 
@@ -42,6 +47,20 @@
   font-weight: bold;
 }
 
-.savePlaylist-btn{
+.savePlaylist-btn {
   font-size: 14px;
+}
+
+.inPL {
+  color: gray;
+  text-decoration: none;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.inPL:hover {
+  color: gray;
+  text-decoration: none;
+  cursor: not-allowed;
+  pointer-events: none;
 }
