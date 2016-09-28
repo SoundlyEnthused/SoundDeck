@@ -23,6 +23,18 @@ export default class Playlist extends React.Component {
     this.removeFromPlaylist = this.removeFromPlaylist.bind(this);
     this.moveToTop = this.moveToTop.bind(this);
     this.updateState = this.updateState.bind(this);
+    this.onServerPlaylistUpdate = this.onServerPlaylistUpdate.bind(this);
+    ServerAPI.onPlaylistUpdate(this.onServerPlaylistUpdate);
+  }
+
+  onServerPlaylistUpdate(tracks) {
+    const playlistById = {};
+    this.state.playlist.forEach((track) => { playlistById[track.id] = track; });
+    const updatedPlaylist = tracks.map(track => playlistById[track.songId]);
+    this.setState({
+      playlist: updatedPlaylist,
+    });
+    console.log('onServerPlaylistUpdate: ', updatedPlaylist);
   }
 
   updateState(obj) {
@@ -48,6 +60,7 @@ export default class Playlist extends React.Component {
 
   sendPlaylistToServer() {
     const updated = this.state.playlist.map(track => ({ songId: track.id, duration: track.duration }));
+    console.log('updated playlist: ', updated);
     ServerAPI.updatePlaylist(updated);
   }
 
@@ -61,8 +74,7 @@ export default class Playlist extends React.Component {
     this.setState({
       playlist: newPlaylist,
       searchResult: newSearchResults,
-    });
-    this.sendPlaylistToServer();
+    }, this.sendPlaylistToServer);
   }
   removeFromPlaylist(trackId) {
     const newCurrPlaylist = this.state.playlist;
@@ -71,8 +83,7 @@ export default class Playlist extends React.Component {
     this.setState({
       searchResult: updateSearchResult,
       playlist: updatedPlaylist,
-    });
-    this.sendPlaylistToServer();
+    }, this.sendPlaylistToServer);
   }
 
   moveToTop(trackId) {
@@ -80,8 +91,7 @@ export default class Playlist extends React.Component {
     this.state.playlist.forEach(track => (track.id === trackId ? newCurrPlaylist.unshift(track) : newCurrPlaylist.push(track)));
     this.setState({
       playlist: newCurrPlaylist,
-    });
-    this.sendPlaylistToServer();
+    }, this.sendPlaylistToServer);
   }
 
   render() {
