@@ -5,8 +5,7 @@ const ServerAPI = {
 };
 
 ServerAPI.connect = () => {
-  // console.log("socket connecting");
-  ServerAPI.socket = io('http://localhost:' + process.env.PORT);
+  ServerAPI.socket = io();
 };
 
 ServerAPI.disconnect = () => {
