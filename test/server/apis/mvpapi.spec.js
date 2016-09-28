@@ -425,9 +425,11 @@ describe('MvpAPI', () => {
     it('should be a function', () => {
       expect(MvpAPI.sendNextTrack).to.be.a('function');
     });
-    it('should not send anything if there are no next tracks for a room', () => {
+    it('should not update track if there is no next track', () => {
       MvpAPI.sendNextTrack(room2.id);
-      expect(sent.length).to.equal(0);
+      const msg = sent.pop();
+      expect(msg.eventName).to.equal('room');
+      expect(msg.data[room2.id].track).to.equal(null);
     });
     it('should send updated timeStamp of when track started + trackDelay', () => {
       MvpAPI.sendNextTrack(room1.id);

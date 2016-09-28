@@ -47,10 +47,17 @@ MvpAPI.clearAll = () => {
 /* waitForTrack takes a roomId and sendsTheNext track, waits for it to complete and repeats */
 const waitTime = 5000; // in msec
 function waitForTrack(roomId) {
+  const queue = DjQueue.getByRoom(roomId);
+  if (queue === null) {
+    console.error('Error in waitForTrack. No DjQueue associated with Room.');
+    return;
+  }
+  if (queue.currentTrack !== null) {
+    return; // Already have a song and should have a setTimeout event for next track
+  }
   MvpAPI.sendNextTrack(roomId);
   const track = DjQueue.getByRoom(roomId).currentTrack;
   if (track === null) {
-    console.log('No track available');
     return;
   }
   setTimeout(() => {
@@ -102,10 +109,11 @@ MvpAPI.enqueue = (socket) => {
     return;
   }
   DjQueue.enqueue(queue.id, userId);
-  // // !!!
+  // !!!
   // if (queue.active.length === 0) {
   //   waitForTrack(room.id);
   // }
+  // !!!
   Connection.sendAll('room', MvpAPI.getState());
 };
 
@@ -163,6 +171,8 @@ MvpAPI.sendNextTrack = (roomId) => {
   const track = DjQueue.nextTrack(queue.id);
   if (track === null) {
     // No next track for this room
+    // Send state in case dj was removed
+    Connection.sendAll('room', MvpAPI.getState());
     return;
   }
   const playlist = Playlist.getByUserId(dj);
@@ -200,8 +210,12 @@ MvpAPI.attachListeners = (io) => {
     // On a connection event, add handlers to socket
     socket.on('login', MvpAPI.login.bind(null, socket));
     socket.on('join', MvpAPI.join.bind(null, socket));
-    // socket.on('enqueue', MvpAPI.enqueue.bind(null, socket));
-    socket.on('enqueue', MvpAPI.enqueue.bind(null, socket));
+    socket.on('enqueue', () => {
+      MvpAPI.enqueue(socket);
+      const userId = Connection.getUserId(socket);
+      const room = Room.getByUserId(userId);
+      waitForTrack(room.id);
+    });
     socket.on('dequeue', MvpAPI.dequeue.bind(null, socket));
     socket.on('disconnect', MvpAPI.disconnect.bind(null, socket));
     socket.on('playlist', MvpAPI.updatePlaylist.bind(null, socket));

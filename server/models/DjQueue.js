@@ -59,7 +59,12 @@ DjQueue.next = function next(id) {
     queue.currentDj = 0;
   }
   const dj = queue.active[queue.currentDj];
-  queue.currentDj = ((queue.currentDj + 1) % queue.active.length);
+  if (queue.active.length === 0) {
+    // We can't mod by zero...
+    queue.currentDj = 0;
+  } else {
+    queue.currentDj = ((queue.currentDj + 1) % queue.active.length);
+  }
   return dj !== undefined ? dj : null;
 };
 
@@ -75,11 +80,11 @@ DjQueue.nextTrack = function nextTrack(id) {
   // Grab DJ's playlist
   const playlist = Playlist.getByUserId(dj);
   // if playlist is empty...
-  if (playlist.tracks.length === 0) {
+  if (playlist === null || playlist.tracks.length === 0) {
     // remove the DJ from queue
     DjQueue.removeUser(id, dj);
     // Set currentDj index back by one in order to keep current position
-    queues[id].currentDj -= 1;
+    queues[id].currentDj = Math.max(0, queues[id].currentDj - 1);
     // Try again!
     queues[id].currentTrack = DjQueue.nextTrack(id);
     return queues[id].currentTrack;

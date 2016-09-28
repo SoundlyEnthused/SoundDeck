@@ -50,12 +50,12 @@ export default class App extends React.Component {
   }
 
   componentDidMount(){
-    let seeds = require('../../test/client/seeds');
-    this.roomData = seeds.rooms;
-    let state = this.getRoomStates();
-    state.roomIds = Object.keys(this.roomData);
-    state.roomNames = Object.keys(this.roomData).map(roomId => (this.roomData[roomId].name));
-    this.setState(state);
+    // let seeds = require('../../test/client/seeds');
+    // this.roomData = seeds.rooms;
+    // let state = this.getRoomStates();
+    // state.roomIds = Object.keys(this.roomData);
+    // state.roomNames = Object.keys(this.roomData).map(roomId => (this.roomData[roomId].name));
+    // this.setState(state);
   }
 
   componentDidUpdate() {
@@ -66,11 +66,11 @@ export default class App extends React.Component {
 
   updateOnEvent(data) {
     console.log("app event", data);
-    // this.roomData = data;
-    // let state = this.getRoomStates();
-    // state.roomIds = Object.keys(this.roomData);
-    // state.roomNames = Object.keys(this.roomData).map(roomId => (this.roomData[roomId].name));
-    // this.setState(state);
+    this.roomData = data;
+    let state = this.getRoomStates();
+    state.roomIds = Object.keys(this.roomData);
+    state.roomNames = Object.keys(this.roomData).map(roomId => (this.roomData[roomId].name));
+    this.setState(state);
   }
 
   getRoomStates() {
