@@ -19,13 +19,14 @@ MvpAPI.getState = () => {
     state[room.id] = {
       name: room.name,
       djs: queue.active.map(dj => User.get(dj)),
-      currentDj: queue.currentDj,
+      currentDj: queue.previousDj, // queue.currentDj,
       // User's array should not include DJ's
       users: room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)),
       djMaxNum: queue.maxDjs,
       track: queue.currentTrack !== null ? queue.currentTrack.songId : null,
       timeStamp: queue.currentTrack !== null ? queue.currentTrack.startTime + MvpAPI.trackDelay : 0,
     };
+    console.log('MvpAPI.currentTrack: ', queue.currentTrack);
   });
   return state;
 };
@@ -48,6 +49,7 @@ MvpAPI.clearAll = () => {
 const waitTime = 500; // in msec
 function waitForTrack(roomId) {
   const queue = DjQueue.getByRoom(roomId);
+  console.log('waitForTrack queue: ', JSON.stringify(queue));
   if (queue === null) {
     console.error('Error in waitForTrack. No DjQueue associated with Room.');
     return;
@@ -57,6 +59,7 @@ function waitForTrack(roomId) {
   if (track === null) {
     return;
   }
+  console.log('waitForTrack track: ', JSON.stringify(track));
   setTimeout(() => {
     waitForTrack(roomId);
   }, track.duration + waitTime);
@@ -140,6 +143,7 @@ MvpAPI.updatePlaylist = (socket, tracks) => {
   } else {
     Playlist.update(playlist.id, tracks);
   }
+  console.log('MvpAPI.updatePlaylist updated to: ', JSON.stringify(Playlist.getByUserId(userId)));
 };
 /* handler for getting Playlist for user */
 MvpAPI.getPlaylist = (socket) => {
@@ -170,7 +174,9 @@ MvpAPI.sendNextTrack = (roomId) => {
     return;
   }
   // Send playlist back to dj
-  Connection.send(dj, 'playlist', playlist.tracks);
+  if (playlist !== null) {
+    Connection.send(dj, 'playlist', playlist.tracks);
+  }
   Connection.sendAll('room', MvpAPI.getState());
 };
 
