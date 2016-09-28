@@ -12,7 +12,6 @@ import seeds from '../seeds';
 // describe 
 describe('<App>', () => {
   let wrapper = null;
-
   describe('<Nav>', () => {
     // mount <App/> before running each describe statement below:
     before(() => {
@@ -57,7 +56,6 @@ describe('<App>', () => {
         });
     }); // end describe 'signed in'
   }); // end Nav()
- 
   describe('<Lobby>', () => {
     before(() => {
       wrapper = mount(<App />);

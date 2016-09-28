@@ -278,5 +278,26 @@ describe('DjQueue', () => {
       expect(DjQueue.get(queue.id).active).to.not.include(u3);
       expect(DjQueue.get(queue.id).waiting).to.not.include(u3);
     });
+    it('should remove DJs that don\'t have playlists', () => {
+      const u3 = 3;
+      DjQueue.enqueue(queue.id, u1);
+      DjQueue.enqueue(queue.id, u3);
+      DjQueue.enqueue(queue.id, u2);
+      expect(DjQueue.nextTrack(queue.id).songId).to.deep.equal(tracks1[0].songId);
+      // Should skip u3
+      expect(DjQueue.nextTrack(queue.id).songId).to.deep.equal(tracks2[0].songId);
+      // Should reove u3 from active and waiting
+      expect(DjQueue.get(queue.id).active).to.not.include(u3);
+      expect(DjQueue.get(queue.id).waiting).to.not.include(u3);
+      expect(DjQueue.get(queue.id).active).to.include(u1);
+      expect(DjQueue.get(queue.id).active).to.include(u2);
+    });
+    it('should remove a DJ that enqueues but has no playlist', () => {
+      const u4 = 4;
+      DjQueue.enqueue(queue.id, u4);
+      expect(DjQueue.get(queue.id).active).to.include(u4)
+      DjQueue.nextTrack(queue.id);
+      expect(DjQueue.get(queue.id).active).to.not.include(u4)
+    });
   });
 });
