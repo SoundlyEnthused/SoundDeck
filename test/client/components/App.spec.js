@@ -5,78 +5,79 @@ import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 import App from '../../../client/components/App';
 import seeds from '../seeds';
+
 // describe() is a strictly visual function => it formats output to
 // be more readable; can organize tests with different describe() functions
 
+// describe 
 describe('<App>', () => {
   let wrapper = null;
   describe('<Nav>', () => {
+    // mount <App/> before running each describe statement below:
     before(() => {
       wrapper = mount(<App />);
     });
-    describe('not signed in', () => {
-      it('renders a nav bar', () => {
+    describe('user not signed in:', () => {
+      it('displays a navigation bar', () => {
         expect(wrapper.find('nav').length).to.equal(1);
       });
-      it('renders a login button when user is not signed in', () => {
+      it('displays a login button', () => {
         expect(wrapper.find('#LoginButton').length).to.equal(1);
       });
-      it('does NOT render lobby button when user is not signed in', () => {
+      it('does NOT display a lobby button', () => {
         expect(wrapper.find('#LobbyButton').length).to.equal(0);
       });
-      it('does NOT render playlist button when user is not signed in', () => {
+      it('does NOT display a playlist button', () => {
         expect(wrapper.find('#PlaylistButton').length).to.equal(0);
       });
-    });
-    describe('signed in', () => {
+    }); // end describe 'not signed in'
+
+    describe('user signed in:', () => {
       let me = null;
       before(() => {
         me = seeds.user;
         wrapper.setState({ userData: me });
       });
-      it('does NOT render a login button when user is signed in', () => {
-        expect(wrapper.find('#LoginButton').length).to.equal(0);
-      });
-      it('renders the username when user is signed in', () => {
-        expect(wrapper.find('.navbar--signedIn').length).to.equal(1);
-        expect(wrapper.find('.navbar--signedIn').html()).to.include(me.username);
-      });
-      it('renders lobby button when user is signed in', () => {
-        expect(wrapper.find('#LobbyButton').length).to.equal(1);
-      });
-      it('renders playlist button when user is signed in', () => {
-        expect(wrapper.find('#PlaylistButton').length).to.equal(1);
-      });
-    });
-  });
-
+        it('displays a navigation bar', () => {
+          expect(wrapper.find('nav').length).to.equal(1);
+        });
+        it('does NOT display a login button', () => {
+          expect(wrapper.find('#LoginButton').length).to.equal(0);
+        });
+        it('displays a lobby button', () => {
+          expect(wrapper.find('#LobbyButton').length).to.equal(1);
+        });
+        it('displays a playlist button', () => {
+          expect(wrapper.find('#PlaylistButton').length).to.equal(1);
+        });
+        it('displays the user\'s Soundcloud username', () => {
+          expect(wrapper.find('.navbar--signedIn').length).to.equal(1);
+          expect(wrapper.find('.navbar--signedIn').html()).to.include(me.username);
+        });
+    }); // end describe 'signed in'
+  }); // end Nav()
   describe('<Lobby>', () => {
     before(() => {
       wrapper = mount(<App />);
     });
     describe('not signed in', () => {
-      it('Lobby should be collapse', () => {
-        expect(wrapper.find('#lobby').hasClass('in')).to.equal(false);
-      });
-    });
-    describe('singed in', () => {
-      let me = null;
-      before(() => {
-        me = seeds.user;
-        wrapper.setState({ userData: me });
-      });
-
-      // describe('before room select', () => {
-      //   it('Lobby should NOT be collapse', () => {
-      //     expect(wrapper.find('#lobby').hasClass('in')).to.equal(true);
-      //   });
-      // });
-      // describe('after room select', () => {
-
-      // });
+      it('lobby should collapse', () => {
+        expect(wrapper.find('#lobby').hasClass('collapse')).to.equal(true);
+      })
     })
+  }); // end Lobby()
+}); // end App()
+
+/* Enzyme test to see if a function is called on a button click and passed the right arguments
+  it('calls onCompleteChange handler with the right arguments when clicked', () => {
+    const spy = sinon.spy();
+    const item = mockItem();
+    const wrapper = shallow(<ToDoItem item={item} onCompleteChange={spy} />);
+    wrapper.find('.item-button').simulate('click');
+    expect(spy.calledOnce).to.be.true;
+    expect(spy.calledWith(item, false)).to.be.true;
   });
-});
+*/
 
 // describe('App functions', () => {
 //   describe('joinRoom', () => {
