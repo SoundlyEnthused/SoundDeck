@@ -68,6 +68,9 @@
     "browserify",
     "express"
   ],
+  "engines": {
+    "node" : "6.2.1"
+  },
   "bugs": {
     "url": "https://github.com/mindeavor/node-catapult/issues"
   },
