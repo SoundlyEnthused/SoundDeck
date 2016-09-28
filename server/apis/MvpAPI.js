@@ -26,7 +26,6 @@ MvpAPI.getState = () => {
       track: queue.currentTrack !== null ? queue.currentTrack.songId : null,
       timeStamp: queue.currentTrack !== null ? queue.currentTrack.startTime + MvpAPI.trackDelay : 0,
     };
-    console.log('MvpAPI.currentTrack: ', queue.currentTrack);
   });
   return state;
 };

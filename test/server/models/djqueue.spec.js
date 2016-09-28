@@ -254,6 +254,15 @@ describe('DjQueue', () => {
       expect(Playlist.get(p1.id).tracks[0].songId).to.equal(tracks1[1].songId);
       DjQueue.nextTrack(queue.id);
       expect(Playlist.get(p1.id).tracks[0].songId).to.equal(tracks1[0].songId);
+      DjQueue.nextTrack(queue.id);
+      expect(Playlist.get(p1.id).tracks[0].songId).to.equal(tracks1[1].songId);
+    });
+    it('should work with only one track and dj', () => {
+      Playlist.update(p1.id, [{ songId: 5, duration: 2300 }]);
+      console.log(Playlist.get(p1.id));
+      expect(Playlist.get(p1.id).tracks[0].songId).to.equal(5);
+      DjQueue.nextTrack(queue.id);
+      expect(Playlist.get(p1.id).tracks[0].songId).to.equal(5);
     });
     it('should rotate DJs', () => {
       DjQueue.enqueue(queue.id, u1);
@@ -307,9 +316,9 @@ describe('DjQueue', () => {
     it('should remove a DJ that enqueues but has no playlist', () => {
       const u4 = 4;
       DjQueue.enqueue(queue.id, u4);
-      expect(DjQueue.get(queue.id).active).to.include(u4)
+      expect(DjQueue.get(queue.id).active).to.include(u4);
       DjQueue.nextTrack(queue.id);
-      expect(DjQueue.get(queue.id).active).to.not.include(u4)
+      expect(DjQueue.get(queue.id).active).to.not.include(u4);
     });
   });
 });
