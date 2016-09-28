@@ -57,100 +57,48 @@ export default class Room extends React.Component {
           _this.player.currentTime = timeDiff;
         }
 
+        // we may not need this now that we're using requestAnimationFrame
+        // window.setInterval(function() {
+        //     _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
+        // }, 250);
 
-
-
-        // var self = this;
-        // var analyser;
-        // var audioCtx = new (window.AudioContext || window.webkitAudioContext);
-        // var streamData = new Uint8Array(128);
-        // var playStream = function(streamUrl) {
-        //     // get the input stream from the audio element
-        //     player.addEventListener('ended', function(){
-        //         self.directStream('coasting');
-        //     });
-        //     player.setAttribute('src', streamUrl);
-        //     player.play();
-        // }
-
-        // analyser = audioCtx.createAnalyser();
-        // analyser.fftSize = 256;
-        // player.crossOrigin = "anonymous";
-        // var source = audioCtx.createMediaElementSource(player);
-        // source.connect(analyser);
-        // analyser.connect(audioCtx.destination);
-        // var sampleAudioStream = function() {
-        //     analyser.getByteFrequencyData(streamData);
-        //     // calculate an overall volume value
-        //     var total = 0;
-        //     for (var i = 0; i < 80; i++) { // get the volume from the first 80 bins, else it gets too loud with treble
-        //         total += streamData[i];
-        //     }
-        //     console.log(total);
-        // };
-        // setInterval(sampleAudioStream, 20);
-
-
-
-
-        window.setInterval(function() {
-            _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
-        }, 250);
-
-        var image = sound.artwork_url ? sound.artwork_url : sound.user.avatar_url; // if no track artwork exists, use the user's avatar.
+        const image = sound.artwork_url ? sound.artwork_url : sound.user.avatar_url; // if no track artwork exists, use the user's avatar.
         _this.infoImage.setAttribute('src', image);
         _this.infoImage.setAttribute('alt', sound.user.username);
         _this.infoArtist.innerHTML = sound.user.username;
         _this.infoTrack.innerHTML = sound.title;
 
 
+        const ctx = new AudioContext();
+        const audioSrc = ctx.createMediaElementSource(player);
+        const analyser = ctx.createAnalyser();
 
-
-
-
-        var ctx = new AudioContext();
-        // var audio = document.getElementById('myAudio');
-        var audioSrc = ctx.createMediaElementSource(player);
-        var analyser = ctx.createAnalyser();
-        
-        // we have to connect the MediaElementSource with the analyser 
         audioSrc.connect(analyser);
         audioSrc.connect(ctx.destination);
 
-        // we could configure the analyser: e.g. analyser.fftSize (for further infos read the spec)
-        // analyser.fftSize = 128;
+        const frequencyData = new Uint8Array(analyser.frequencyBinCount);
 
-        // frequencyBinCount tells you how many values you'll receive from the analyser
-        var frequencyData = new Uint8Array(analyser.frequencyBinCount);
-      
-        // we're ready to receive some data!
-        // loop
+        const bars = document.getElementsByClassName('bar');
 
-        var bars = document.getElementsByClassName('bar');
         function renderFrame() {
           requestAnimationFrame(renderFrame);
-          // update data in frequencyData
+
           analyser.getByteFrequencyData(frequencyData);
-          // render frame based on values in frequencyData
-          //console.log(analyser.frequencyBinCount, frequencyData);
-          for (var i = 0; i < 32; i++) {
-            var h = ((frequencyData[i]) / 256) * 100;
+
+          // loop through divs in visualizer and render heights
+          for (let i = 0; i < 32; i++) {
+            let h = ((frequencyData[i]) / 256) * 100;
             h = h * Math.sin(i/10);
             bars[i].style.height =  h < 100 ? h + '%' : '100%';
             if (i === 31) {
                 bars[0].style.height = h + '%';
             }
           }
+
+          // update play position in player UI
+          _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
         }
         renderFrame();
-
-
-
-
-
-
-
-
       }
     });
   }
