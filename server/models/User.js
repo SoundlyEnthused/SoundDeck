@@ -7,6 +7,7 @@ User.create = function create(id, username, avatar_url) {
     id,
     username,
     avatar_url,
+    likes: 0,
   };
   users[id] = user;
   return user;

@@ -46,6 +46,16 @@ ServerAPI.dequeue = () => {
   ServerAPI.socket.emit('dequeue');
 };
 
+ServerAPI.upvote = (currentDJ, track) => {
+  console.log('Server API upvote', currentDJ, track);
+  ServerAPI.socket.emit('upvote', { currentDJ: currentDJ.Id, track });
+};
+
+ServerAPI.downvote = (songId) => {
+  // console.log('Server API dequeueDJ', user);
+  ServerAPI.socket.emit('downvote', { songId });
+};
+
 // tracks => [{ songId: ele.songId, duration: ele.duration }, etc...]
 ServerAPI.updatePlaylist = (tracks) => {
   ServerAPI.socket.emit('playlist', tracks);

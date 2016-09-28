@@ -41,13 +41,13 @@ export default class Room extends React.Component {
     // check current time vs. time stamp
     const timeDiff = (Date.now() - this.state.timeStamp) / 1000;
 
-    SC.get(`/tracks/${this.state.track}`).then(function(sound) {
+    SC.get(`/tracks/${this.state.track}`).then((sound) => {
       if (sound.errors) {
-        console.log("Error", sound.errors);
+        console.log('Error', sound.errors);
       } else {
         console.log('sound object', sound);
 
-        player.crossOrigin = "anonymous";
+        player.crossOrigin = 'anonymous';
         player.setAttribute('src', sound.stream_url + '?client_id=' + process.env.CLIENT_ID);
         player.play();
 
@@ -176,11 +176,17 @@ export default class Room extends React.Component {
   // }
 
   upvote() {
-    var djList = this.state.djs;
-    djList[this.state.currentDj].likes = djList[this.state.currentDj].likes + 1 || 1;
-    this.setState({
-      djs: djList,
-    });
+    const djList = this.state.djs;
+    const currentDjObj = djList[this.state.currentDj];
+    if (currentDjObj) {
+      const currentDjId = currentDjObj.id;
+      if (currentDjId) {
+        this.props.ServerAPI.upvote(currentDjId, this.state.track);
+      }
+    }
+    // this.setState({
+    //   djs: djList,
+    // });
   }
 
   downvote() {
@@ -270,7 +276,11 @@ export default class Room extends React.Component {
               <img src="" alt="" id="infoImage" className="player--image" />
               <h2 id="infoArtist" className="player--artist" />
               <h3 id="infoTrack" className="player--track" />
+<<<<<<< da9fcaf74c6112c87f8e389824d148065d83c7ce
               <audio id="player" loop autoPlay preload></audio>
+=======
+              <audio id="player" autoPlay preload />
+>>>>>>> wire upvote front end
               <div className="progress player--progress">
                 <div
                   className="progress-bar progress-bar-primary progress-bar-striped active"
