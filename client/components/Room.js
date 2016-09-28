@@ -57,6 +57,42 @@ export default class Room extends React.Component {
           _this.player.currentTime = timeDiff;
         }
 
+
+
+
+        // var self = this;
+        // var analyser;
+        // var audioCtx = new (window.AudioContext || window.webkitAudioContext);
+        // var streamData = new Uint8Array(128);
+        // var playStream = function(streamUrl) {
+        //     // get the input stream from the audio element
+        //     player.addEventListener('ended', function(){
+        //         self.directStream('coasting');
+        //     });
+        //     player.setAttribute('src', streamUrl);
+        //     player.play();
+        // }
+
+        // analyser = audioCtx.createAnalyser();
+        // analyser.fftSize = 256;
+        // player.crossOrigin = "anonymous";
+        // var source = audioCtx.createMediaElementSource(player);
+        // source.connect(analyser);
+        // analyser.connect(audioCtx.destination);
+        // var sampleAudioStream = function() {
+        //     analyser.getByteFrequencyData(streamData);
+        //     // calculate an overall volume value
+        //     var total = 0;
+        //     for (var i = 0; i < 80; i++) { // get the volume from the first 80 bins, else it gets too loud with treble
+        //         total += streamData[i];
+        //     }
+        //     console.log(total);
+        // };
+        // setInterval(sampleAudioStream, 20);
+
+
+
+
         window.setInterval(function() {
             _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
         }, 250);
@@ -66,6 +102,55 @@ export default class Room extends React.Component {
         _this.infoImage.setAttribute('alt', sound.user.username);
         _this.infoArtist.innerHTML = sound.user.username;
         _this.infoTrack.innerHTML = sound.title;
+
+
+
+
+
+
+        var ctx = new AudioContext();
+        // var audio = document.getElementById('myAudio');
+        var audioSrc = ctx.createMediaElementSource(player);
+        var analyser = ctx.createAnalyser();
+        
+        // we have to connect the MediaElementSource with the analyser 
+        audioSrc.connect(analyser);
+        audioSrc.connect(ctx.destination);
+
+        // we could configure the analyser: e.g. analyser.fftSize (for further infos read the spec)
+        // analyser.fftSize = 128;
+
+        // frequencyBinCount tells you how many values you'll receive from the analyser
+        var frequencyData = new Uint8Array(analyser.frequencyBinCount);
+      
+        // we're ready to receive some data!
+        // loop
+
+        var bars = document.getElementsByClassName('bar');
+        function renderFrame() {
+          requestAnimationFrame(renderFrame);
+          // update data in frequencyData
+          analyser.getByteFrequencyData(frequencyData);
+          // render frame based on values in frequencyData
+          //console.log(analyser.frequencyBinCount, frequencyData);
+          for (var i = 0; i < 32; i++) {
+            var h = ((frequencyData[i]) / 256) * 100;
+            h = h * Math.sin(i/10);
+            bars[i].style.height =  h < 100 ? h + '%' : '100%';
+            if (i === 31) {
+                bars[0].style.height = h + '%';
+            }
+          }
+        }
+        renderFrame();
+
+
+
+
+
+
+
+
       }
     });
   }
@@ -192,12 +277,51 @@ export default class Room extends React.Component {
             }
             </div>
 
+            <div className="visualizer">
+              <div id="spectrum">
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+              </div>
+            </div>
 
             <div className="player">
               <img src="" alt="" id="infoImage" className="player--image" />
               <h2 id="infoArtist" className="player--artist" />
               <h3 id="infoTrack" className="player--track" />
-              <audio id="player" autoPlay preload></audio>
+              <audio id="player" loop autoPlay preload></audio>
               <div className="progress player--progress">
                 <div
                   className="progress-bar progress-bar-primary progress-bar-striped active"
