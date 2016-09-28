@@ -7,7 +7,7 @@ const User = require('../models/User');
 const MvpAPI = {};
 
 /* Delay to insert between tracks times */
-MvpAPI.trackDelay = 1000;
+MvpAPI.trackDelay = 500;
 
 /* Bundle the state of all Rooms and DjQueues into one Object */
 MvpAPI.getState = () => {
@@ -45,15 +45,12 @@ MvpAPI.clearAll = () => {
 
 // TODO: Test this!
 /* waitForTrack takes a roomId and sendsTheNext track, waits for it to complete and repeats */
-const waitTime = 5000; // in msec
+const waitTime = 500; // in msec
 function waitForTrack(roomId) {
   const queue = DjQueue.getByRoom(roomId);
   if (queue === null) {
     console.error('Error in waitForTrack. No DjQueue associated with Room.');
     return;
-  }
-  if (queue.currentTrack !== null) {
-    return; // Already have a song and should have a setTimeout event for next track
   }
   MvpAPI.sendNextTrack(roomId);
   const track = DjQueue.getByRoom(roomId).currentTrack;
@@ -168,6 +165,7 @@ MvpAPI.sendNextTrack = (roomId) => {
     return;
   }
   const dj = queue.active[queue.currentDj];
+  const playlist = Playlist.getByUserId(dj);
   const track = DjQueue.nextTrack(queue.id);
   if (track === null) {
     // No next track for this room
@@ -175,7 +173,7 @@ MvpAPI.sendNextTrack = (roomId) => {
     Connection.sendAll('room', MvpAPI.getState());
     return;
   }
-  const playlist = Playlist.getByUserId(dj);
+  // Send playlist back to dj
   Connection.send(dj, 'playlist', playlist.tracks);
   Connection.sendAll('room', MvpAPI.getState());
 };
@@ -214,7 +212,10 @@ MvpAPI.attachListeners = (io) => {
       MvpAPI.enqueue(socket);
       const userId = Connection.getUserId(socket);
       const room = Room.getByUserId(userId);
-      waitForTrack(room.id);
+      const queue = DjQueue.getByRoom(room.id);
+      if (queue !== null && queue.currentTrack === null) {
+        waitForTrack(room.id);
+      }
     });
     socket.on('dequeue', MvpAPI.dequeue.bind(null, socket));
     socket.on('disconnect', MvpAPI.disconnect.bind(null, socket));
