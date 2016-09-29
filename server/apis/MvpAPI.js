@@ -90,6 +90,15 @@ MvpAPI.join = (socket, data) => {
     return;
   }
   const userId = Connection.getUserId(socket);
+  // Remove from DjQueue on room exit
+  const room = Room.getByUserId(userId);
+  if (room !== null) {
+    const queue = DjQueue.getByRoom(room.id);
+    if (queue !== null) {
+      // TODO: optimize?
+      DjQueue.removeUser(queue.id, userId);
+    }
+  }
   Room.join(data.roomId, userId);
   Connection.sendAll('room', MvpAPI.getState());
 };

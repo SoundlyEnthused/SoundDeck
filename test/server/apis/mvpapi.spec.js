@@ -282,6 +282,17 @@ describe('MvpAPI', () => {
       expect(msg.data[room1.id].users.length).to.equal(1);
       expect(msg.data[room2.id].users.length).to.equal(0);
     });
+    it('should remove a user from the DjQueue if they join another room', () => {
+      MvpAPI.join(socket1, { roomId: room2.id });
+      sent = [];
+      MvpAPI.enqueue(socket1);
+      let msg = sent.pop();
+      expect(msg.data[room2.id].djs[0].id).to.equal(user1);
+      sent = [];
+      MvpAPI.join(socket1, { roomId: room1.id });
+      msg = sent.pop();
+      expect(msg.data[room2.id].djs[0]).to.equal(null);
+    });
   });
   describe('disconnect', () => {
     it('should be a function', () => {
