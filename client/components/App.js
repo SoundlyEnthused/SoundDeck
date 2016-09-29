@@ -8,6 +8,7 @@ import Playlist from './Playlist';
 import Room from './Room';
 import Nav from './Nav';
 import Lobby from './Lobby';
+import Profile from './Profile';
 import Auth from './Auth';
 import ServerAPI from '../models/ServerAPI';
 /* globals $ */
@@ -146,6 +147,7 @@ export default class App extends React.Component {
           createRoom={this.createRoom}
         />
         <Playlist updatePlaylistLength={this.updatePlaylistLength} />
+        <Profile username={this.state.userData.username} avatar={this.state.userData.avatar_url} />
         {
           this.state.currentRoom ? (
             <Room

@@ -7,6 +7,7 @@
   "rules": {
     "max-len": 0,
     "react/forbid-prop-types": 1,
-    "arrow-body-style": 1
+    "arrow-body-style": 1,
+    "class-methods-use-this": 1
   }
 }

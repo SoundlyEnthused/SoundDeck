@@ -6,12 +6,20 @@ export default class Nav extends React.Component {
   static toggleLobby() {
     $('#lobby').collapse('toggle');
     $('#playlist').collapse('hide');
+    $('#profile').collapse('hide');
   }
 
   // Toggles the playlist id element to 'active' in CSS => displays Playlist
   static togglePlaylist() {
     $('#playlist').collapse('toggle');
     $('#lobby').collapse('hide');
+    $('#profile').collapse('hide');
+  }
+
+  static toggleProfile() {
+    $('#profile').collapse('toggle');
+    $('#lobby').collapse('hide');
+    $('#playlist').collapse('hide');
   }
 
   constructor(props) {
@@ -51,7 +59,7 @@ export default class Nav extends React.Component {
   toggleSignedIn() {
     // If user signs-in, displays their Soundcloud username in the nav bar
     if (this.props.userData) {
-      return <div className="navbar--signedIn"> { this.props.userData.username } </div>;
+      return <button id="profileBtn" className="btn btn-default navbar--profile" onClick={Nav.toggleProfile} data-toggle="collapse" data-target="#profile" aria-expanded="false"> { this.props.userData.username } </button>;
     }
     // Displays the Login button
     return <button className="btn btn-default" id="LoginButton" onClick={this.props.loggingIn}> Login </button>;

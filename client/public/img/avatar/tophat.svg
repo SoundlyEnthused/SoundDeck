@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 20.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1"
+	 id="svg4443" inkscape:version="0.48.2 r9819" sodipodi:docname="New document 9" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg"
+	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000"
+	 style="enable-background:new 0 0 1000 1000;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#7F219E;stroke:#000000;}
+	.st1{opacity:0.33;fill:url(#ha_x5F_hi_1_);}
+	.st2{opacity:0.32;}
+	.st3{opacity:0.67;}
+</style>
+<path id="hat_1_" class="st0" d="M988.4,570.2c-6.6-62.3-75.4-85.6-140-52c-7.3,1.5-14.5,2.8-21.5,3.7C785,383.5,782.7,222,780,62.2
+	c-226.1-17.6-473.6,18-695.8,95.3c58.6,161.4,103.7,319.7,99.4,466.6l0,0c-265-5-194.5,308.2,96.6,247.1c16.7-3.3,33.3-7.7,49.8-13
+	c133.3-34.5,221.7-71.1,290-109.4C883.2,769.5,1003.2,690.5,988.4,570.2z"/>
+<linearGradient id="ha_x5F_hi_1_" gradientUnits="userSpaceOnUse" x1="-226.9672" y1="604.2112" x2="-153.8485" y2="621.0279" gradientTransform="matrix(3.8656 0 0 -3.8656 1190.535 2724.8816)">
+	<stop  offset="0" style="stop-color:#000000"/>
+	<stop  offset="0.4875" style="stop-color:#6B6B6B"/>
+	<stop  offset="1" style="stop-color:#000000"/>
+</linearGradient>
+<path id="ha_x5F_hi" inkscape:connector-curvature="0" sodipodi:nodetypes="ccccc" class="st1" d="M324,659.8
+	c40.4,11.7,178.5-15.7,374.9-66.4c-34.5-179,78.6-61.2-102.9-534.2c-161.8,8.8-270.3,30.7-373,56.2L324,659.8z"/>
+<path id="ribbon" inkscape:connector-curvature="0" sodipodi:nodetypes="ccccc" d="M181.5,668.2c-1.6,40.9-3.2,86.1-8.3,111.1
+	c148.2,20,246.4-16.5,382.6-42.9c0,0,53.4-34.1,106.2-76.4L765,577.7C566.8,613.6,411,670.3,181.5,668.2z"/>
+<path id="brim_x5F_shadow" inkscape:connector-curvature="0" sodipodi:nodetypes="cssccc" class="st2" d="M326.5,859.1
+	c82.7-26.3,182.8-88.5,286.5-162.2c73.3-52.1,143.5-117.1,219.2-168.9c68.7-47.1,149.1-25.4,156.3,42.2
+	c-46-20.3-89.1-18.2-127.8,5.6C711.9,679.1,652.3,775.5,326.5,859.1L326.5,859.1z"/>
+<path id="hat_x5F_shadow" class="st3" d="M988.4,570c-46-20.3-89.1-18.2-127.8,5.6C773.7,636,717.2,694.1,620,748.6c0,0,0,0,0,0
+	C883.2,769.3,1003.2,690.3,988.4,570z"/>
+</svg>
