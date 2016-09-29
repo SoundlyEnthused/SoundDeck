@@ -15,7 +15,7 @@ h1 {
   align-items: stretch;
   flex-wrap: wrap;
   position: relative;
-  z-index: 999;
+  z-index: 998;
 }
 
 .vote--meter {
@@ -73,7 +73,7 @@ h1 {
 .player {
   overflow: auto;
   position: relative;
-  z-index: 999;
+  z-index: 998;
   background: rgba(0,0,0,0.53);
   padding-right: 15px;
 }
