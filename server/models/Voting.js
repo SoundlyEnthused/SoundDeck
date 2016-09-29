@@ -45,6 +45,7 @@ Voting.clearAll = function clearAll() {
   votingIdsByRoom = {};
   nextId = 0;
 };
+
 Voting.get = function get(id) {
   return votings[id];
 };
@@ -56,9 +57,11 @@ Voting.upvote = function upvote(roomId, userId, currentDJ, track) {
       if (voting.voted[userId] === 'upvote') {
         return;
       }
-      // remove downvote?
+      // remove downvote? update giant object?
+      voting.downvoteCount -= 1;
     }
     User.get(currentDJ).likes = User.get(currentDJ).likes + 1;
+    // update giant object?
     voting.voted[userId] = 'upvote';
   }
 };
@@ -74,11 +77,9 @@ Voting.downvote = function downvote(roomId, userId, currentDJ, track) {
         User.get(currentDJ).likes = User.get(currentDJ).likes - 1;
       }
     }
-    // create downvote
     voting.downvoteCount += 1;
     if (voting.downvoteCount / voting.totalCount > skipRatio) {
       // skip track
-
       voting.downvotes[currentDJ] += 1;
       if (voting.downvotes[currentDJ] > mercy) {
         // kickout the DJ
@@ -97,13 +98,27 @@ Voting.newTrack = function newTrack(roomId, totalCount, track) {
   voting.totalCount = totalCount;
 };
 
-Voting.DJenqueue = function DJenqueue (roomId, newDJ) {
+Voting.DJenqueue = function DJenqueue(roomId, djList) {
   const voting = votings[votingIdsByRoom[roomId]];
-  voting.downvotes[newDJ] = 0;
+  djList.forEach((dj) => {
+    if (dj != null && !(dj.id in voting.downvotes)) {
+      voting.downvotes[dj] = 0;
+    }
+  });
 };
 
-Voting.DJdequeue = function DJdequeue(roomId, oldDJ) {
+Voting.DJdequeue = function DJdequeue(roomId, djList) {
   const voting = votings[votingIdsByRoom[roomId]];
-  delete voting.downvotes[oldDJ];
+  Object.keys(voting.downvotes).forEach((key) => {
+    if (djList.indexOf(key) < 0) {
+      delete voting.downvotes[key];
+    }
+  });
+
+  djList.forEach((dj) => {
+    if (dj != null && !(dj.id in voting.downvotes)) {
+      voting.downvotes[dj] = 0;
+    }
+  });
 };
 module.exports = Voting;
