@@ -14,6 +14,7 @@ DjQueue.create = function create(roomId, maxDjs = 4) {
     waiting: [],
     maxDjs,
     currentDj: 0,
+    previousDj: -1,
     currentTrack: null,
   };
   nextId += 1;
@@ -58,7 +59,15 @@ DjQueue.next = function next(id) {
   if (queue.currentDj >= queue.active.length) {
     queue.currentDj = 0;
   }
+  if (queue.currentDj === queue.previousDj
+    && queue.active.length > queue.currentDj + 1) {
+    // Another user has joined since song start
+    // This case should only happen when currentDj is 0
+    queue.currentDj += 1;
+  }
+  queue.previousDj = queue.currentDj;
   const dj = queue.active[queue.currentDj];
+  // update current dj
   if (queue.active.length === 0) {
     // We can't mod by zero...
     queue.currentDj = 0;
@@ -105,8 +114,14 @@ DjQueue.removeUser = function removeUser(id, userId) {
   // Move users from waiting to active if we removed a user and have waiting
   if (queue.active.length < length) {
     if (queue.waiting.length > 0) {
+      // Promote next waiting user to DJ
       queue.active.push(queue.waiting.shift());
     }
+    // if (queue.currentDj >= queue.active.length) {
+    //   // Reset currentDj if there are no more after removed user
+    //   console.log('reset current dj')
+    //   queue.currentDj = 0;
+    // }
     return; // We can exit as user was an active DJ and thus isn't waiting
   }
   queue.waiting = queue.waiting.filter(uid => uid !== userId);

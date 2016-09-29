@@ -455,6 +455,20 @@ describe('MvpAPI', () => {
       expect(msg.eventName).to.equal('room');
       expect(msg.data[room1.id].track).to.equal(tracks1[1].songId);
     });
+    xit('should allow dj\'s to leave the queue and maintain order', () => {
+      MvpAPI.sendNextTrack(room1.id);
+      let msg = sent.pop();
+      expect(msg.eventName).to.equal('room');
+      expect(msg.data[room1.id].track).to.equal(tracks1[0].songId);
+      MvpAPI.dequeue(socket2);
+      // Grab track from next DJ
+      sent = [];
+      MvpAPI.sendNextTrack(room1.id);
+      msg = sent.pop();
+      expect(msg.eventName).to.equal('room');
+      expect(msg.data[room1.id].track).to.equal(tracks1[1].songId);
+      // Test addition
+    });
     it('should send rotated playlist to the current DJ', () => {
       // Grab track from first DJ
       MvpAPI.sendNextTrack(room1.id);
