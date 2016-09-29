@@ -50,32 +50,34 @@ Voting.get = function get(id) {
   return votings[id];
 };
 
+Voting.getByRoom = function get(roomId) {
+  return votings[votingIdsByRoom[roomId]];
+};
+
 Voting.upvote = function upvote(roomId, userId, currentDJ, track) {
   const voting = votings[votingIdsByRoom[roomId]];
+  console.log(voting);
   if (voting.track === track) {
     if (userId in voting.voted) {
       if (voting.voted[userId] === 'upvote') {
         return;
       }
-      // remove downvote? update giant object?
       voting.downvoteCount -= 1;
     }
     User.get(currentDJ).likes = User.get(currentDJ).likes + 1;
-    // update giant object?
     voting.voted[userId] = 'upvote';
   }
 };
 
 Voting.downvote = function downvote(roomId, userId, currentDJ, track) {
   const voting = votings[votingIdsByRoom[roomId]];
+  console.log('downvote voting', voting)
   if (voting.track === track) {
     if (userId in voting.voted) {
       if (voting.voted[userId] === 'downvote') {
         return;
       }
-      if (voting.voted[userId] === 'upvote') {
-        User.get(currentDJ).likes = User.get(currentDJ).likes - 1;
-      }
+      User.get(currentDJ).likes = User.get(currentDJ).likes - 1;
     }
     voting.downvoteCount += 1;
     if (voting.downvoteCount / voting.totalCount > skipRatio) {
@@ -85,13 +87,13 @@ Voting.downvote = function downvote(roomId, userId, currentDJ, track) {
         // kickout the DJ
       }
     }
-
     voting.voted[userId] = 'downvote';
   }
 };
 
 Voting.newTrack = function newTrack(roomId, totalCount, track) {
   const voting = votings[votingIdsByRoom[roomId]];
+  console.log('new track voting', roomId, totalCount, track, voting)
   voting.track = track;
   voting.downvoteCount = 0;
   voting.voted = {};
