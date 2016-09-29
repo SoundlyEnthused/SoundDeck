@@ -100,6 +100,11 @@ DjQueue.nextTrack = function nextTrack(id) {
   return queues[id].currentTrack;
 };
 
+DjQueue.clearTrack = function skipTrackfunction(id) {
+  const queue = queues[id];
+  queue.currentTrack = null;
+};
+
 DjQueue.removeUser = function removeUser(id, userId) {
   const queue = queues[id];
   if (!queue) {

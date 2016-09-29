@@ -173,7 +173,21 @@ describe('DjQueue', () => {
       expect(DjQueue.get(id).currentTrack.songId).to.equal(1);
       DjQueue.removeUser(id, u1);
       expect(DjQueue.get(id).currentTrack).to.equal(null);
-
+    });
+  });
+  describe('clearTrack', () => {
+    it('should be a function', () => {
+      expect(DjQueue.clearTrack).to.be.a('function');
+    });
+    it('should set the current track to null', () => {
+      const id = DjQueue.create(1, 4).id;
+      const u1 = 1;
+      Playlist.create(u1, [{ songId: 5, duration: 2300 }]);
+      DjQueue.enqueue(id, u1);
+      DjQueue.nextTrack(id);
+      expect(DjQueue.get(id).currentTrack.songId).to.equal(5);
+      DjQueue.clearTrack(id);
+      expect(DjQueue.get(id).currentTrack).to.equal(null);
     });
   });
   describe('next', () => {
