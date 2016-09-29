@@ -9,7 +9,7 @@ import seeds from '../seeds';
 global.jQuery = jquery;
 global.$ = jquery;
 require('bootstrap-sass');  // import doesn't work for some reason
-
+/* globals describe it before beforeEach expect */
 describe('<Room />', () => {
   const roomData = seeds.createRoom('METAL', 2, 15);
   const djs = roomData.djs;
@@ -63,7 +63,7 @@ describe('<Room />', () => {
   });
 
   describe('Player', () => {
-    it('should have an iframe element', ()=> {
+    it('should have an iframe element', () => {
       const iframe = wrapper.find('iframe');
       expect(iframe).to.be.defined;
       // expect(wrapper.find('#soundcloudPlayer').is('iframe')).to.equal(true);
@@ -105,7 +105,7 @@ describe('<Room />', () => {
         nextProps = { djs: djsNew };
         wrapper.setProps(nextProps);
         expect(wrapper.state('isDJ')).to.equal(true);
-        djsNew = djsNew.filter((dj) => { return dj.id !== wrapper.props().userId; });
+        djsNew = djsNew.filter(dj => dj.id !== wrapper.props().userId);
         nextProps = { djs: djsNew };
 
         wrapper.setProps(nextProps);
@@ -148,4 +148,3 @@ describe('<Room />', () => {
     });
   });
 });
-

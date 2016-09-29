@@ -153,8 +153,9 @@ export default class Room extends React.Component {
   }
 
   processProps(nextProps) {
-    const djArray = this.processDjs(nextProps.djs, nextProps.djMaxNum);
-    const isDJ = nextProps.djs.map(dj => dj.id).includes(this.props.userId);
+    // const djArray = this.processDjs(nextProps.djs, nextProps.djMaxNum);
+    const djArray = nextProps.djs;
+    const isDJ = nextProps.djs.map(dj => dj !== null ? dj.id : null).includes(this.props.userId);
     return {
       name: nextProps.name,
       track: nextProps.track,
@@ -166,13 +167,13 @@ export default class Room extends React.Component {
     };
   }
 
-  processDjs(djList, djMaxNum) {
-    const djSeats = djList.slice();
-    while (djSeats.length < djMaxNum) {
-      djSeats.push(null);
-    }
-    return djSeats;
-  }
+  // processDjs(djList, djMaxNum) {
+  //   const djSeats = djList.slice();
+  //   while (djSeats.length < djMaxNum) {
+  //     djSeats.push(null);
+  //   }
+  //   return djSeats;
+  // }
 
   upvote() {
     var djList = this.state.djs;
