@@ -8,6 +8,16 @@ export default class Room extends React.Component {
     super(props);
     const state = this.processProps(this.props);
     this.state = state;
+    /*  
+      State object includes:
+      { name
+        track
+        timeStamp
+        djs
+        currentDj
+        isDJ
+        users }
+    */
     this.mute = false;  // can't set this.mute as state, otherwise it will render iframe for some reason
     this.player = null; // new html5 audio player
     this.infoImage = null;
@@ -41,13 +51,13 @@ export default class Room extends React.Component {
     // check current time vs. time stamp
     const timeDiff = (Date.now() - this.state.timeStamp) / 1000;
 
-    SC.get(`/tracks/${this.state.track}`).then(function(sound) {
+    SC.get(`/tracks/${this.state.track}`).then((sound) => {
       if (sound.errors) {
-        console.log("Error", sound.errors);
+        console.log('Error', sound.errors);
       } else {
         console.log('sound object', sound);
 
-        player.crossOrigin = "anonymous";
+        player.crossOrigin = 'anonymous';
         player.setAttribute('src', sound.stream_url + '?client_id=' + process.env.CLIENT_ID);
         player.play();
 
@@ -153,8 +163,9 @@ export default class Room extends React.Component {
   }
 
   processProps(nextProps) {
-    const djArray = this.processDjs(nextProps.djs, nextProps.djMaxNum);
-    const isDJ = nextProps.djs.map(dj => dj.id).includes(this.props.userId);
+    // const djArray = this.processDjs(nextProps.djs, nextProps.djMaxNum);
+    const djArray = nextProps.djs;
+    const isDJ = nextProps.djs.map(dj => dj !== null ? dj.id : null).includes(this.props.userId);
     return {
       name: nextProps.name,
       track: nextProps.track,
@@ -163,19 +174,20 @@ export default class Room extends React.Component {
       currentDj: nextProps.currentDj,
       isDJ,
       users: nextProps.users,
+      downvoteCount: nextProps.downvoteCount,
     };
   }
 
-  processDjs(djList, djMaxNum) {
-    const djSeats = djList.slice();
-    while (djSeats.length < djMaxNum) {
-      djSeats.push(null);
-    }
-    return djSeats;
-  }
+  // processDjs(djList, djMaxNum) {
+  //   const djSeats = djList.slice();
+  //   while (djSeats.length < djMaxNum) {
+  //     djSeats.push(null);
+  //   }
+  //   return djSeats;
+  // }
 
   upvote() {
-    var djList = this.state.djs;
+    const djList = this.state.djs;
     // djList is an array of objects.
     // Each object contains the following information:
     // { avatar_url : ________,
@@ -185,12 +197,32 @@ export default class Room extends React.Component {
     // }
     console.log('this.state.currentDj = ', this.state.currentDj);
 
-    const currentDjObj = djList(this.state.currentDj)
-
+    // Define currentDJ
+    const currentDjObj = djList[this.state.currentDj];
+    // Define currentTrack
+    const currentTrack = this.state.track;
+    console.log('currentTrack = ', currentTrack);
+    // Call server with currentDJ_ID and currentTrack_ID
+    if (currentDjObj && currentDjObj.id && currentTrack) {
+      this.props.ServerAPI.upvote(currentDjObj.id, currentTrack);
+    }
 
 
     /*
-    
+
+    =======
+   
+    const djList = this.state.djs;
+    const currentDjObj = djList[this.state.currentDj];
+    if (currentDjObj) {
+      const currentDjId = currentDjObj.id;
+      if (currentDjId) {
+        this.props.ServerAPI.upvote(currentDjId, this.state.track);
+      }
+    }
+     >>>>>>> 3eb783ae9a823ce5187c598d7d86a15e81eb45f3
+
+
     // make call to server
     this.props.ServerAPI.upvote();
 
@@ -200,12 +232,21 @@ export default class Room extends React.Component {
       djs: djList,
     });
     */
+
   }
 
   downvote() {
-    this.setState({
-      downvotes: this.state.downvotes + 1 || 1,
-    });
+    // this.setState({
+    //   downvotes: this.state.downvotes + 1 || 1,
+    // });
+    const djList = this.state.djs;
+    const currentDjObj = djList[this.state.currentDj];
+    if (currentDjObj) {
+      const currentDjId = currentDjObj.id;
+      if (currentDjId) {
+        this.props.ServerAPI.downvote(currentDjId, this.state.track);
+      }
+    }
   }
 
   render() {
@@ -310,10 +351,10 @@ export default class Room extends React.Component {
                   <div
                     className="progress-bar progress-bar-danger progress-bar-striped active"
                     role="progressbar"
-                    aria-valuenow={this.state.downvotes}
+                    aria-valuenow={this.state.downvoteCount}
                     aria-valuemin="0"
-                    aria-valuemax="5"
-                    style={{ width: `${(this.state.downvotes / 5) * 100}%` }}
+                    aria-valuemax={this.state.users.length + this.state.djs.filter(d => d).length}
+                    style={{ width: `${(this.state.downvoteCount / (this.state.users.length + this.state.djs.filter(d => d).length)) * 100}%` }}
                   />
                 </div>
               </div>

@@ -3,6 +3,7 @@ const Room = require('../models/Room');
 const DjQueue = require('../models/DjQueue');
 const Playlist = require('../models/Playlist');
 const User = require('../models/User');
+const Voting = require('../models/Voting');
 
 const MvpAPI = {};
 
@@ -15,16 +16,18 @@ MvpAPI.getState = () => {
   Room.all().forEach((room) => {
     // Get the DjQueue associated with this room
     const queue = DjQueue.getByRoom(room.id);
+    const voting = Voting.getByRoom(room.id);
     // Build up the state object entry from related Room and DjQueue models
     state[room.id] = {
       name: room.name,
       djs: queue.active.map(dj => User.get(dj)),
-      currentDj: queue.previousDj, // queue.currentDj,
+      currentDj: queue.currentDj,
       // User's array should not include DJ's
       users: room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)),
       djMaxNum: queue.maxDjs,
       track: queue.currentTrack !== null ? queue.currentTrack.songId : null,
       timeStamp: queue.currentTrack !== null ? queue.currentTrack.startTime + MvpAPI.trackDelay : 0,
+      downvoteCount: voting.downvoteCount,
     };
   });
   return state;
@@ -33,6 +36,7 @@ MvpAPI.getState = () => {
 MvpAPI.createRoom = (name) => {
   const room = Room.create(name);
   DjQueue.create(room.id);
+  Voting.create(room.id);
   return room;
 };
 
@@ -41,6 +45,7 @@ MvpAPI.clearAll = () => {
   Room.clearAll();
   DjQueue.clearAll();
   Playlist.clearAll();
+  Voting.clearAll();
 };
 
 // TODO: Test this!
@@ -106,7 +111,9 @@ MvpAPI.enqueue = (socket) => {
     return;
   }
   DjQueue.enqueue(queue.id, userId);
-  Connection.sendAll('room', MvpAPI.getState());
+  const roomState = MvpAPI.getState();
+  Voting.DJenqueue(room.id, roomState[room.id].djs);
+  Connection.sendAll('room', roomState);
 };
 
 /* Handler for event to dequeue DJ */
@@ -127,7 +134,9 @@ MvpAPI.dequeue = (socket) => {
     return;
   }
   DjQueue.removeUser(queue.id, userId);
-  Connection.sendAll('room', MvpAPI.getState());
+  const roomState = MvpAPI.getState();
+  Voting.DJenqueue(room.id, roomState[room.id].djs);
+  Connection.sendAll('room', roomState);
 };
 
 /* handler for updating Playlist */
@@ -159,8 +168,10 @@ MvpAPI.sendNextTrack = (roomId) => {
     console.error('MvpAPI.sendNextTrack error: Room has no corresponding DjQueue');
     return;
   }
-  const dj = queue.active[queue.currentDj];
+  // const dj = queue.active[queue.currentDj];
   const track = DjQueue.nextTrack(queue.id);
+  const updatedQueue = DjQueue.get(queue.id);
+  const dj = updatedQueue.active[updatedQueue.currentDj];
   const playlist = Playlist.getByUserId(dj);
   if (track === null) {
     // No next track for this room
@@ -172,6 +183,34 @@ MvpAPI.sendNextTrack = (roomId) => {
   if (playlist !== null) {
     Connection.send(dj, 'playlist', playlist.tracks);
   }
+  Voting.newTrack(roomId, track);
+  const roomState = MvpAPI.getState();
+  const totalUsers = roomState[roomId].users.length + roomState[roomId].djs.filter(d => d).length;
+  Voting.updateTotalUser(roomId, totalUsers);
+  Connection.sendAll('room', roomState);
+};
+
+/* Handler for event to upvote for DJ */
+MvpAPI.upvote = (socket, data) => {
+  // User must be logged in, in order to join
+  if (!Connection.isRegistered(socket)) {
+    return;
+  }
+  const userId = Connection.getUserId(socket);
+  const room = Room.getByUserId(userId);
+  Voting.upvote(room.id, userId, data.currentDJ, data.track);
+  Connection.sendAll('room', MvpAPI.getState());
+};
+
+/* Handler for event to downvote for song */
+MvpAPI.downvote = (socket, data) => {
+  // User must be logged in, in order to join
+  if (!Connection.isRegistered(socket)) {
+    return;
+  }
+  const userId = Connection.getUserId(socket);
+  const room = Room.getByUserId(userId);
+  Voting.downvote(room.id, userId, data.currentDJ, data.track);
   Connection.sendAll('room', MvpAPI.getState());
 };
 
@@ -217,6 +256,8 @@ MvpAPI.attachListeners = (io) => {
     socket.on('dequeue', MvpAPI.dequeue.bind(null, socket));
     socket.on('disconnect', MvpAPI.disconnect.bind(null, socket));
     socket.on('playlist', MvpAPI.updatePlaylist.bind(null, socket));
+    socket.on('upvote', MvpAPI.upvote.bind(null, socket));
+    socket.on('downvote', MvpAPI.downvote.bind(null, socket));
   });
 };
 

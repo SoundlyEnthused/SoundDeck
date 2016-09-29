@@ -7,13 +7,14 @@ User.create = function create(id, username, avatar_url) {
     id,
     username,
     avatar_url,
+    likes: 0,
   };
   users[id] = user;
   return user;
 };
 
 User.get = function get(id) {
-  return users[id];
+  return users[id] === undefined ? null : users[id];
 };
 
 module.exports = User;
