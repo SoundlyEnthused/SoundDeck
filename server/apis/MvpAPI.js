@@ -3,6 +3,7 @@ const Room = require('../models/Room');
 const DjQueue = require('../models/DjQueue');
 const Playlist = require('../models/Playlist');
 const User = require('../models/User');
+const Voting = require('../models/Voting')
 
 const MvpAPI = {};
 
@@ -180,6 +181,29 @@ MvpAPI.sendNextTrack = (roomId) => {
   Connection.sendAll('room', MvpAPI.getState());
 };
 
+/* Handler for event to upvote for DJ */
+MvpAPI.upvote = (socket) => {
+  // User must be logged in, in order to join
+  if(!Connection.isRegistered(socket)) {
+    return;
+  }
+  Voting.upvote(currentDJ, currentTrack);
+};
+
+/* Handler for event to downvote for song */
+MvpAPI.downvote = (socket) => {
+  // User must be logged in, in order to join
+  if(!Connection.isRegistered(socket)) {
+    return;
+  }
+};
+
+
+
+
+
+
+
 /* Handler for disconnect event */
 MvpAPI.disconnect = (socket) => {
   if (!Connection.isRegistered(socket)) {
@@ -219,6 +243,8 @@ MvpAPI.attachListeners = (io) => {
     socket.on('dequeue', MvpAPI.dequeue.bind(null, socket));
     socket.on('disconnect', MvpAPI.disconnect.bind(null, socket));
     socket.on('playlist', MvpAPI.updatePlaylist.bind(null, socket));
+    socket.on('upvote', MvpAPI.upvote.bind(null, socket));
+    socket.on('downvote', MvpAPI.downvote.bind(null, socket));
   });
 };
 

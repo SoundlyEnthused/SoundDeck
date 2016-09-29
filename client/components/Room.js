@@ -143,6 +143,7 @@ export default class Room extends React.Component {
 
   upvote() {
     var djList = this.state.djs;
+    console.log("upvote djList = ", djList);
     djList[this.state.currentDj].likes = djList[this.state.currentDj].likes + 1 || 1;
     this.setState({
       djs: djList,
