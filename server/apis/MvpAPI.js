@@ -192,7 +192,6 @@ MvpAPI.sendNextTrack = (roomId) => {
   }
   const roomState = MvpAPI.getState();
   const totalUsers = roomState[roomId].users.length + roomState[roomId].djs.filter(d => d).length;
-  console.log('send next track', totalUsers, roomState[roomId]);
   Voting.newTrack(roomId, totalUsers, roomState[roomId].track);
   Connection.sendAll('room', roomState);
 };
@@ -205,8 +204,7 @@ MvpAPI.upvote = (socket, data) => {
   }
   const userId = Connection.getUserId(socket);
   const room = Room.getByUserId(userId);
-  console.log('mvpapi upvote', data)
-  Voting.upvote(room, userId, data.currentDJ, data.track);
+  Voting.upvote(room.id, userId, data.currentDJ, data.track);
   Connection.sendAll('room', MvpAPI.getState());
 };
 
@@ -216,10 +214,9 @@ MvpAPI.downvote = (socket, data) => {
   if (!Connection.isRegistered(socket)) {
     return;
   }
-  console.log('downvote mvpapi', data)
   const userId = Connection.getUserId(socket);
   const room = Room.getByUserId(userId);
-  Voting.downvote(room, userId, data.currentDJ, data.track);
+  Voting.downvote(room.id, userId, data.currentDJ, data.track);
   Connection.sendAll('room', MvpAPI.getState());
 };
 
