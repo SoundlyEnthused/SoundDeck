@@ -61,7 +61,7 @@ seeds.createRoom = (roomName, djNum, userNum, track) => {
     track: track,
     timeStamp: Date.now() - 120000,
     djs: seeds.djs.slice(0, djNum),
-    currentDj: 2,
+    currentDj: 1,
     djMaxNum: 4,
     users: seeds.users.slice(0, userNum),
     ServerAPI: seeds.ServerAPI,
