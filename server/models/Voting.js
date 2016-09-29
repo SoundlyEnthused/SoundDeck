@@ -1,5 +1,5 @@
 const User = require('./User');
-const DJdequeue = require('./DjQueue');
+const DjQueue = require('./DjQueue');
 
 const Voting = {};
 

@@ -1,5 +1,4 @@
 const Playlist = require('./Playlist');
-const Voting = require('./Voting');
 
 // DjQueue are indexed by roomId
 const DjQueue = {};
