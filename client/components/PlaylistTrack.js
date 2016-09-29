@@ -1,5 +1,6 @@
 import React from 'react';
 import { Sortable } from 'react-sortable';
+import formatDuration from '../utils/formatDuration';
 
 class Track extends React.Component {
   constructor(props) {
@@ -20,7 +21,7 @@ class Track extends React.Component {
       className="playlist--playlist--track list-unstyled list-item firstTrack"
     >
       <button className="remove-btn" onClick={this._clickToRem}>
-        <span className="fa fa-times" /></button>{this.props.title}</li>)
+        <span className="fa fa-times" /></button>{this.props.title} {formatDuration(this.props.duration)}</li>)
     :
       (<li
         {...this.props}
@@ -30,7 +31,7 @@ class Track extends React.Component {
           <span className="fa fa-times" /></button>|
         <button className="moveTop-btn" onClick={this._clickToTop}>
           <span className="fa fa-level-up" aria-hidden="true" /></button>
-        {this.props.title}</li>)
+        {this.props.title} {formatDuration(this.props.duration)}</li>)
     ));
   }
 }
@@ -40,6 +41,7 @@ Track.propTypes = {
   title: React.PropTypes.string.isRequired,
   clickToTop: React.PropTypes.func.isRequired,
   clickToRem: React.PropTypes.func.isRequired,
+  duration: React.PropTypes.number.isRequired,
   isFirst: React.PropTypes.bool,
 };
 

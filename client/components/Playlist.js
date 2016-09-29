@@ -117,6 +117,7 @@ export default class Playlist extends React.Component {
                       clickToTop: this.moveToTop,
                       isFirst: i === 0,
                       id: track.id,
+                      duration: track.duration,
                     }}
                   />
                 )}
@@ -136,6 +137,7 @@ export default class Playlist extends React.Component {
                     <SearchResult
                       key={track.id}
                       id={track.id}
+                      duration={track.duration}
                       title={track.title}
                       clickToAdd={this.addToPlaylist}
                       inPlaylist={track.inPlaylist}
