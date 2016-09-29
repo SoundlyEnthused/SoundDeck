@@ -8,6 +8,16 @@ export default class Room extends React.Component {
     super(props);
     const state = this.processProps(this.props);
     this.state = state;
+    /*  
+      State object includes:
+      { name
+        track
+        timeStamp
+        djs
+        currentDj
+        isDJ
+        users }
+    */
     this.mute = false;  // can't set this.mute as state, otherwise it will render iframe for some reason
     this.player = null; // new html5 audio player
     this.infoImage = null;

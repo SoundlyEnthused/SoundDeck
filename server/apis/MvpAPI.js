@@ -109,7 +109,9 @@ MvpAPI.enqueue = (socket) => {
     return;
   }
   DjQueue.enqueue(queue.id, userId);
-  Connection.sendAll('room', MvpAPI.getState());
+  const roomState = MvpAPI.getState();
+  Voting.DJenqueue(room.id, roomState.djs);
+  Connection.sendAll('room', roomState);
 };
 
 /* Handler for event to dequeue DJ */
@@ -130,7 +132,9 @@ MvpAPI.dequeue = (socket) => {
     return;
   }
   DjQueue.removeUser(queue.id, userId);
-  Connection.sendAll('room', MvpAPI.getState());
+  const roomState = MvpAPI.getState();
+  Voting.DJenqueue(room.id, roomState.djs);
+  Connection.sendAll('room', roomState);
 };
 
 /* handler for updating Playlist */
@@ -177,7 +181,10 @@ MvpAPI.sendNextTrack = (roomId) => {
   if (playlist !== null) {
     Connection.send(dj, 'playlist', playlist.tracks);
   }
-  Connection.sendAll('room', MvpAPI.getState());
+  const roomState = MvpAPI.getState();
+  const totalUsers = roomState.users.length + roomState.djs.filter(d => d).length;
+  Voting.newTrack(roomId, totalUsers, roomState.track);
+  Connection.sendAll('room', roomState);
 };
 
 /* Handler for event to upvote for DJ */
@@ -197,7 +204,6 @@ MvpAPI.downvote = (socket, data) => {
   if (!Connection.isRegistered(socket)) {
     return;
   }
-
 };
 
 /* Handler for disconnect event */
