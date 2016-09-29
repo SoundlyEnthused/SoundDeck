@@ -26,7 +26,7 @@ export default class Nav extends React.Component {
     if (this.props.userData) {
       return (
         <button
-          className="btn btn-default"
+          className="btn btn-nav"
           onClick={Nav.toggleLobby}
           data-toggle="collapse"
           data-target="#lobby"
@@ -42,7 +42,7 @@ export default class Nav extends React.Component {
 
   showPlaylist() {
     if (this.props.userData) {
-      return <button className="btn btn-default" id="PlaylistButton" onClick={Nav.togglePlaylist} data-toggle="collapse" data-target="#playlist" aria-expanded="false"> Playlist </button>;
+      return <button className="btn btn-nav" id="PlaylistButton" onClick={Nav.togglePlaylist} data-toggle="collapse" data-target="#playlist" aria-expanded="false"> Playlist </button>;
     }
     return false;
   }
