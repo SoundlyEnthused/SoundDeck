@@ -159,8 +159,10 @@ MvpAPI.sendNextTrack = (roomId) => {
     console.error('MvpAPI.sendNextTrack error: Room has no corresponding DjQueue');
     return;
   }
-  const dj = queue.active[queue.currentDj];
+  // const dj = queue.active[queue.currentDj];
   const track = DjQueue.nextTrack(queue.id);
+  const updatedQueue = DjQueue.get(queue.id);
+  const dj = updatedQueue.active[updatedQueue.currentDj];
   const playlist = Playlist.getByUserId(dj);
   if (track === null) {
     // No next track for this room
@@ -170,7 +172,10 @@ MvpAPI.sendNextTrack = (roomId) => {
   }
   // Send playlist back to dj
   if (playlist !== null) {
+    console.log('playlist not null');
     Connection.send(dj, 'playlist', playlist.tracks);
+  } else {
+    console.log('playlist is null for dj: ', dj);
   }
   Connection.sendAll('room', MvpAPI.getState());
 };

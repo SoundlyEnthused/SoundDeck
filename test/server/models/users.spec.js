@@ -24,5 +24,8 @@ describe('User', () => {
       expect(User.get(id)).to.be.an('object');
       expect(User.get(id)).to.deep.equal({ id, username: 'coolguy', avatar_url: 'http://www.example.com/avatar.gif' });
     });
+    it('should return null if there is no user for a given id', () => {
+      expect(User.get(1234)).to.equal(null);
+    });
   });
 });
