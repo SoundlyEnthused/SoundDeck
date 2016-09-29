@@ -3,12 +3,21 @@
   border-radius: 0;
   margin-bottom: 0;
   border-color: #000000;
+
   button {
     padding: 16px 12px;
     border-radius: 0;
     border: none;
     background: none;
     color: #9a9a9a;
+  }
+
+
+  .btn-nav[aria-expanded='true'],
+  .btn-nav:hover {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
   }
 }
 
