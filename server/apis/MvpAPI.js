@@ -34,6 +34,7 @@ MvpAPI.getState = () => {
 MvpAPI.createRoom = (name) => {
   const room = Room.create(name);
   DjQueue.create(room.id);
+  Voting.create(room.id);
   return room;
 };
 
@@ -185,7 +186,9 @@ MvpAPI.upvote = (socket, data) => {
   if (!Connection.isRegistered(socket)) {
     return;
   }
-  Voting.upvote(data.currentDjId)
+  const userId = Connection.getUserId(socket);
+  const room = Room.getByUserId(userId);
+  Voting.upvote(room, userId, data.currentDJ, data.track);
 };
 
 /* Handler for event to downvote for song */
