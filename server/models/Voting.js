@@ -1,40 +1,109 @@
 const User = require('./User');
 const Voting = {};
 
-let votings = {};
-let votingsIdsByRoom = {};
-let nextId = 0;
+/*
+  Voting = {
+    votings: { id: {voting}},
+    votingsIdsByRoom: {roomId: votng.id}
+    nextId: 0
+    methods
+  }
 
-Voting.create = function create(roomId, maxDjs = 4) {
+  voting = {
+    id,
+    roomId,
+    track,
+    voted : { userId }
+    djdownvotes: {djId: timescutoff}
+  }
+*/
+
+let votings = {};
+let votingIdsByRoom = {};
+let nextId = 0;
+const skipRatio = 0.3;
+const mercy = 3;
+
+Voting.create = function create(roomId) {
   const voting = {
     roomId,
     id: nextId,
     trackId: null,
+    downvoteCount: 0,
+    totalCount: 1,
     voted: {},
+    downvotes: {},
   };
   nextId += 1;
-  queues[queue.id] = queue;
-  queueIdsByRoom[roomId] = queue.id;
-  return DjQueue.get(queue.id);
-
-  votings[roomId] = voting;
+  votings[voting.id] = voting;
+  votingIdsByRoom[roomId] = voting.id;
   return Voting.get(voting.roomId);
 };
 
-Voting.clearAll = () => {
-  voting = {};
+Voting.clearAll = function clearAll() {
+  votings = {};
+  votingIdsByRoom = {};
+  nextId = 0;
+};
+Voting.get = function get(id) {
+  return votings[id];
 };
 
-Voting.upvote = () => {
-  User.get(djid).likes = User.get(djid).likes + 1;
+Voting.upvote = function upvote(roomId, userId, currentDJ, track) {
+  const voting = votings[votingIdsByRoom[roomId]];
+  if (voting.track === track) {
+    if (userId in voting.voted) {
+      if (voting.voted[userId] === 'upvote') {
+        return;
+      }
+      // remove downvote?
+    }
+    User.get(currentDJ).likes = User.get(currentDJ).likes + 1;
+    voting.voted[userId] = 'upvote';
+  }
 };
 
-Voting.downvote = () => {
+Voting.downvote = function downvote(roomId, userId, currentDJ, track) {
+  const voting = votings[votingIdsByRoom[roomId]];
+  if (voting.track === track) {
+    if (userId in voting.voted) {
+      if (voting.voted[userId] === 'downvote') {
+        return;
+      }
+      if (voting.voted[userId] === 'upvote') {
+        User.get(currentDJ).likes = User.get(currentDJ).likes - 1;
+      }
+    }
+    // create downvote
+    voting.downvoteCount += 1;
+    if (voting.downvoteCount / voting.totalCount > skipRatio) {
+      // skip track
 
+      voting.downvotes[currentDJ] += 1;
+      if (voting.downvotes[currentDJ] > mercy) {
+        // kickout the DJ
+      }
+    }
+
+    voting.voted[userId] = 'downvote';
+  }
 };
 
-Voting.newTrack = (roomId, trackId) => {
-
+Voting.newTrack = function newTrack(roomId, totalCount, track) {
+  const voting = votings[votingIdsByRoom[roomId]];
+  voting.track = track;
+  voting.downvoteCount = 0;
+  voting.voted = {};
+  voting.totalCount = totalCount;
 };
 
+Voting.DJenqueue = function DJenqueue (roomId, newDJ) {
+  const voting = votings[votingIdsByRoom[roomId]];
+  voting.downvotes[newDJ] = 0;
+};
+
+Voting.DJdequeue = function DJdequeue(roomId, oldDJ) {
+  const voting = votings[votingIdsByRoom[roomId]];
+  delete voting.downvotes[oldDJ];
+};
 module.exports = Voting;
