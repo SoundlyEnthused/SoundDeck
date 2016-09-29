@@ -50,14 +50,14 @@ export default class App extends React.Component {
   }
 
   // Seeding for FE dev
-  componentDidMount(){
-    let seeds = require('../../test/client/seeds');
-    this.roomData = seeds.rooms;
-    let state = this.getRoomStates();
-    state.roomIds = Object.keys(this.roomData);
-    state.roomNames = Object.keys(this.roomData).map(roomId => (this.roomData[roomId].name));
-    this.setState(state);
-  }
+  // componentDidMount(){
+  //   let seeds = require('../../test/client/seeds');
+  //   this.roomData = seeds.rooms;
+  //   let state = this.getRoomStates();
+  //   state.roomIds = Object.keys(this.roomData);
+  //   state.roomNames = Object.keys(this.roomData).map(roomId => (this.roomData[roomId].name));
+  //   this.setState(state);
+  // }
 
   componentDidUpdate() {
     if (this.state.userData && !this.state.currentRoom) {
@@ -66,24 +66,26 @@ export default class App extends React.Component {
   }
 
   updateOnEvent(data) {
-    // console.log("app event", data);
-    // this.roomData = data;
-    // let state = this.getRoomStates();
-    // state.roomIds = Object.keys(this.roomData);
-    // state.roomNames = Object.keys(this.roomData).map(roomId => (this.roomData[roomId].name));
-    // this.setState(state);
+    console.log("app event", data);
+    this.roomData = data;
+    let state = this.getRoomStates();
+    state.roomIds = Object.keys(this.roomData);
+    state.roomNames = Object.keys(this.roomData).map(roomId => (this.roomData[roomId].name));
+    this.setState(state);
   }
 
   getRoomStates() {
     let state = {};
     if (this.roomData && this.state.currentRoom && (this.state.currentRoom in this.roomData)) {
-      state.roomName = this.roomData[this.state.currentRoom].name;
-      state.users = this.roomData[this.state.currentRoom].users;
-      state.djs = this.roomData[this.state.currentRoom].djs;
-      state.djMaxNum = this.roomData[this.state.currentRoom].djMaxNum;
-      state.track = this.roomData[this.state.currentRoom].track;
-      state.timeStamp = this.roomData[this.state.currentRoom].timeStamp;
-      state.currentDj = this.roomData[this.state.currentRoom].currentDj;
+      const room = this.roomData[this.state.currentRoom];
+      state.roomName = room.name;
+      state.users = room.users;
+      state.djs = room.djs;
+      state.djMaxNum = room.djMaxNum;
+      state.track = room.track;
+      state.timeStamp = room.timeStamp;
+      state.currentDj = room.currentDj;
+      state.downvoteCount = room.downvoteCount;
     }
     return state;
   }
@@ -122,6 +124,7 @@ export default class App extends React.Component {
               djMaxNum={this.state.djMaxNum}
               currentDj={this.state.currentDj}
               users={this.state.users}
+              downvoteCount={this.state.downvoteCount}
               ServerAPI={ServerAPI}
             />) : null
         }

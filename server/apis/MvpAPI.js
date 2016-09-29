@@ -16,6 +16,7 @@ MvpAPI.getState = () => {
   Room.all().forEach((room) => {
     // Get the DjQueue associated with this room
     const queue = DjQueue.getByRoom(room.id);
+    const voting = Voting.getByRoom(room.id);
     // Build up the state object entry from related Room and DjQueue models
     state[room.id] = {
       name: room.name,
@@ -26,6 +27,7 @@ MvpAPI.getState = () => {
       djMaxNum: queue.maxDjs,
       track: queue.currentTrack !== null ? queue.currentTrack.songId : null,
       timeStamp: queue.currentTrack !== null ? queue.currentTrack.startTime + MvpAPI.trackDelay : 0,
+      downvoteCount: voting.downvoteCount,
     };
   });
   return state;
@@ -117,7 +119,7 @@ MvpAPI.enqueue = (socket) => {
   }
   DjQueue.enqueue(queue.id, userId);
   const roomState = MvpAPI.getState();
-  Voting.DJenqueue(room.id, roomState.djs);
+  Voting.DJenqueue(room.id, roomState[room.id].djs);
   Connection.sendAll('room', roomState);
 };
 
@@ -140,7 +142,7 @@ MvpAPI.dequeue = (socket) => {
   }
   DjQueue.removeUser(queue.id, userId);
   const roomState = MvpAPI.getState();
-  Voting.DJenqueue(room.id, roomState.djs);
+  Voting.DJenqueue(room.id, roomState[room.id].djs);
   Connection.sendAll('room', roomState);
 };
 
@@ -189,8 +191,9 @@ MvpAPI.sendNextTrack = (roomId) => {
     Connection.send(dj, 'playlist', playlist.tracks);
   }
   const roomState = MvpAPI.getState();
-  const totalUsers = roomState.users.length + roomState.djs.filter(d => d).length;
-  Voting.newTrack(roomId, totalUsers, roomState.track);
+  const totalUsers = roomState[roomId].users.length + roomState[roomId].djs.filter(d => d).length;
+  console.log('send next track', totalUsers, roomState[roomId]);
+  Voting.newTrack(roomId, totalUsers, roomState[roomId].track);
   Connection.sendAll('room', roomState);
 };
 
@@ -202,7 +205,9 @@ MvpAPI.upvote = (socket, data) => {
   }
   const userId = Connection.getUserId(socket);
   const room = Room.getByUserId(userId);
+  console.log('mvpapi upvote', data)
   Voting.upvote(room, userId, data.currentDJ, data.track);
+  Connection.sendAll('room', MvpAPI.getState());
 };
 
 /* Handler for event to downvote for song */
@@ -211,6 +216,11 @@ MvpAPI.downvote = (socket, data) => {
   if (!Connection.isRegistered(socket)) {
     return;
   }
+  console.log('downvote mvpapi', data)
+  const userId = Connection.getUserId(socket);
+  const room = Room.getByUserId(userId);
+  Voting.downvote(room, userId, data.currentDJ, data.track);
+  Connection.sendAll('room', MvpAPI.getState());
 };
 
 /* Handler for disconnect event */

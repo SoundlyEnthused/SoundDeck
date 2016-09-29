@@ -174,6 +174,7 @@ export default class Room extends React.Component {
       currentDj: nextProps.currentDj,
       isDJ,
       users: nextProps.users,
+      downvoteCount: nextProps.downvoteCount,
     };
   }
 
@@ -194,15 +195,20 @@ export default class Room extends React.Component {
         this.props.ServerAPI.upvote(currentDjId, this.state.track);
       }
     }
-    // this.setState({
-    //   djs: djList,
-    // });
   }
 
   downvote() {
-    this.setState({
-      downvotes: this.state.downvotes + 1 || 1,
-    });
+    // this.setState({
+    //   downvotes: this.state.downvotes + 1 || 1,
+    // });
+    const djList = this.state.djs;
+    const currentDjObj = djList[this.state.currentDj];
+    if (currentDjObj) {
+      const currentDjId = currentDjObj.id;
+      if (currentDjId) {
+        this.props.ServerAPI.downvote(currentDjId, this.state.track);
+      }
+    }
   }
 
   render() {
@@ -286,11 +292,7 @@ export default class Room extends React.Component {
               <img src="" alt="" id="infoImage" className="player--image" />
               <h2 id="infoArtist" className="player--artist" />
               <h3 id="infoTrack" className="player--track" />
-<<<<<<< da9fcaf74c6112c87f8e389824d148065d83c7ce
               <audio id="player" loop autoPlay preload></audio>
-=======
-              <audio id="player" autoPlay preload />
->>>>>>> wire upvote front end
               <div className="progress player--progress">
                 <div
                   className="progress-bar progress-bar-primary progress-bar-striped active"
@@ -311,10 +313,10 @@ export default class Room extends React.Component {
                   <div
                     className="progress-bar progress-bar-danger progress-bar-striped active"
                     role="progressbar"
-                    aria-valuenow={this.state.downvotes}
+                    aria-valuenow={this.state.downvoteCount}
                     aria-valuemin="0"
-                    aria-valuemax="5"
-                    style={{ width: `${(this.state.downvotes / 5) * 100}%` }}
+                    aria-valuemax={this.state.users.length + this.state.djs.filter(d => d).length}
+                    style={{ width: `${(this.state.downvoteCount / (this.state.users.length + this.state.djs.filter(d => d).length)) * 100}%` }}
                   />
                 </div>
               </div>
