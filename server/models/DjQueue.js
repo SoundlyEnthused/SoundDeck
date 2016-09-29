@@ -76,22 +76,6 @@ DjQueue.next = function next(id) {
   }
   return dj !== undefined ? dj : null;
 };
-// /* Return the id of next DJ in line, or null if there are no DJs */
-// DjQueue.next = function next(id) {
-//   const queue = queues[id];
-//   if (queue.currentDj >= queue.active.length) {
-//     queue.currentDj = 0;
-//   }
-//   const dj = queue.active[queue.currentDj];
-//   // update current dj
-//   if (queue.active.length === 0) {
-//     // We can't mod by zero...
-//     queue.currentDj = 0;
-//   } else {
-//     queue.currentDj = ((queue.currentDj + 1) % queue.active.length);
-//   }
-//   return dj !== undefined ? dj : null;
-// };
 
 /* Retrieve the next track for track change events in a room or return null if none are ready */
 DjQueue.nextTrack = function nextTrack(id) {

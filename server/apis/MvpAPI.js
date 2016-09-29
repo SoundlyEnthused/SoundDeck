@@ -48,7 +48,6 @@ MvpAPI.clearAll = () => {
 const waitTime = 500; // in msec
 function waitForTrack(roomId) {
   const queue = DjQueue.getByRoom(roomId);
-  console.log('waitForTrack queue: ', JSON.stringify(queue));
   if (queue === null) {
     console.error('Error in waitForTrack. No DjQueue associated with Room.');
     return;
@@ -58,7 +57,6 @@ function waitForTrack(roomId) {
   if (track === null) {
     return;
   }
-  console.log('waitForTrack track: ', JSON.stringify(track));
   setTimeout(() => {
     waitForTrack(roomId);
   }, track.duration + waitTime);
@@ -129,7 +127,6 @@ MvpAPI.dequeue = (socket) => {
     return;
   }
   DjQueue.removeUser(queue.id, userId);
-  console.log(JSON.stringify(DjQueue.get(queue.id)));
   Connection.sendAll('room', MvpAPI.getState());
 };
 
@@ -142,7 +139,6 @@ MvpAPI.updatePlaylist = (socket, tracks) => {
   } else {
     Playlist.update(playlist.id, tracks);
   }
-  console.log('MvpAPI.updatePlaylist updated to: ', JSON.stringify(Playlist.getByUserId(userId)));
 };
 /* handler for getting Playlist for user */
 MvpAPI.getPlaylist = (socket) => {
