@@ -1,5 +1,6 @@
+const DjQueue = require('./DjQueue');
 const User = require('./User');
-const DJdequeue = require('./DjQueue');
+
 const Voting = {};
 
 /*
@@ -67,12 +68,10 @@ Voting.upvote = function upvote(roomId, userId, currentDJ, track) {
     User.get(currentDJ).likes = User.get(currentDJ).likes + 1;
     voting.voted[userId] = 'upvote';
   }
-  console.log('voting upvote', voting)
 };
 
 Voting.downvote = function downvote(roomId, userId, currentDJ, track) {
   const voting = votings[votingIdsByRoom[roomId]];
-  console.log('xxxxxxxxxxxxx', voting, voting.track, track)
   if (voting.track === track) {
     if (userId in voting.voted) {
       if (voting.voted[userId] === 'downvote') {
@@ -80,19 +79,18 @@ Voting.downvote = function downvote(roomId, userId, currentDJ, track) {
       }
       User.get(currentDJ).likes = User.get(currentDJ).likes - 1;
     }
-    console.log("HERE")
     voting.downvoteCount += 1;
     if (voting.downvoteCount / voting.totalCount > skipRatio) {
       // skip track
+      DjQueue.clearTrack(DjQueue.getByRoom(roomId).id);
       voting.downvotes[currentDJ] += 1;
       if (voting.downvotes[currentDJ] > mercy) {
         // kickout the DJ
-        DJdequeue.removeUser(currentDJ);
+        DjQueue.removeUser(DjQueue.getByRoom(roomId).id, currentDJ);
       }
     }
     voting.voted[userId] = 'downvote';
   }
-  console.log('voting downvote', voting, track)
 };
 
 Voting.newTrack = function newTrack(roomId, track) {
@@ -100,7 +98,6 @@ Voting.newTrack = function newTrack(roomId, track) {
   voting.track = track.songId;
   voting.downvoteCount = 0;
   voting.voted = {};
-  console.log('voting new track', voting);
 };
 
 Voting.updateTotalUser = function updateTotalUser(roomId, totalCount) {
