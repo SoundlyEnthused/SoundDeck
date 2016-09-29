@@ -28,7 +28,7 @@ Voting.create = function create(roomId) {
   const voting = {
     roomId,
     id: nextId,
-    trackId: null,
+    track: null,
     downvoteCount: 0,
     totalCount: 1,
     voted: {},
@@ -56,7 +56,6 @@ Voting.getByRoom = function get(roomId) {
 
 Voting.upvote = function upvote(roomId, userId, currentDJ, track) {
   const voting = votings[votingIdsByRoom[roomId]];
-  console.log(voting);
   if (voting.track === track) {
     if (userId in voting.voted) {
       if (voting.voted[userId] === 'upvote') {
@@ -71,7 +70,6 @@ Voting.upvote = function upvote(roomId, userId, currentDJ, track) {
 
 Voting.downvote = function downvote(roomId, userId, currentDJ, track) {
   const voting = votings[votingIdsByRoom[roomId]];
-  console.log('downvote voting', voting)
   if (voting.track === track) {
     if (userId in voting.voted) {
       if (voting.voted[userId] === 'downvote') {
@@ -93,7 +91,6 @@ Voting.downvote = function downvote(roomId, userId, currentDJ, track) {
 
 Voting.newTrack = function newTrack(roomId, totalCount, track) {
   const voting = votings[votingIdsByRoom[roomId]];
-  console.log('new track voting', roomId, totalCount, track, voting)
   voting.track = track;
   voting.downvoteCount = 0;
   voting.voted = {};
@@ -104,7 +101,7 @@ Voting.DJenqueue = function DJenqueue(roomId, djList) {
   const voting = votings[votingIdsByRoom[roomId]];
   djList.forEach((dj) => {
     if (dj != null && !(dj.id in voting.downvotes)) {
-      voting.downvotes[dj] = 0;
+      voting.downvotes[dj.id] = 0;
     }
   });
 };
