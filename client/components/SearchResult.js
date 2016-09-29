@@ -1,4 +1,5 @@
 import React from 'react';
+import formatDuration from '../utils/formatDuration';
 
 export default class SearchResult extends React.Component {
   constructor(props) {
@@ -12,16 +13,21 @@ export default class SearchResult extends React.Component {
     }
     this.props.clickToAdd(this.props.id);
   }
-
   render() {
-    // eslint-disable-next-line
-    return <li className={`list-unstyled ${this.props.inPlaylist ? 'inPL' : ''}`} onClick={this._clickToAdd}>{this.props.title}</li>;
+    return (
+      // eslint-disable-next-line
+      <li
+        className={`list-unstyled ${this.props.inPlaylist ? 'inPL' : ''}`}
+        onClick={this._clickToAdd}
+      >{this.props.title} {formatDuration(this.props.duration)}</li>
+    );
   }
 }
 
 SearchResult.propTypes = {
   id: React.PropTypes.number.isRequired,
   title: React.PropTypes.string.isRequired,
+  duration: React.PropTypes.number.isRequired,
   clickToAdd: React.PropTypes.func.isRequired,
   inPlaylist: React.PropTypes.bool.isRequired,
 };
