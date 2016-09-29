@@ -44,22 +44,29 @@ MvpAPI.clearAll = () => {
 };
 
 // TODO: Test this!
-/* waitForTrack takes a roomId and sendsTheNext track, waits for it to complete and repeats */
-const waitTime = 500; // in msec
-function waitForTrack(roomId) {
-  const queue = DjQueue.getByRoom(roomId);
-  if (queue === null) {
-    console.error('Error in waitForTrack. No DjQueue associated with Room.');
-    return;
-  }
-  MvpAPI.sendNextTrack(roomId);
-  const track = DjQueue.getByRoom(roomId).currentTrack;
-  if (track === null) {
-    return;
-  }
-  setTimeout(() => {
-    waitForTrack(roomId);
-  }, track.duration + waitTime);
+function updateTracks() {
+  Room.all().forEach((room) => {
+    const queue = DjQueue.getByRoom(room.id);
+    // There is not a track playing in this room
+    if (queue.currentTrack === null) {
+      // We have a DJ -- someone must have just joined an empty Queue
+      if (queue.active.some(dj => dj !== null)) {
+        MvpAPI.sendNextTrack(room.id);
+      }
+      return;
+    }
+    // Bail early if we don't have any time data
+    if (queue.currentTrack.startTime === undefined
+      || queue.currentTrack.duration === undefined) {
+      console.error('updateTracks Error: no time information for current track');
+      return;
+    }
+    // See if it is time to advance this track
+    const endTime = queue.currentTrack.startTime + queue.currentTrack.duration + MvpAPI.trackDelay;
+    if (Date.now() > endTime) {
+      MvpAPI.sendNextTrack(room.id);
+    }
+  });
 }
 
 /* Socket.io Event Endpoints */
@@ -207,19 +214,13 @@ MvpAPI.attachListeners = (io) => {
     // On a connection event, add handlers to socket
     socket.on('login', MvpAPI.login.bind(null, socket));
     socket.on('join', MvpAPI.join.bind(null, socket));
-    socket.on('enqueue', () => {
-      MvpAPI.enqueue(socket);
-      const userId = Connection.getUserId(socket);
-      const room = Room.getByUserId(userId);
-      const queue = DjQueue.getByRoom(room.id);
-      if (queue !== null && queue.currentTrack === null) {
-        waitForTrack(room.id);
-      }
-    });
+    socket.on('enqueue', MvpAPI.enqueue.bind(null, socket));
     socket.on('dequeue', MvpAPI.dequeue.bind(null, socket));
     socket.on('disconnect', MvpAPI.disconnect.bind(null, socket));
     socket.on('playlist', MvpAPI.updatePlaylist.bind(null, socket));
   });
+  // Kick off repeated task to update tracks
+  setInterval(updateTracks, 100);
 };
 
 module.exports = MvpAPI;
