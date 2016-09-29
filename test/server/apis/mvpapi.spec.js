@@ -138,8 +138,10 @@ describe('MvpAPI', () => {
     it('should make a user an active dj if there are spots available', () => {
       MvpAPI.enqueue(socket1);
       const state = sent[0].data;
-      expect(state[room.id].djs.length).to.equal(1);
       expect(state[room.id].djs[0].id).to.equal(user1);
+      expect(state[room.id].djs[1]).to.equal(null);
+      expect(state[room.id].djs[2]).to.equal(null);
+      expect(state[room.id].djs[3]).to.equal(null);
     });
     it('should do and send nothing if user is not logged in', () => {
       // Create a dummy socket that is not registered
@@ -194,12 +196,14 @@ describe('MvpAPI', () => {
       sent = []; // clear sent messages
       MvpAPI.enqueue(socket2);
       let msg = sent[0];
-      expect(msg.data[room.id].djs.length).to.equal(2);
+      expect(msg.data[room.id].djs[0].id).to.equal(user1);
+      expect(msg.data[room.id].djs[1].id).to.equal(user2);
       sent = []; // clear sent messages
       MvpAPI.dequeue(socket1);
       msg = sent[0];
       expect(msg.eventName).to.equal('room');
-      expect(msg.data[room.id].djs.length).to.equal(1);
+      expect(msg.data[room.id].djs[0]).to.equal(null);
+      expect(msg.data[room.id].djs[1].id).to.equal(user2);
     });
     it('should do and send nothing if user is not logged in', () => {
       // Create a dummy socket that is not registered
@@ -341,12 +345,13 @@ describe('MvpAPI', () => {
       sent = []; // clear sent messages
       MvpAPI.enqueue(socket2);
       let msg = sent.pop();
-      expect(msg.data[room.id].djs.length).to.equal(2);
+      expect(msg.data[room.id].djs[0].id).to.equal(userId1);
+      expect(msg.data[room.id].djs[1].id).to.equal(userId2);
       sent = []; // clear sent messages
       MvpAPI.disconnect(socket1);
       msg = sent.pop();
-      expect(msg.data[room.id].djs.length).to.equal(1);
-      expect(msg.data[room.id].djs[0].id).to.equal(userId2);
+      expect(msg.data[room.id].djs[0]).to.equal(null);
+      expect(msg.data[room.id].djs[1].id).to.equal(userId2);
     });
   });
   describe('updatePlaylist', () => {
@@ -470,9 +475,12 @@ describe('MvpAPI', () => {
       // Test addition
     });
     it('should send rotated playlist to the current DJ', () => {
+      // TODO fix string issue for IDs?
       // Grab track from first DJ
       MvpAPI.sendNextTrack(room1.id);
+      // let msg = sent.find(m => m.eventName === 'playlist');
       let msg = sent.shift();
+      expect(msg).to.not.equal(undefined);
       expect(msg.userId).to.equal(user1);
       expect(msg.eventName).to.equal('playlist');
       expect(msg.data).to.deep.equal([{ songId: 2, duration: 2000 },

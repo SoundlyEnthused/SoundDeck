@@ -10,11 +10,10 @@ DjQueue.create = function create(roomId, maxDjs = 4) {
   const queue = {
     roomId,
     id: nextId,
-    active: [],
+    active: Array(maxDjs).fill(null),
     waiting: [],
     maxDjs,
-    currentDj: 0,
-    previousDj: -1,
+    currentDj: -1,
     currentTrack: null,
   };
   nextId += 1;
@@ -46,35 +45,32 @@ DjQueue.enqueue = function enqueue(id, userId) {
   if (queue.active.includes(userId) || queue.waiting.includes(userId)) {
     return;
   }
-  if (queue.active.length < queue.maxDjs) {
-    queue.active.push(userId);
-  } else {
+  const idx = queue.active.indexOf(null);
+  if (idx === -1) {
     queue.waiting.push(userId);
+  } else {
+    // We have an open slot
+    queue.active[idx] = userId;
   }
 };
 
 /* Return the id of next DJ in line, or null if there are no DJs */
 DjQueue.next = function next(id) {
   const queue = queues[id];
-  if (queue.currentDj >= queue.active.length) {
-    queue.currentDj = 0;
+  let idx = (queue.currentDj + 1) % queue.active.length;
+  const start = idx;
+  while (queue.active[idx] === null) {
+    idx = (idx + 1) % queue.active.length;
+    if (idx === start) {
+      // No Djs :( reset currentDj to -1
+      queue.currentDj = -1;
+      return null;
+    }
   }
-  if (queue.currentDj === queue.previousDj
-    && queue.active.length > queue.currentDj + 1) {
-    // Another user has joined since song start
-    // This case should only happen when currentDj is 0
-    queue.currentDj += 1;
-  }
-  queue.previousDj = queue.currentDj;
+  queue.currentDj = idx;
   const dj = queue.active[queue.currentDj];
-  // update current dj
-  if (queue.active.length === 0) {
-    // We can't mod by zero...
-    queue.currentDj = 0;
-  } else {
-    queue.currentDj = ((queue.currentDj + 1) % queue.active.length);
-  }
-  return dj !== undefined ? dj : null;
+  // return dj !== undefined ? dj : null;
+  return dj;
 };
 
 /* Retrieve the next track for track change events in a room or return null if none are ready */
@@ -109,21 +105,18 @@ DjQueue.removeUser = function removeUser(id, userId) {
   if (!queue) {
     return;
   }
-  const length = queue.active.length;
-  queue.active = queue.active.filter(uid => uid !== userId);
-  // Move users from waiting to active if we removed a user and have waiting
-  if (queue.active.length < length) {
+  const idx = queue.active.indexOf(userId);
+  // Check if users is a DJ
+  if (idx !== -1) {
+    // remove user from DJ spot
+    queue.active[idx] = null;
+    // move next waiting user to newly opened slot
     if (queue.waiting.length > 0) {
-      // Promote next waiting user to DJ
-      queue.active.push(queue.waiting.shift());
+      queue.active[idx] = queue.waiting.shift();
     }
-    // if (queue.currentDj >= queue.active.length) {
-    //   // Reset currentDj if there are no more after removed user
-    //   console.log('reset current dj')
-    //   queue.currentDj = 0;
-    // }
     return; // We can exit as user was an active DJ and thus isn't waiting
   }
+  // User was not a DJ, remove them from waiting instead
   queue.waiting = queue.waiting.filter(uid => uid !== userId);
 };
 

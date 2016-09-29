@@ -30,7 +30,7 @@ describe('DjQueue', () => {
     it('should return an immutable object', () => {
       const queue = DjQueue.create(1);
       queue.active[0] = 'No';
-      expect(DjQueue.get(queue.id).active).to.deep.equal([]);
+      expect(DjQueue.get(queue.id).active).to.deep.equal([null, null, null, null]);
       queue.waiting[0] = 'Really No!';
       expect(DjQueue.get(queue.id).waiting).to.deep.equal([]);
       queue.maxDjs = 99;
@@ -49,7 +49,7 @@ describe('DjQueue', () => {
       const id = DjQueue.create(1).id;
       const queue = DjQueue.get(id);
       queue.active[0] = 'No';
-      expect(DjQueue.get(id).active).to.deep.equal([]);
+      expect(DjQueue.get(id).active).to.deep.equal([null, null, null, null]);
       queue.waiting[0] = 'Really No!';
       expect(DjQueue.get(id).waiting).to.deep.equal([]);
       queue.maxDjs = 99;
@@ -88,14 +88,16 @@ describe('DjQueue', () => {
     });
     it('should add users to a active DJ queue if there are open spots', () => {
       const roomId = 123;
-      const id = DjQueue.create(roomId, 3).id;
+      const id = DjQueue.create(roomId).id;
       const u1 = 1;
       const u2 = 2;
       const u3 = 3;
       DjQueue.enqueue(id, u1);
+      expect(DjQueue.getByRoom(roomId).active).to.deep.equal([u1, null, null, null]);
       DjQueue.enqueue(id, u2);
+      expect(DjQueue.getByRoom(roomId).active).to.deep.equal([u1, u2, null, null]);
       DjQueue.enqueue(id, u3);
-      expect(DjQueue.getByRoom(roomId).active).to.deep.equal([u1, u2, u3]);
+      expect(DjQueue.getByRoom(roomId).active).to.deep.equal([u1, u2, u3, null]);
     });
     it('should add users to waiting queue if all active DJ spots are full', () => {
       const roomId = 123;
@@ -115,9 +117,9 @@ describe('DjQueue', () => {
       let id = DjQueue.create(roomId).id;
       DjQueue.enqueue(id, u1);
       // Check active
-      expect(DjQueue.get(id).active).to.deep.equal([u1]);
+      expect(DjQueue.get(id).active).to.deep.equal([u1, null, null, null]);
       DjQueue.enqueue(id, u1);
-      expect(DjQueue.get(id).active).to.deep.equal([u1]);
+      expect(DjQueue.get(id).active).to.deep.equal([u1, null, null, null]);
       // Check waiting
       id = DjQueue.create(roomId, 0).id;
       DjQueue.enqueue(id, u1);
@@ -134,9 +136,9 @@ describe('DjQueue', () => {
       const id = DjQueue.create(1, 2).id;
       const u1 = 1;
       DjQueue.enqueue(id, u1);
-      expect(DjQueue.get(id).active).to.deep.equal([u1]);
+      expect(DjQueue.get(id).active).to.deep.equal([u1, null]);
       DjQueue.removeUser(id, u1);
-      expect(DjQueue.get(id).active).to.deep.equal([]);
+      expect(DjQueue.get(id).active).to.deep.equal([null, null]);
     });
     it('should remove a user from waiting if user is waiting', () => {
       const id = DjQueue.create(1, 1).id;
@@ -259,7 +261,6 @@ describe('DjQueue', () => {
     });
     it('should work with only one track and dj', () => {
       Playlist.update(p1.id, [{ songId: 5, duration: 2300 }]);
-      console.log(Playlist.get(p1.id));
       expect(Playlist.get(p1.id).tracks[0].songId).to.equal(5);
       DjQueue.nextTrack(queue.id);
       expect(Playlist.get(p1.id).tracks[0].songId).to.equal(5);
@@ -280,11 +281,8 @@ describe('DjQueue', () => {
       DjQueue.enqueue(queue.id, u1);
       DjQueue.enqueue(queue.id, u3);
       DjQueue.enqueue(queue.id, u2);
-      console.log(JSON.stringify(DjQueue.get(queue.id)));
-
       expect(DjQueue.nextTrack(queue.id).songId).to.equal(tracks1[0].songId);
       // Should skip u3
-      console.log(JSON.stringify(DjQueue.get(queue.id)));
       expect(DjQueue.nextTrack(queue.id).songId).to.equal(tracks2[0].songId);
       // Should remove u3 from active and waiting
       expect(DjQueue.get(queue.id).active).to.not.include(u3);
