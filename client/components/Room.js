@@ -176,10 +176,30 @@ export default class Room extends React.Component {
 
   upvote() {
     var djList = this.state.djs;
+    // djList is an array of objects.
+    // Each object contains the following information:
+    // { avatar_url : ________,
+    //   id : ________________,
+    //   likes : _____________,
+    //   username : __________,
+    // }
+    console.log('this.state.currentDj = ', this.state.currentDj);
+
+    const currentDjObj = djList(this.state.currentDj)
+
+
+
+    /*
+    
+    // make call to server
+    this.props.ServerAPI.upvote();
+
+    // increment the value of djList.likes by 1 => will handle on server side
     djList[this.state.currentDj].likes = djList[this.state.currentDj].likes + 1 || 1;
     this.setState({
       djs: djList,
     });
+    */
   }
 
   downvote() {

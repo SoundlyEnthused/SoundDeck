@@ -16,8 +16,6 @@ describe('Voting', () => {
 
 
       // expect fake DJ licks = 1
-      expect.
-
     });
     it('sould allow a user to vote once per song', () => {
 

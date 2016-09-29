@@ -136,6 +136,13 @@ describe('<Room />', () => {
   });
 
   describe('Vote', () => {
+    it('displays a button to upvote a DJ', () => {
+      expect(wrapper.find('#upvote')).to.exist;
+    })
+    it('allows the user to upvote a DJ', () => {
+      wrapper.find('#upvote').simulate('click');
+      expect(wrapper.props().ServerAPI.upvote.calledOnce).to.equal(true);
+    })
 
   });
 

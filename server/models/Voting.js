@@ -3,6 +3,7 @@ const Voting = {};
 // voting { } is an object created for each room
 // this object persists as long as room exists:
 let voting = {};
+let nextId= 0;
 
 Voting.create = function create(roomId, track) {
   console.log('Voting.create roomId = ', roomId);
@@ -13,12 +14,10 @@ Voting.create = function create(roomId, track) {
     id: nextId, // used for testing 
     trackId: track,
     downvoteCount,
-
   	// object 
   	voters: {},
   };
-
-}
+};
 /*
   // ?? nextId
   nextId += 1;

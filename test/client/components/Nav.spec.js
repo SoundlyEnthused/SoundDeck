@@ -6,6 +6,7 @@ import $ from 'jquery';
 
 // describe() is a strictly visual function => it formats output to
 // be more readable; can organize tests with different describe() functions
+/*
 describe('<NAV>', () => {
   it('displays a login button', () => {
     const wrapper = mount(<App />);
@@ -17,4 +18,5 @@ describe('<NAV>', () => {
     expect(wrapper.find('#PlaylistButton')).to.exist;
   });
 });
+*/
 

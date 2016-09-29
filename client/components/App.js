@@ -65,7 +65,7 @@ export default class App extends React.Component {
   }
 
   updateOnEvent(data) {
-    console.log("app event", data);
+    console.log("App updateOnEvent = ", data);
     this.roomData = data;
     let state = this.getRoomStates();
     state.roomIds = Object.keys(this.roomData);
