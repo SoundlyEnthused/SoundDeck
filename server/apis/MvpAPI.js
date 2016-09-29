@@ -190,9 +190,10 @@ MvpAPI.sendNextTrack = (roomId) => {
   if (playlist !== null) {
     Connection.send(dj, 'playlist', playlist.tracks);
   }
+  Voting.newTrack(roomId, track);
   const roomState = MvpAPI.getState();
   const totalUsers = roomState[roomId].users.length + roomState[roomId].djs.filter(d => d).length;
-  Voting.newTrack(roomId, totalUsers, roomState[roomId].track);
+  Voting.updateTotalUser(roomId, totalUsers);
   Connection.sendAll('room', roomState);
 };
 

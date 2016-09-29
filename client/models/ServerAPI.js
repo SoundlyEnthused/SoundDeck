@@ -52,7 +52,7 @@ ServerAPI.upvote = (currentDJ, track) => {
 };
 
 ServerAPI.downvote = (currentDJ, track) => {
-  console.log('Server API upvote', currentDJ, track);
+  console.log('Server API downvote', currentDJ, track);
   ServerAPI.socket.emit('downvote', { currentDJ, track });
 };
 
