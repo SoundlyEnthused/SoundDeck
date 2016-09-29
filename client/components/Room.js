@@ -394,7 +394,11 @@ export default class Room extends React.Component {
                     data-toggle="tooltip"
                     data-likes={user.likes}
                   >
-                    <img src={user.avatar_url} alt={user.username} />
+                      {
+                        localStorage.soundDeck && user.id === this.props.userId ? 
+                          <img src={localStorage.soundDeck} alt={user.username} /> : 
+                          <img src={user.avatar_url} alt={user.username} />
+                      }
                   </div>
                 </div>
                 )

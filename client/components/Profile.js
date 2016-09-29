@@ -61,7 +61,7 @@ export default class Profile extends React.Component {
   }
 
   saveAvatar() {
-    console.log('data', this.canvas.toDataURL());
+    localStorage.soundDeck = this.canvas.toDataURL();
   }
 
   addGlasses() {
