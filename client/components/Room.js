@@ -57,15 +57,48 @@ export default class Room extends React.Component {
           _this.player.currentTime = timeDiff;
         }
 
-        window.setInterval(function() {
-            _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
-        }, 250);
+        // we may not need this now that we're using requestAnimationFrame
+        // window.setInterval(function() {
+        //     _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
+        // }, 250);
 
-        var image = sound.artwork_url ? sound.artwork_url : sound.user.avatar_url; // if no track artwork exists, use the user's avatar.
+        const image = sound.artwork_url ? sound.artwork_url : sound.user.avatar_url; // if no track artwork exists, use the user's avatar.
         _this.infoImage.setAttribute('src', image);
         _this.infoImage.setAttribute('alt', sound.user.username);
         _this.infoArtist.innerHTML = sound.user.username;
         _this.infoTrack.innerHTML = sound.title;
+
+
+        const ctx = new AudioContext();
+        const audioSrc = ctx.createMediaElementSource(player);
+        const analyser = ctx.createAnalyser();
+
+        audioSrc.connect(analyser);
+        audioSrc.connect(ctx.destination);
+
+        const frequencyData = new Uint8Array(analyser.frequencyBinCount);
+
+        const bars = document.getElementsByClassName('bar');
+
+        function renderFrame() {
+          requestAnimationFrame(renderFrame);
+
+          analyser.getByteFrequencyData(frequencyData);
+
+          // loop through divs in visualizer and render heights
+          for (let i = 0; i < 32; i++) {
+            let h = ((frequencyData[i]) / 256) * 100;
+            h = h * Math.sin(i/10);
+            bars[i].style.height =  h < 100 ? h + '%' : '100%';
+            if (i === 31) {
+                bars[0].style.height = h + '%';
+            }
+          }
+
+          // update play position in player UI
+          _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
+        }
+        renderFrame();
       }
     });
   }
@@ -192,12 +225,51 @@ export default class Room extends React.Component {
             }
             </div>
 
+            <div className="visualizer">
+              <div id="spectrum">
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+                <div className="bar" />
+              </div>
+            </div>
 
             <div className="player">
               <img src="" alt="" id="infoImage" className="player--image" />
               <h2 id="infoArtist" className="player--artist" />
               <h3 id="infoTrack" className="player--track" />
-              <audio id="player" autoPlay preload></audio>
+              <audio id="player" loop autoPlay preload></audio>
               <div className="progress player--progress">
                 <div
                   className="progress-bar progress-bar-primary progress-bar-striped active"

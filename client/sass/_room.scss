@@ -14,6 +14,8 @@ h1 {
   justify-content: center;
   align-items: stretch;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 999;
 }
 
 .vote--meter {
@@ -70,6 +72,10 @@ h1 {
 
 .player {
   overflow: auto;
+  position: relative;
+  z-index: 999;
+  background: rgba(0,0,0,0.53);
+  padding-right: 15px;
 }
 
 .player--image {
@@ -190,4 +196,36 @@ h1 {
 .tooltip-inner {
   background: white;
   color: #222;
+}
+.visualizer {
+  position: relative;
+  height: 10px;
+  margin-bottom: 40px;
+}
+
+#spectrum {
+  display: flex;
+  position: absolute;
+  z-index: 888;
+  top: -61px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 150px;
+  .bar {
+    width: 6.25%;
+    margin: 0 3px;
+    height: 0%;
+    background: linear-gradient(to top, #008BA0 0%, #FDE92B 59%, #FD0000 100%);
+    background-size: 100% 150px;
+    background-position: center center;
+    will-change: height;
+    &:first-child {
+      margin-left: 0;
+    }
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 }
