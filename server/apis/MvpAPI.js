@@ -19,7 +19,7 @@ MvpAPI.getState = () => {
     state[room.id] = {
       name: room.name,
       djs: queue.active.map(dj => User.get(dj)),
-      currentDj: queue.previousDj, // queue.currentDj,
+      currentDj: queue.currentDj,
       // User's array should not include DJ's
       users: room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)),
       djMaxNum: queue.maxDjs,
@@ -172,10 +172,7 @@ MvpAPI.sendNextTrack = (roomId) => {
   }
   // Send playlist back to dj
   if (playlist !== null) {
-    console.log('playlist not null');
     Connection.send(dj, 'playlist', playlist.tracks);
-  } else {
-    console.log('playlist is null for dj: ', dj);
   }
   Connection.sendAll('room', MvpAPI.getState());
 };

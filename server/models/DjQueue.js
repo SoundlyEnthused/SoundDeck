@@ -14,7 +14,6 @@ DjQueue.create = function create(roomId, maxDjs = 4) {
     waiting: [],
     maxDjs,
     currentDj: -1,
-    previousDj: -1,
     currentTrack: null,
   };
   nextId += 1;
