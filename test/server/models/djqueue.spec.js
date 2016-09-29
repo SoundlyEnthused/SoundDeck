@@ -164,6 +164,31 @@ describe('DjQueue', () => {
       expect(DjQueue.get(id).active).to.deep.equal([u1, u3]);
       expect(DjQueue.get(id).waiting).to.deep.equal([]);
     });
+    it('should set currentTrack to null if user is the currentDj and they are removed', () => {
+      const id = DjQueue.create(1, 2).id;
+      const u1 = 1;
+      Playlist.create(u1, [{ songId: 1, duration: 1000 }]);
+      DjQueue.enqueue(id, u1);
+      DjQueue.nextTrack(id);
+      expect(DjQueue.get(id).currentTrack.songId).to.equal(1);
+      DjQueue.removeUser(id, u1);
+      expect(DjQueue.get(id).currentTrack).to.equal(null);
+    });
+  });
+  describe('clearTrack', () => {
+    it('should be a function', () => {
+      expect(DjQueue.clearTrack).to.be.a('function');
+    });
+    it('should set the current track to null', () => {
+      const id = DjQueue.create(1, 4).id;
+      const u1 = 1;
+      Playlist.create(u1, [{ songId: 5, duration: 2300 }]);
+      DjQueue.enqueue(id, u1);
+      DjQueue.nextTrack(id);
+      expect(DjQueue.get(id).currentTrack.songId).to.equal(5);
+      DjQueue.clearTrack(id);
+      expect(DjQueue.get(id).currentTrack).to.equal(null);
+    });
   });
   describe('next', () => {
     it('should be a function', () => {

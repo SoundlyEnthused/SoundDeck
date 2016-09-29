@@ -100,6 +100,11 @@ DjQueue.nextTrack = function nextTrack(id) {
   return queues[id].currentTrack;
 };
 
+DjQueue.clearTrack = function skipTrackfunction(id) {
+  const queue = queues[id];
+  queue.currentTrack = null;
+};
+
 DjQueue.removeUser = function removeUser(id, userId) {
   const queue = queues[id];
   if (!queue) {
@@ -110,6 +115,10 @@ DjQueue.removeUser = function removeUser(id, userId) {
   if (idx !== -1) {
     // remove user from DJ spot
     queue.active[idx] = null;
+    // set current track to null if this removed user was current dj
+    if (idx === queue.currentDj) {
+      queue.currentTrack = null;
+    }
     // move next waiting user to newly opened slot
     if (queue.waiting.length > 0) {
       queue.active[idx] = queue.waiting.shift();
