@@ -138,6 +138,9 @@ h1 {
   border-radius: 20px;
   animation: fade .35s;
   animation-delay: .35s;
+  &:empty {
+    padding: 0;
+  }
 }
 
 .crowd--user {
