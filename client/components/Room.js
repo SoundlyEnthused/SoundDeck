@@ -204,11 +204,11 @@ export default class Room extends React.Component {
       const currentDjID = currentDjObj.id;
       // Test if currentDjID exists:
       if (currentDjID) {
-        const currentTrackID = this.state.track;
-        if (currentTrackID) {
-          this.props.ServerAPI.upvote(currentDjID, currentTrackID);
+        const currentTrack = this.state.track;
+        if (currentTrack) {
+          this.props.ServerAPI.upvote(currentDjID, currentTrack);
         } else {
-          console.log('client/Room/upvote() => currentTrackId undefined');
+          console.log('client/Room/upvote() => currentTrack undefined');
         }
       } else {
         console.log('client/Room/upvote() => currentDjID undefined');
@@ -217,7 +217,7 @@ export default class Room extends React.Component {
       console.log('client/Room/upvote() => currentDjObj undefined');
     }
   }
-  
+
   downvote() {
     const djList = this.state.djs;
     const currentDjObj = djList[this.state.currentDj];
@@ -227,11 +227,11 @@ export default class Room extends React.Component {
       const currentDjID = currentDjObj.id;
       // Test if currentDjID exists:
       if (currentDjID) {
-        const currentTrackID = this.state.track;
-        if (currentTrackID) {
-          this.props.ServerAPI.downvote(currentDjID, currentTrackID);
+        const currentTrack = this.state.track;
+        if (currentTrack) {
+          this.props.ServerAPI.downvote(currentDjID, currentTrack);
         } else {
-          console.log('client/Room/downvote() => currentTrackId undefined');
+          console.log('client/Room/downvote() => currentTrack undefined');
         }
       } else {
         console.log('client/Room/downvote() => currentDjID undefined');
