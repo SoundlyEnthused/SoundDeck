@@ -149,11 +149,15 @@ export default class Room extends React.Component {
 
   handleMute() {
     if (this.player.volume === 1) {
-      this.mute = true;
       this.player.volume = 0;
+      this.setState({
+        mute: true,
+      });
     } else if (this.player.volume === 0) {
-      this.mute = false;
       this.player.volume = 1;
+      this.setState({
+        mute: false,
+      });
     }
   }
 
@@ -345,7 +349,7 @@ export default class Room extends React.Component {
                 </button>
 
                 <button className="vote--muteBtn btn btn-default btn-round" onClick={this.handleMute}>
-                  {this.mute ? <span className="fa fa-volume-off" /> : <span className="fa fa-volume-up" /> }
+                  {this.state.mute ? <span className="fa fa-volume-off" /> : <span className="fa fa-volume-up" /> }
                 </button>
               </div>
             </div>
@@ -362,7 +366,7 @@ export default class Room extends React.Component {
                     data-placement="bottom"
                     data-animation="true"
                     data-toggle="tooltip"
-                    data-likes={5}
+                    data-likes={user.likes}
                   >
                     <img src={user.avatar_url} alt={user.username} />
                   </div>
