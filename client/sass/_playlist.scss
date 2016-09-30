@@ -1,17 +1,14 @@
 .playlist {
   width: 100%;
   z-index: 999;
-  color: darkblue;
+  color: $text-color;
   position: absolute;
   // background: rgba(255,255,255,0.8);
   background: linear-gradient(135deg, #ffffff 0%,#c4d7ed 100%);
   -webkit-backdrop-filter: blur(10px);
-}
-
-.list-unstyled:hover {
-    text-decoration: underline;
-    cursor: pointer;
-    color: darkblue;
+  h1 {
+    border-bottom: 1px solid rgba(0,0,0,0.3);
+  }
 }
 
 .remove-btn {
@@ -63,4 +60,40 @@
   text-decoration: none;
   cursor: not-allowed;
   pointer-events: none;
+}
+
+.playlist--form {
+  display: flex;
+  margin-bottom: 20px;
+
+  input {
+    width: 100%;
+    margin-right: 5px;
+  }
+  button {
+
+  }
+}
+.playlist--list,
+.playlist--results {
+  li {
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed #ccc;
+  }
+}
+
+.playlist--results {
+  li {
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+      color: $link-hover-color;
+    }
+  }
+}
+
+.playlist--onDeck {
+  font-size: 20px;
+  margin-top: 20px;
 }

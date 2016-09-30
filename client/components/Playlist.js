@@ -101,8 +101,8 @@ export default class Playlist extends React.Component {
           <h1> Playlist </h1>
           <div className="row">
             <div className="playlist--playlist col-sm-6">
-              <div className="onDeck">{(this.state.playlist.length === 0) ? false : 'Track On Deck: '}</div>
-              <ul className="list">
+              <h2 className="playlist--onDeck">{(this.state.playlist.length === 0) ? false : 'Track On Deck: '}</h2>
+              <ul className="playlist--list list list-unstyled">
                 {this.state.playlist.map((track, i) =>
                   <PlaylistTrack
                     key={track.id}
@@ -125,14 +125,23 @@ export default class Playlist extends React.Component {
             </div>
             <div className="playlist--search col-sm-6">
               <form>
-                <input
-                  type="text"
-                  value={this.state.searchPhrase}
-                  id="playlist--search--input"
-                  onChange={(e) => { this.setState({ searchPhrase: e.target.value }); }}
-                />
-                <button onClick={(e) => { this.search(e); }}>Search</button>
-                <ul>
+                <div className="playlist--form">
+                  <input
+                    type="text"
+                    value={this.state.searchPhrase}
+                    id="playlist--search--input"
+                    className="form-control"
+                    onChange={(e) => { this.setState({ searchPhrase: e.target.value }); }}
+                  />
+                  <button 
+                    className="btn btn-primary"
+                    onClick={(e) => { this.search(e); }}
+                  >
+                    Search
+                  </button>
+                </div>
+
+                <ul className="playlist--results list-unstyled">
                   {this.state.searchResult.map(track =>
                     <SearchResult
                       key={track.id}
