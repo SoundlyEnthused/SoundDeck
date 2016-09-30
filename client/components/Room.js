@@ -176,6 +176,8 @@ export default class Room extends React.Component {
       users: nextProps.users,
       downvoteCount: nextProps.downvoteCount,
     };
+
+    console.log('downvoteCount = ', downvoteCount);
   }
 
   // processDjs(djList, djMaxNum) {
@@ -244,6 +246,12 @@ export default class Room extends React.Component {
       this.props.ServerAPI.downvote(currentDjID, currentTrackID);
     }
   }
+
+  updateProgressBar() {
+
+
+  }
+
 
   render() {
     // console.log('room render', this.state)

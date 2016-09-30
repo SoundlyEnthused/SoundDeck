@@ -4,7 +4,6 @@ import { expect } from 'chai';
 import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 import Room from '../../../client/components/Room';
-//import ServerAPI from '../../../client/models/ServerAPI';
 import seeds from '../seeds';
 
 global.jQuery = jquery;
