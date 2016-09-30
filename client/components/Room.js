@@ -8,7 +8,7 @@ export default class Room extends React.Component {
     super(props);
     const state = this.processProps(this.props);
     this.state = state;
-    /*  
+    /*
       State object includes:
       { name
         track
@@ -51,7 +51,17 @@ export default class Room extends React.Component {
     // check current time vs. time stamp
     const timeDiff = (Date.now() - this.state.timeStamp) / 1000;
 
-    SC.get(`/tracks/${this.state.track}`).then((sound) => {
+    SC.get(`/tracks/${this.state.track}`).catch((err) => {
+      console.log('loading err', err);
+      player.crossOrigin = 'anonymous';
+      player.setAttribute('src', '');
+      player.pause();
+      player.currentTime = 0;
+      _this.infoArtist.innerHTML = 'N/A';
+      _this.trackProgress.style.width = '0';
+      _this.infoTrack.innerHTML = 'No available tracks';
+      _this.infoImage.setAttribute('src', 'img/user.svg');
+    }).then((sound) => {
       if (sound.errors) {
         console.log('Error', sound.errors);
       } else {
@@ -62,7 +72,6 @@ export default class Room extends React.Component {
         player.play();
 
         // if current time is larger than time stamp, skip some par of the song
-        console.log('time diff', timeDiff);
         if (timeDiff > 0) {
           _this.player.currentTime = timeDiff;
         }
@@ -289,7 +298,7 @@ export default class Room extends React.Component {
             </div>
 
             <div className="player">
-              <img src="" alt="" id="infoImage" className="player--image" />
+              <img src="" alt="" id="infoImage" className="player--image" width="100" height="100" />
               <h2 id="infoArtist" className="player--artist" />
               <h3 id="infoTrack" className="player--track" />
               <audio id="player" loop autoPlay preload></audio>
@@ -316,7 +325,7 @@ export default class Room extends React.Component {
                     aria-valuenow={this.state.downvoteCount}
                     aria-valuemin="0"
                     aria-valuemax={this.state.users.length + this.state.djs.filter(d => d).length}
-                    style={{ width: `${(this.state.downvoteCount / (this.state.users.length + this.state.djs.filter(d => d).length)) * 100}%` }}
+                    style={{ width: `${(this.state.downvoteCount / ((this.state.users.length + this.state.djs.filter(d => d).length)) * 0.4) * 100}%` }}
                   />
                 </div>
               </div>

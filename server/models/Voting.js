@@ -3,28 +3,11 @@ const DjQueue = require('./DjQueue');
 
 const Voting = {};
 
-/*
-  Voting = {
-    votings: { id: {voting}},
-    votingsIdsByRoom: {roomId: votng.id}
-    nextId: 0
-    methods
-  }
-
-  voting = {
-    id,
-    roomId,
-    track,
-    voted : { userId }
-    djdownvotes: {djId: timescutoff}
-  }
-*/
-
 let votings = {};
 let votingIdsByRoom = {};
 let nextId = 0;
-const skipRatio = 0.3;
-const mercy = 3;
+const skipRatio = 0.4;
+const mercy = 2;
 
 Voting.create = function create(roomId) {
   const voting = {
