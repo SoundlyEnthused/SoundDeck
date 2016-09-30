@@ -4,7 +4,8 @@
   margin-bottom: 0;
   border-color: #000000;
 
-  button {
+  button,
+  .btn-nav:focus {
     padding: 16px 12px;
     border-radius: 0;
     border: none;
