@@ -196,52 +196,48 @@ export default class Room extends React.Component {
     //   username : __________,
     // }
     console.log('this.state.currentDj = ', this.state.currentDj);
-
-    // Define currentDjID
-    const currentDjID = djList[this.state.currentDj].id;
-    console.log('currentDjID = ', currentDjID);
-    // Define currentTrackID
-    const currentTrackID = this.state.track;
-    console.log('currentTrackID = ', currentTrackID);
-    // Call server with currentDjID and currentTrackID
-    if (currentDjID && currentTrackID) {
-      this.props.ServerAPI.upvote(currentDjID, currentTrackID);
+    // Define current DJ object
+    const currentDjObj = djList[this.state.currentDj];
+    // Test if current DJ object exists:
+    if (currentDjObj) {
+      // Define currentDjID
+      const currentDjID = currentDjObj.id;
+      // Test if currentDjID exists:
+      if (currentDjID) {
+        const currentTrackID = this.state.track;
+        if (currentTrackID) {
+          this.props.ServerAPI.upvote(currentDjID, currentTrackID);
+        } else {
+          console.log('client/Room/upvote() => currentTrackId undefined');
+        }
+      } else {
+        console.log('client/Room/upvote() => currentDjID undefined');
+      }
+    } else {
+      console.log('client/Room/upvote() => currentDjObj undefined');
     }
   }
-
-    /*
-
-    ---- CC's Code ----
-    const djList = this.state.djs;
-    const currentDjObj = djList[this.state.currentDj];
-    if (currentDjObj) {
-      const currentDjId = currentDjObj.id;
-      if (currentDjId) {
-        this.props.ServerAPI.upvote(currentDjId, this.state.track);
-      }
-    }
-    ---- END CC'S CODE ----
-
-    // make call to server
-    this.props.ServerAPI.upvote();
-
-    // increment the value of djList.likes by 1 => will handle on server side
-    djList[this.state.currentDj].likes = djList[this.state.currentDj].likes + 1 || 1;
-    this.setState({
-      djs: djList,
-    });
-    */
-
+  
   downvote() {
     const djList = this.state.djs;
-
-    // Define currentDjID
-    const currentDjID = djList[this.state.currentDj].id;
-    // Define currentTrackID
-    const currentTrackID = this.state.track;
-    // Call server with currentDjID and currentTrackID
-    if (currentDjID && currentTrackID) {
-      this.props.ServerAPI.downvote(currentDjID, currentTrackID);
+    const currentDjObj = djList[this.state.currentDj];
+    // Test if current DJ object exists:
+    if (currentDjObj) {
+      // Define currentDjID
+      const currentDjID = currentDjObj.id;
+      // Test if currentDjID exists:
+      if (currentDjID) {
+        const currentTrackID = this.state.track;
+        if (currentTrackID) {
+          this.props.ServerAPI.downvote(currentDjID, currentTrackID);
+        } else {
+          console.log('client/Room/downvote() => currentTrackId undefined');
+        }
+      } else {
+        console.log('client/Room/downvote() => currentDjID undefined');
+      }
+    } else {
+      console.log('client/Room/downvote() => currentDjObj undefined');
     }
   }
 
