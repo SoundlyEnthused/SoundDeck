@@ -8,7 +8,7 @@ export default class Room extends React.Component {
     super(props);
     const state = this.processProps(this.props);
     this.state = state;
-    /*  
+    /*
       State object includes:
       { name
         track
@@ -46,12 +46,47 @@ export default class Room extends React.Component {
     $('.avatar').tooltip();
   }
 
+  componentWillReceiveProps(nextProps) {
+    const state = this.processProps(nextProps);
+    this.updataTrack = true;
+    if (this.state.track === state.track) {
+      this.updataTrack = false;
+    }
+    this.setState(state);
+  }
+
+  // componentDidUpate invoked immediately after the component's updates are flushed to the DOM
+  componentDidUpdate() {
+    if (this.player && this.updataTrack) {
+      this.initPlayer();
+    }
+    this.highlightDj();
+  }
+
+  // ********************
+  // Room functions
+  // ********************
   initPlayer() {
     const _this = this;
     // check current time vs. time stamp
     const timeDiff = (Date.now() - this.state.timeStamp) / 1000;
 
-    SC.get(`/tracks/${this.state.track}`).then((sound) => {
+    SC.get(`/tracks/${this.state.track}`).catch((err) => {
+      console.log('loading err', err);
+      player.crossOrigin = 'anonymous';
+      player.setAttribute('src', '');
+      player.pause();
+      player.currentTime = 0;
+      _this.infoArtist.innerHTML = 'N/A';
+      _this.trackProgress.style.width = '0';
+      _this.infoTrack.innerHTML = 'No available tracks';
+      _this.infoImage.setAttribute('src', 'img/user.svg');
+      const bars = document.getElementsByClassName('bar');
+      console.log(bars);
+      bars.forEach((bar) => {
+        bar.style.height = 0;
+      });
+    }).then((sound) => {
       if (sound.errors) {
         console.log('Error', sound.errors);
       } else {
@@ -62,7 +97,6 @@ export default class Room extends React.Component {
         player.play();
 
         // if current time is larger than time stamp, skip some par of the song
-        console.log('time diff', timeDiff);
         if (timeDiff > 0) {
           _this.player.currentTime = timeDiff;
         }
@@ -77,7 +111,6 @@ export default class Room extends React.Component {
         _this.infoImage.setAttribute('alt', sound.user.username);
         _this.infoArtist.innerHTML = sound.user.username;
         _this.infoTrack.innerHTML = sound.title;
-
 
         const ctx = new AudioContext();
         const audioSrc = ctx.createMediaElementSource(player);
@@ -113,26 +146,6 @@ export default class Room extends React.Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
-    const state = this.processProps(nextProps);
-    this.updataTrack = true;
-    if (this.state.track === state.track) {
-      this.updataTrack = false;
-    }
-    this.setState(state);
-  }
-
-  // componentDidUpate invoked immediately after the component's updates are flushed to the DOM
-  componentDidUpdate() {
-    if (this.player && this.updataTrack) {
-      this.initPlayer();
-    }
-    this.highlightDj();
-  }
-
-  // ********************
-  // Room functions
-  // ********************
   handleMute() {
     if (this.player.volume === 1) {
       this.mute = true;
@@ -286,7 +299,7 @@ export default class Room extends React.Component {
             </div>
 
             <div className="player">
-              <img src="" alt="" id="infoImage" className="player--image" />
+              <img src="" alt="" id="infoImage" className="player--image" width="100" height="100" />
               <h2 id="infoArtist" className="player--artist" />
               <h3 id="infoTrack" className="player--track" />
               <audio id="player" loop autoPlay preload />
@@ -313,7 +326,7 @@ export default class Room extends React.Component {
                     aria-valuenow={this.state.downvoteCount}
                     aria-valuemin="0"
                     aria-valuemax={this.state.users.length + this.state.djs.filter(d => d).length}
-                    style={{ width: `${(this.state.downvoteCount / (this.state.users.length + this.state.djs.filter(d => d).length)) * 100}%` }}
+                    style={{ width: `${(this.state.downvoteCount / ((this.state.users.length + this.state.djs.filter(d => d).length)) * 0.4) * 100}%` }}
                   />
                 </div>
               </div>
