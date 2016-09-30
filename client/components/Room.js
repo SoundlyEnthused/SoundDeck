@@ -58,7 +58,7 @@ export default class Room extends React.Component {
         console.log('sound object', sound);
 
         player.crossOrigin = 'anonymous';
-        player.setAttribute('src', sound.stream_url + '?client_id=' + process.env.CLIENT_ID);
+        player.setAttribute('src', `${sound.stream_url}?client_id=${process.env.CLIENT_ID}`);
         player.play();
 
         // if current time is larger than time stamp, skip some par of the song
@@ -98,10 +98,10 @@ export default class Room extends React.Component {
           // loop through divs in visualizer and render heights
           for (let i = 0; i < 32; i++) {
             let h = ((frequencyData[i]) / 256) * 100;
-            h = h * Math.sin(i/10);
-            bars[i].style.height =  h < 100 ? h + '%' : '100%';
+            h = h * Math.sin(i / 10);
+            bars[i].style.height = h < 100 ? `${h}%` : '100%';
             if (i === 31) {
-                bars[0].style.height = h + '%';
+              bars[0].style.height = `${h}%`;
             }
           }
 
@@ -134,14 +134,11 @@ export default class Room extends React.Component {
   // Room functions
   // ********************
   handleMute() {
-    // toggle mute state. Inital mute state is false.
-    // this.setState({
-    //   mute: !this.mute,
-    // });
-    this.mute = !this.mute;
-    if (!this.mute) {
+    if (this.player.volume === 1) {
+      this.mute = true;
       this.player.volume = 0;
-    } else {
+    } else if (this.player.volume === 0) {
+      this.mute = false;
       this.player.volume = 1;
     }
   }
@@ -292,7 +289,7 @@ export default class Room extends React.Component {
               <img src="" alt="" id="infoImage" className="player--image" />
               <h2 id="infoArtist" className="player--artist" />
               <h3 id="infoTrack" className="player--track" />
-              <audio id="player" loop autoPlay preload></audio>
+              <audio id="player" loop autoPlay preload />
               <div className="progress player--progress">
                 <div
                   className="progress-bar progress-bar-primary progress-bar-striped active"
