@@ -69,6 +69,7 @@ Voting.downvote = function downvote(roomId, userId, currentDJ, track) {
       voting.downvotes[currentDJ] += 1;
       if (voting.downvotes[currentDJ] > mercy) {
         // kickout the DJ
+        delete voting.downvotes[currentDJ];
         DjQueue.removeUser(DjQueue.getByRoom(roomId).id, currentDJ);
       }
     }

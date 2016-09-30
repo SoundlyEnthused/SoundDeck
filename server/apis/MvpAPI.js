@@ -151,7 +151,7 @@ MvpAPI.dequeue = (socket) => {
   }
   DjQueue.removeUser(queue.id, userId);
   const roomState = MvpAPI.getState();
-  Voting.DJenqueue(room.id, roomState[room.id].djs);
+  Voting.DJdequeue(room.id, roomState[room.id].djs);
   Connection.sendAll('room', roomState);
 };
 
