@@ -25,6 +25,7 @@ export default class Room extends React.Component {
     this.infoTrack = null;
     this.trackProgress = null;
     this.updataTrack = false;
+    this.currentDj = null;
     this.handleMute = this.handleMute.bind(this);
     this.handleDjQueue = this.handleDjQueue.bind(this);
     this.downvote = this.downvote.bind(this);
@@ -148,11 +149,15 @@ export default class Room extends React.Component {
 
   handleMute() {
     if (this.player.volume === 1) {
-      this.mute = true;
       this.player.volume = 0;
+      this.setState({
+        mute: true,
+      });
     } else if (this.player.volume === 0) {
-      this.mute = false;
       this.player.volume = 1;
+      this.setState({
+        mute: false,
+      });
     }
   }
 
@@ -229,7 +234,7 @@ export default class Room extends React.Component {
           <h1> {this.state.name} </h1>
           <div className="stage">
             <div className="stage--djs">
-            {
+              {
               this.state.djs.map((dj, index) => {
                 if (dj && dj.username) {
                   return (
@@ -344,7 +349,7 @@ export default class Room extends React.Component {
                 </button>
 
                 <button className="vote--muteBtn btn btn-default btn-round" onClick={this.handleMute}>
-                  {this.mute ? <span className="fa fa-volume-off" /> : <span className="fa fa-volume-up" /> }
+                  {this.state.mute ? <span className="fa fa-volume-off" /> : <span className="fa fa-volume-up" /> }
                 </button>
               </div>
             </div>
@@ -353,22 +358,21 @@ export default class Room extends React.Component {
 
           <div className="crowd">
             {
-              this.state.users.map((user) => {
-                return (
-                  <div className="crowd--user" key={user.username}>
-                    <div
-                      className="avatar"
-                      title={user.username}
-                      data-placement="bottom"
-                      data-animation="true"
-                      data-toggle="tooltip"
-                      data-likes={5}
-                    >
-                      <img src={user.avatar_url} alt={user.username} />
-                    </div>
+              this.state.users.map(user => (
+                <div className="crowd--user" key={user.username}>
+                  <div
+                    className="avatar"
+                    title={user.username}
+                    data-placement="bottom"
+                    data-animation="true"
+                    data-toggle="tooltip"
+                    data-likes={user.likes}
+                  >
+                    <img src={user.avatar_url} alt={user.username} />
                   </div>
-                );
-              })
+                </div>
+                )
+              )
             }
           </div>
         </div>
