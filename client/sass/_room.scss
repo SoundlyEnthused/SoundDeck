@@ -1,5 +1,6 @@
 h1 {
   font-size: 24px;
+  cursor: default;
 }
 
 .stage {
@@ -39,7 +40,7 @@ h1 {
   position: relative;
 }
 
-.dj--seat.current {
+.dj--seat.current:not(.empty) {
     box-shadow: 0px 0px 20px #0061ff;
     border: 1px solid black;
   &:after {
