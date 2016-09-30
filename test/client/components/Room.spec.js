@@ -4,6 +4,7 @@ import { expect } from 'chai';
 import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 import Room from '../../../client/components/Room';
+//import ServerAPI from '../../../client/models/ServerAPI';
 import seeds from '../seeds';
 
 global.jQuery = jquery;
@@ -11,13 +12,15 @@ global.$ = jquery;
 require('bootstrap-sass');  // import doesn't work for some reason
 /* globals describe it before beforeEach expect */
 describe('<Room />', () => {
-  const roomData = seeds.createRoom('METAL', 2, 15);
+  // create new room with seed data (roomName, djNum, usernNum, track)
+  const roomData = seeds.createRoom('METAL', 2, 15, 99999);
   const djs = roomData.djs;
   const users = roomData.users;
   const name = roomData.name;
   const djMaxNum = roomData.djMaxNum;
   const track = roomData.track;
-  const currentDj = roomData.currentDj;
+  const currentDJ = roomData.currentDj;
+ 
   //Room.widget = roomData.widget;
 
   let wrapper = null;
@@ -135,15 +138,34 @@ describe('<Room />', () => {
     });
   });
 
-  describe('Vote', () => {
+  describe('Upvote', () => {
     it('displays a button to upvote a DJ', () => {
       expect(wrapper.find('#upvote')).to.exist;
-    })
+    });
     it('allows the user to upvote a DJ', () => {
+      // console.log('ServerAPI: ', Object.keys(wrapper.props().ServerAPI));
+      sinon.spy(wrapper.props().ServerAPI, 'upvote');
+      wrapper.setState({ currentDjID: djs[currentDJ].id, currentTrackID: track });
+      expect(wrapper.state('currentDjID')).to.equal(djs[currentDJ].id);
+      expect(wrapper.state('currentTrackID')).to.equal(track);
       wrapper.find('#upvote').simulate('click');
       expect(wrapper.props().ServerAPI.upvote.calledOnce).to.equal(true);
-    })
+    });
+  });
 
+  describe('Downvote', () => {
+    it('displays a button to downvote a song', () => {
+      expect(wrapper.find('#downvote')).to.exist;
+    });
+    it('allows the user to downvote a song', () => {
+      //console.log('ServerAPI: ', Object.keys(wrapper.props().ServerAPI));
+      sinon.spy(wrapper.props().ServerAPI, 'downvote');
+      wrapper.setState({ currentDjID: djs[currentDJ].id, currentTrackID: track });
+      expect(wrapper.state('currentDjID')).to.equal(djs[currentDJ].id);
+      expect(wrapper.state('currentTrackID')).to.equal(track);
+      wrapper.find('#downvote').simulate('click');
+      expect(wrapper.props().ServerAPI.downvote.calledOnce).to.equal(true);
+    });
   });
 
   describe('Crowd', () => {

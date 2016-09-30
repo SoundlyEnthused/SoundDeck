@@ -197,21 +197,21 @@ export default class Room extends React.Component {
     // }
     console.log('this.state.currentDj = ', this.state.currentDj);
 
-    // Define currentDJ
-    const currentDjObj = djList[this.state.currentDj];
-    // Define currentTrack
-    const currentTrack = this.state.track;
-    console.log('currentTrack = ', currentTrack);
-    // Call server with currentDJ_ID and currentTrack_ID
-    if (currentDjObj && currentDjObj.id && currentTrack) {
-      this.props.ServerAPI.upvote(currentDjObj.id, currentTrack);
+    // Define currentDjID
+    const currentDjID = djList[this.state.currentDj].id;
+    console.log('currentDjID = ', currentDjID);
+    // Define currentTrackID
+    const currentTrackID = this.state.track;
+    console.log('currentTrackID = ', currentTrackID);
+    // Call server with currentDjID and currentTrackID
+    if (currentDjID && currentTrackID) {
+      this.props.ServerAPI.upvote(currentDjID, currentTrackID);
     }
-
+  }
 
     /*
 
-    =======
-   
+    ---- CC's Code ----
     const djList = this.state.djs;
     const currentDjObj = djList[this.state.currentDj];
     if (currentDjObj) {
@@ -220,8 +220,7 @@ export default class Room extends React.Component {
         this.props.ServerAPI.upvote(currentDjId, this.state.track);
       }
     }
-     >>>>>>> 3eb783ae9a823ce5187c598d7d86a15e81eb45f3
-
+    ---- END CC'S CODE ----
 
     // make call to server
     this.props.ServerAPI.upvote();
@@ -233,19 +232,16 @@ export default class Room extends React.Component {
     });
     */
 
-  }
-
   downvote() {
-    // this.setState({
-    //   downvotes: this.state.downvotes + 1 || 1,
-    // });
     const djList = this.state.djs;
-    const currentDjObj = djList[this.state.currentDj];
-    if (currentDjObj) {
-      const currentDjId = currentDjObj.id;
-      if (currentDjId) {
-        this.props.ServerAPI.downvote(currentDjId, this.state.track);
-      }
+
+    // Define currentDjID
+    const currentDjID = djList[this.state.currentDj].id;
+    // Define currentTrackID
+    const currentTrackID = this.state.track;
+    // Call server with currentDjID and currentTrackID
+    if (currentDjID && currentTrackID) {
+      this.props.ServerAPI.downvote(currentDjID, currentTrackID);
     }
   }
 
