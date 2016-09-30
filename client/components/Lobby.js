@@ -32,8 +32,8 @@ export default class Lobby extends React.Component {
                 this.props.roomIds.map((roomId, index) => {
                   return (
                     <li className="row lobby--room list-unstyled" key={roomId}>
-                      <div className="col-xs-10 lobby--roomName">{this.props.roomNames[index]}</div>
-                      <div className="col-xs-2 lobby--joinBtn" >
+                      <div className="col-sm-10">{this.props.roomNames[index]} ({this.props.roomCounts[index]})</div>
+                      <div className="col-sm-2 lobby--joinBtn" >
                         <button className="btn btn-default joinBtn" onClick={() => { this.handleRoomJoin(roomId); }}>
                           Join
                         </button>
@@ -53,5 +53,6 @@ export default class Lobby extends React.Component {
 Lobby.propTypes = {
   roomIds: React.PropTypes.array,
   roomNames: React.PropTypes.array,
+  roomCounts: React.PropTypes.array,
   joinRoom: React.PropTypes.func,
 };

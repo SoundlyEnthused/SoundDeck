@@ -10,7 +10,7 @@ import Nav from './Nav';
 import Lobby from './Lobby';
 import Auth from './Auth';
 import ServerAPI from '../models/ServerAPI';
-
+/* globals $ */
 // bootstrap-sass needs jQuery to be global
 global.jQuery = jquery;
 global.$ = jquery;
@@ -65,6 +65,12 @@ export default class App extends React.Component {
     }
   }
 
+  getRoomCounts() {
+    return Object.keys(this.roomData)
+    .map(id => this.roomData[id].users.length
+      + this.roomData[id].djs.map(x => (x === null ? 0 : 1)).reduce((a, b) => a + b));
+  }
+
   updateOnEvent(data) {
     console.log("App updateOnEvent = ", data);
     this.roomData = data;
@@ -111,7 +117,7 @@ export default class App extends React.Component {
     return (
       <main>
         <Nav currentRoom={this.state.currentRoom} loggingIn={this.loggingIn} userData={this.state.userData} />
-        <Lobby roomIds={this.state.roomIds} roomNames={this.state.roomNames} joinRoom={this.joinRoom} />
+        <Lobby roomIds={this.state.roomIds} roomNames={this.state.roomNames} roomCounts={this.getRoomCounts()} joinRoom={this.joinRoom} />
         <Playlist />
         {
           this.state.currentRoom ? (
