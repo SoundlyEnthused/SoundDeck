@@ -82,11 +82,6 @@ export default class Room extends React.Component {
       _this.trackProgress.style.width = '0';
       _this.infoTrack.innerHTML = 'No available tracks';
       _this.infoImage.setAttribute('src', 'img/user.svg');
-      const bars = document.getElementsByClassName('bar');
-      console.log(bars);
-      bars.forEach((bar) => {
-        bar.style.height = 0;
-      });
     }).then((sound) => {
       if (sound.errors) {
         console.log('Error', sound.errors);
@@ -97,15 +92,10 @@ export default class Room extends React.Component {
         player.setAttribute('src', `${sound.stream_url}?client_id=${process.env.CLIENT_ID}`);
         player.play();
 
-        // if current time is larger than time stamp, skip some par of the song
+        // if current time is larger than time stamp, skip some part of the song
         if (timeDiff > 0) {
           _this.player.currentTime = timeDiff;
         }
-
-        // we may not need this now that we're using requestAnimationFrame
-        // window.setInterval(function() {
-        //     _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
-        // }, 250);
 
         const image = sound.artwork_url ? sound.artwork_url : sound.user.avatar_url; // if no track artwork exists, use the user's avatar.
         _this.infoImage.setAttribute('src', image);
@@ -121,13 +111,16 @@ export default class Room extends React.Component {
         audioSrc.connect(ctx.destination);
 
         const frequencyData = new Uint8Array(analyser.frequencyBinCount);
+        console.log('frequencyData outside', frequencyData);
 
-        const bars = document.getElementsByClassName('bar');
+        renderFrame(frequencyData);
 
-        function renderFrame() {
-          requestAnimationFrame(renderFrame);
-
+        function renderFrame(frequencyData) {
+          const bars = document.getElementsByClassName('bar');
+          console.log('frequencyData inside', frequencyData);
+          requestAnimationFrame(renderFrame.bind(null, frequencyData));
           analyser.getByteFrequencyData(frequencyData);
+          console.log('frequencyData inside after', frequencyData);
 
           // loop through divs in visualizer and render heights
           for (let i = 0; i < 32; i++) {
@@ -138,14 +131,31 @@ export default class Room extends React.Component {
               bars[0].style.height = `${h}%`;
             }
           }
-
           // update play position in player UI
           _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
         }
-        renderFrame();
       }
     });
   }
+  // function renderFrame(frequencyData) {
+  //   const bars = document.getElementsByClassName('bar');
+  //   console.log('frequencyData inside', frequencyData);
+  //   requestAnimationFrame(renderFrame.bind(null, frequencyData));
+  //   analyser.getByteFrequencyData(frequencyData);
+  //   console.log('frequencyData inside after', frequencyData);
+
+  //   // loop through divs in visualizer and render heights
+  //   for (let i = 0; i < 32; i++) {
+  //     let h = ((frequencyData[i]) / 256) * 100;
+  //     h = h * Math.sin(i / 10);
+  //     bars[i].style.height = h < 100 ? `${h}%` : '100%';
+  //     if (i === 31) {
+  //       bars[0].style.height = `${h}%`;
+  //     }
+  //   }
+  //   // update play position in player UI
+  //   _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
+  // }
 
   handleMute() {
     if (this.player.volume === 1) {
