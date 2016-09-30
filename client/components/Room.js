@@ -221,6 +221,13 @@ export default class Room extends React.Component {
     } else {
       console.log('client/Room/upvote() => currentDjObj undefined');
     }
+
+    // $('.vote--upvote').addClass('upvoteActive').delay(2500).removeClass('upvoteActive');
+    document.getElementsByClassName('vote--upvote')[0].classList.add('upvoteActive');
+    let timeout = window.setTimeout(function() {
+      document.getElementsByClassName('vote--upvote')[0].classList.remove('upvoteActive');
+      clearTimeout(timeout);
+    }, 1200);
   }
 
   downvote() {
@@ -244,6 +251,12 @@ export default class Room extends React.Component {
     } else {
       console.log('client/Room/downvote() => currentDjObj undefined');
     }
+
+    document.getElementsByClassName('vote--downvote')[0].classList.add('downvoteActive');
+    let timeout = window.setTimeout(function() {
+      document.getElementsByClassName('vote--downvote')[0].classList.remove('downvoteActive');
+      clearTimeout(timeout);
+    }, 1200);
   }
 
   render() {
