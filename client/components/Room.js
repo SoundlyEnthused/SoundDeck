@@ -46,6 +46,26 @@ export default class Room extends React.Component {
     $('.avatar').tooltip();
   }
 
+  componentWillReceiveProps(nextProps) {
+    const state = this.processProps(nextProps);
+    this.updataTrack = true;
+    if (this.state.track === state.track) {
+      this.updataTrack = false;
+    }
+    this.setState(state);
+  }
+
+  // componentDidUpate invoked immediately after the component's updates are flushed to the DOM
+  componentDidUpdate() {
+    if (this.player && this.updataTrack) {
+      this.initPlayer();
+    }
+    this.highlightDj();
+  }
+
+  // ********************
+  // Room functions
+  // ********************
   initPlayer() {
     const _this = this;
     // check current time vs. time stamp
@@ -61,6 +81,11 @@ export default class Room extends React.Component {
       _this.trackProgress.style.width = '0';
       _this.infoTrack.innerHTML = 'No available tracks';
       _this.infoImage.setAttribute('src', 'img/user.svg');
+      const bars = document.getElementsByClassName('bar');
+      console.log(bars);
+      bars.forEach((bar) => {
+        bar.style.height = 0;
+      });
     }).then((sound) => {
       if (sound.errors) {
         console.log('Error', sound.errors);
@@ -86,7 +111,6 @@ export default class Room extends React.Component {
         _this.infoImage.setAttribute('alt', sound.user.username);
         _this.infoArtist.innerHTML = sound.user.username;
         _this.infoTrack.innerHTML = sound.title;
-
 
         const ctx = new AudioContext();
         const audioSrc = ctx.createMediaElementSource(player);
@@ -122,26 +146,6 @@ export default class Room extends React.Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
-    const state = this.processProps(nextProps);
-    this.updataTrack = true;
-    if (this.state.track === state.track) {
-      this.updataTrack = false;
-    }
-    this.setState(state);
-  }
-
-  // componentDidUpate invoked immediately after the component's updates are flushed to the DOM
-  componentDidUpdate() {
-    if (this.player && this.updataTrack) {
-      this.initPlayer();
-    }
-    this.highlightDj();
-  }
-
-  // ********************
-  // Room functions
-  // ********************
   handleMute() {
     // toggle mute state. Inital mute state is false.
     // this.setState({
