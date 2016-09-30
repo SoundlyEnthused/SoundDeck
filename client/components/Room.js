@@ -211,6 +211,18 @@ export default class Room extends React.Component {
     }
   }
 
+  updateProgressBarWidth() {
+    console.log("** Inside updateProgressBarWidth **")
+    const downvoteCount = this.state.downvoteCount;
+    const numUsers = this.state.users.length;
+    const numDJs = this.state.djs.filter(d => d).length;
+    
+    // `${(this.state.downvoteCount / (this.state.users.length + this.state.djs.filter(d => d).length)) * 100}%` }
+    const width = downvoteCount / (numUsers + numDJs);
+    console.log('width = ', width);
+    return width;
+  }
+
   render() {
     // console.log('room render', this.state)
     return (
@@ -316,7 +328,7 @@ export default class Room extends React.Component {
                     aria-valuenow={this.state.downvoteCount}
                     aria-valuemin="0"
                     aria-valuemax={this.state.users.length + this.state.djs.filter(d => d).length}
-                    style={{ width: `${(this.state.downvoteCount / (this.state.users.length + this.state.djs.filter(d => d).length)) * 100}%` }}
+                    style={{ width: this.updateProgressBarWidth }}
                   />
                 </div>
               </div>
