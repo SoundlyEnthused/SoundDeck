@@ -1,6 +1,7 @@
 const SC = require('soundcloud');
 
 const clientId = process.env.CLIENT_ID;
+console.log('clientId = ', clientId);
 const login = {};
 
 

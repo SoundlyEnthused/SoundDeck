@@ -13,7 +13,7 @@ require('bootstrap-sass');  // import doesn't work for some reason
 /* globals describe it before beforeEach expect */
 describe('<Room />', () => {
   // create new room with seed data (roomName, djNum, usernNum, track)
-  const roomData = seeds.createRoom('METAL', 2, 15, 99999);
+  const roomData = seeds.createRoom('Vallenato', 2, 15, 266280036);
   const djs = roomData.djs;
   const users = roomData.users;
   const name = roomData.name;
@@ -46,6 +46,7 @@ describe('<Room />', () => {
       expect(wrapper.find('.stage').length).to.equal(1);
       expect(wrapper.find('.stage--djs').length).to.equal(1);
       // expect(wrapper.find('.soundcloudPlayer').length).to.equal(1);
+      expect(wrapper.find('.player').length).to.equal(1);
       expect(wrapper.find('#upvote').length).to.equal(1);
       expect(wrapper.find('#downvote').length).to.equal(1);
       expect(wrapper.find('.vote--djQueue').length).to.equal(1);
@@ -166,6 +167,12 @@ describe('<Room />', () => {
       wrapper.find('#downvote').simulate('click');
       expect(wrapper.props().ServerAPI.downvote.calledOnce).to.equal(true);
     });
+    /*
+    it('calls function updateDownvoteProgressBar on button click', () => {
+      wrapper.find('#downvote').simulate('click');
+      expect(Room.updateDownvoteProgressBar.calledOnce).to.equal(true);
+    });
+    */
   });
 
   describe('Crowd', () => {

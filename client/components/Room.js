@@ -68,10 +68,12 @@ export default class Room extends React.Component {
   // Room functions
   // ********************
   initPlayer() {
+    console.log('inside client/Room: initPlayer()');
     const _this = this;
+    console.log('initPlayer() _this = ', _this);
     // check current time vs. time stamp
     const timeDiff = (Date.now() - this.state.timeStamp) / 1000;
-    console.log('init player');
+
     if(!this.state.track) {
       player.pause();
       _this.infoArtist.innerHTML = 'N/A';
@@ -79,6 +81,7 @@ export default class Room extends React.Component {
       _this.infoTrack.innerHTML = 'No available tracks';
       _this.infoImage.setAttribute('src', 'img/user.svg');
     } else {
+      //console.log('player = ', this.player)
       SC.get(`/tracks/${this.state.track}`).catch((err) => {
         console.log('loading err', err);
         setTimeout(_this.initPlayer, 3000);
@@ -86,9 +89,32 @@ export default class Room extends React.Component {
         if (sound.errors) {
           console.log('Error', sound.errors);
         } else {
-          console.log('sound object', sound);
+          console.log('Sound object =', sound);
 
-          player.crossOrigin = 'anonymous';
+          // ---------------------------------------------------------------------------------------- //
+          // CORS (Cross-Origin Resource Sharing)
+          // ---------------------------------------------------------------------------------------- //
+          // Definition:  A resource makes a cross-origin HTTP request when it requests a resource
+          // from a different domain than the one which the first resource itself serves.
+          //
+          // .crossOrigin configures the CORS requests for the HTML player element's fetched data
+          // If .crossOrigin is NOT specified, CORS is not used at all
+          //    
+          // The player cannot play a song without .crossOrigin.  Either of these parameters work:
+          //  1. 'anonymous' - the credentials flag will not be set.
+          //  2. 'use credentials' - the credentials flag will be set. The request will provide 
+          //      credentials.
+          player.crossOrigin = 'use credentials';
+          // ---------------------------------------------------------------------------------------- //
+
+          // ---------------------------------------------------------------------------------------- //
+          // SET ATTRIBUTE
+          // ---------------------------------------------------------------------------------------- //
+          // .setAttribute adds a new attribute or changes the value of an existing attribute on
+          // the specified HTML element.
+          // element.setAttribute(name, value)
+          // To access public resources on SoundCloud, you must pass a client_id parameter:
+          // https://api.soundcloud.com/tracks/<< sound.id >>/stream/?client_id=YOUR_CLIENT_ID
           player.setAttribute('src', `${sound.stream_url}?client_id=${process.env.CLIENT_ID}`);
           player.play();
 
@@ -224,6 +250,12 @@ export default class Room extends React.Component {
   }
 
   downvote() {
+
+    // Determine state of users on downvote click:
+    console.log('Room/downvote(): this.state.users = ', this.state.users);
+    // => users = [] because the only user is moved from users to DJ queue
+    // => create dummy object of users to test the downvote
+
     const djList = this.state.djs;
     const currentDjObj = djList[this.state.currentDj];
     // Test if current DJ object exists:
@@ -244,9 +276,12 @@ export default class Room extends React.Component {
     } else {
       console.log('client/Room/downvote() => currentDjObj undefined');
     }
+    this.updateDownvoteProgressBar();
   }
 
   updateDownvoteProgressBar() {
+    // What is state of users?
+    console.log('this.state.userData = ', this.state.userData);
     // Total downvotes
     let downvoteCount = this.state.downvoteCount; // => 1
     console.log('downvoteCount = ', downvoteCount);
@@ -367,7 +402,7 @@ export default class Room extends React.Component {
                     aria-valuenow={this.state.downvoteCount}
                     aria-valuemin="0"
                     aria-valuemax={this.state.users.length + this.state.djs.filter(d => d).length}
-                    style={{ width: this.state.updateDownvoteProgressBar }}
+                    style={{ width: this.updateDownvoteProgressBar }}
                   />
                 </div>
               </div>
