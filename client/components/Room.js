@@ -71,80 +71,70 @@ export default class Room extends React.Component {
     const _this = this;
     // check current time vs. time stamp
     const timeDiff = (Date.now() - this.state.timeStamp) / 1000;
-
-    SC.get(`/tracks/${this.state.track}`).catch((err) => {
-      console.log('loading err', err);
-      player.crossOrigin = 'anonymous';
-      player.setAttribute('src', '');
+    console.log('init player');
+    if(!this.state.track) {
       player.pause();
-      player.currentTime = 0;
       _this.infoArtist.innerHTML = 'N/A';
       _this.trackProgress.style.width = '0';
       _this.infoTrack.innerHTML = 'No available tracks';
       _this.infoImage.setAttribute('src', 'img/user.svg');
-      const bars = document.getElementsByClassName('bar');
-      console.log(bars);
-      bars.forEach((bar) => {
-        bar.style.height = 0;
-      });
-    }).then((sound) => {
-      if (sound.errors) {
-        console.log('Error', sound.errors);
-      } else {
-        console.log('sound object', sound);
+    } else {
+      SC.get(`/tracks/${this.state.track}`).catch((err) => {
+        console.log('loading err', err);
+        setTimeout(_this.initPlayer, 3000);
+      }).then((sound) => {
+        if (sound.errors) {
+          console.log('Error', sound.errors);
+        } else {
+          console.log('sound object', sound);
 
-        player.crossOrigin = 'anonymous';
-        player.setAttribute('src', `${sound.stream_url}?client_id=${process.env.CLIENT_ID}`);
-        player.play();
+          player.crossOrigin = 'anonymous';
+          player.setAttribute('src', `${sound.stream_url}?client_id=${process.env.CLIENT_ID}`);
+          player.play();
 
-        // if current time is larger than time stamp, skip some par of the song
-        if (timeDiff > 0) {
-          _this.player.currentTime = timeDiff;
-        }
-
-        // we may not need this now that we're using requestAnimationFrame
-        // window.setInterval(function() {
-        //     _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
-        // }, 250);
-
-        const image = sound.artwork_url ? sound.artwork_url : sound.user.avatar_url; // if no track artwork exists, use the user's avatar.
-        _this.infoImage.setAttribute('src', image);
-        _this.infoImage.setAttribute('alt', sound.user.username);
-        _this.infoArtist.innerHTML = sound.user.username;
-        _this.infoTrack.innerHTML = sound.title;
-
-        const ctx = new AudioContext();
-        const audioSrc = ctx.createMediaElementSource(player);
-        const analyser = ctx.createAnalyser();
-
-        audioSrc.connect(analyser);
-        audioSrc.connect(ctx.destination);
-
-        const frequencyData = new Uint8Array(analyser.frequencyBinCount);
-
-        const bars = document.getElementsByClassName('bar');
-
-        function renderFrame() {
-          requestAnimationFrame(renderFrame);
-
-          analyser.getByteFrequencyData(frequencyData);
-
-          // loop through divs in visualizer and render heights
-          for (let i = 0; i < 32; i++) {
-            let h = ((frequencyData[i]) / 256) * 100;
-            h = h * Math.sin(i / 10);
-            bars[i].style.height = h < 100 ? `${h}%` : '100%';
-            if (i === 31) {
-              bars[0].style.height = `${h}%`;
-            }
+          // if current time is larger than time stamp, skip some part of the song
+          if (timeDiff > 0) {
+            _this.player.currentTime = timeDiff;
           }
 
-          // update play position in player UI
-          _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
+          const image = sound.artwork_url ? sound.artwork_url : sound.user.avatar_url; // if no track artwork exists, use the user's avatar.
+          _this.infoImage.setAttribute('src', image);
+          _this.infoImage.setAttribute('alt', sound.user.username);
+          _this.infoArtist.innerHTML = sound.user.username;
+          _this.infoTrack.innerHTML = sound.title;
+
+          const ctx = new AudioContext();
+          const audioSrc = ctx.createMediaElementSource(player);
+          const analyser = ctx.createAnalyser();
+
+          audioSrc.connect(analyser);
+          audioSrc.connect(ctx.destination);
+
+          const frequencyData = new Uint8Array(analyser.frequencyBinCount);
+          console.log('frequencyData outside', frequencyData);
+
+          renderFrame(frequencyData);
+
+          function renderFrame(frequencyData) {
+            const bars = document.getElementsByClassName('bar');
+            requestAnimationFrame(renderFrame.bind(null, frequencyData));
+            analyser.getByteFrequencyData(frequencyData);
+
+            // loop through divs in visualizer and render heights
+            for (let i = 0; i < 32; i++) {
+              let h = ((frequencyData[i]) / 256) * 100;
+              h = h * Math.sin(i / 10);
+              bars[i].style.height = h < 100 ? `${h}%` : '100%';
+              if (i === 31) {
+                bars[0].style.height = `${h}%`;
+              }
+            }
+            // update play position in player UI
+            _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
+          }
         }
-        renderFrame();
-      }
-    });
+      });
+    }
   }
 
   handleMute() {
