@@ -197,11 +197,11 @@ export default class Room extends React.Component {
     const djList = this.state.djs;
     const currentDjObj = djList[this.state.currentDj];
     const isDJ = this.props;
+    const currentDjId = currentDjObj.id;
     if (currentDjObj.id === isDJ.userId) {
       return;
     }
     if (currentDjObj) {
-      const currentDjId = currentDjObj.id;
       if (currentDjId) {
         this.props.ServerAPI.upvote(currentDjId, this.state.track);
       }
@@ -209,7 +209,7 @@ export default class Room extends React.Component {
 
     // $('.vote--upvote').addClass('upvoteActive').delay(2500).removeClass('upvoteActive');
     document.getElementsByClassName('vote--upvote')[0].classList.add('upvoteActive');
-    let timeout = window.setTimeout(function() {
+    const timeout = window.setTimeout(() => {
       document.getElementsByClassName('vote--upvote')[0].classList.remove('upvoteActive');
       clearTimeout(timeout);
     }, 1200);
@@ -230,15 +230,15 @@ export default class Room extends React.Component {
     }
 
     document.getElementsByClassName('vote--downvote')[0].classList.add('downvoteActive');
-    let timeout = window.setTimeout(function() {
+    const timeout = window.setTimeout(() => {
       document.getElementsByClassName('vote--downvote')[0].classList.remove('downvoteActive');
       clearTimeout(timeout);
     }, 1200);
   }
 
   render() {
-    let activeDJs = this.state.djs.filter(d => d).length;
-    let maxVotes = (this.state.users.length + activeDJs) * 0.4;
+    const activeDJs = this.state.djs.filter(d => d).length;
+    const maxVotes = (this.state.users.length + activeDJs) * 0.4;
 
     console.log('my id', this.state.djs);
 
@@ -350,15 +350,15 @@ export default class Room extends React.Component {
                 </div>
               </div>
               <div className="vote--btns col-xs-4">
-                {this.state.isDJ ? <button className="btn btn-success btn-round vote--upvoteCurrent" disabled id="upvote">
+                {(this.state.currentDj === -1) || (this.state.track === null) || (this.props.userId === this.state.djs[this.state.currentDj].id) ? <button className="btn btn-success btn-round vote--upvote" disabled id="upvote">
                   <i className="fa fa-check" aria-hidden="true" /></button>
                   :
-                  <button className="btn btn-success btn-round vote--upvote" id="upvote" onClick={this.upvote}>
+                  <button className="btn btn-success btn-round vote--upvoteCurrent" id="upvote" onClick={this.upvote}>
                     <i className="fa fa-check" aria-hidden="true" /></button>}
-                {this.state.isDJ ? <button className="btn btn-danger btn-round vote--downvoteCurrent" disabled id="downvote">
+                {(this.state.currentDj === -1) || (this.state.track === null) || (this.props.userId === this.state.djs[this.state.currentDj].id) ? <button className="btn btn-danger btn-round vote--downvote" disabled id="downvote">
                   <i className="fa fa-times" aria-hidden="true" /></button>
                   :
-                  <button className="btn btn-danger btn-round vote--downvote" id="downvote" onClick={this.downvote}>
+                  <button className="btn btn-danger btn-round vote--downvoteCurrent" id="downvote" onClick={this.downvote}>
                     <i className="fa fa-times" aria-hidden="true" /></button>}
               </div>
               <div className="vote--djQueue col-xs-4">
