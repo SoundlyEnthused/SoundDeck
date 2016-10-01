@@ -42,7 +42,6 @@ export default class Room extends React.Component {
     this.trackProgress = document.getElementById('progressBar');
 
     this.initPlayer();
-
     this.highlightDj();
     $('.avatar').tooltip();
   }
@@ -62,6 +61,8 @@ export default class Room extends React.Component {
       this.initPlayer();
     }
     this.highlightDj();
+    $('.avatar').tooltip();
+    console.log('tooltips');
   }
 
   // ********************
@@ -127,11 +128,8 @@ export default class Room extends React.Component {
             // loop through divs in visualizer and render heights
             for (let i = 0; i < 32; i++) {
               let h = ((frequencyData[i]) / 256) * 100;
-              h = h * Math.sin(i / 10);
+              h = h * Math.sin((i + 0.3) / 10);
               bars[i].style.height = h < 100 ? `${h}%` : '100%';
-              if (i === 31) {
-                bars[0].style.height = `${h}%`;
-              }
             }
             // update play position in player UI
             _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
