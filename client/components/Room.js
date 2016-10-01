@@ -240,6 +240,8 @@ export default class Room extends React.Component {
     let activeDJs = this.state.djs.filter(d => d).length;
     let maxVotes = (this.state.users.length + activeDJs) * 0.4;
 
+    console.log('my id', this.state.djs);
+
     return (
       <div className="room">
         <div className="container">

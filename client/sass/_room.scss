@@ -69,6 +69,7 @@ h1 {
   border: 2px solid black;
   img {
     width: 100%;
+    border-radius: 50%;
     height: auto;
   }
 }
@@ -221,12 +222,13 @@ h1 {
 .avatar {
   border-radius: 50%;
   border: 1px solid black;
-  overflow: hidden;
+  // overflow: hidden;
   position: relative;
   z-index: 100;
   img {
     width: 100%;
     height: auto;
+    border-radius: 50%;
   }
   &:before {
     content: attr(data-likes);
