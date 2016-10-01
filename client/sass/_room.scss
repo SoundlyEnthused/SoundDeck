@@ -101,8 +101,6 @@ h1 {
   margin-bottom: 0;
 }
 
-
-
 .vote {
   // padding: 10px;
   // box-sizing: border-box;
@@ -112,22 +110,6 @@ h1 {
 
 .vote--btns {
   text-align: center;
-}
-
-.vote--upvoteCurrent {
-  cursor: default;
-  &:hover {
-    background-color: #485fa6;
-    border: #405594;
-  }
-}
-
-.vote--downvoteCurrent {
-  cursor: default;
-  &:hover {
-    background-color: #ff3100;
-    border: #e62c00;
-  }
 }
 
 .btn-round {

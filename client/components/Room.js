@@ -72,7 +72,7 @@ export default class Room extends React.Component {
     // check current time vs. time stamp
     const timeDiff = (Date.now() - this.state.timeStamp) / 1000;
     console.log('init player');
-    if(!this.state.track) {
+    if (!this.state.track) {
       player.pause();
       _this.infoArtist.innerHTML = 'N/A';
       _this.trackProgress.style.width = '0';
@@ -346,13 +346,13 @@ export default class Room extends React.Component {
                 </div>
               </div>
               <div className="vote--btns col-xs-4">
-                {this.state.isDJ ? <button className="btn btn-success btn-round vote--upvoteCurrent" id="upvote" onClick={this.upvote}>
-                  <i className="fa fa-ban" aria-hidden="true" /></button>
+                {this.state.isDJ ? <button className="btn btn-success btn-round vote--upvoteCurrent" disabled id="upvote">
+                  <i className="fa fa-check" aria-hidden="true" /></button>
                   :
                   <button className="btn btn-success btn-round vote--upvote" id="upvote" onClick={this.upvote}>
                     <i className="fa fa-check" aria-hidden="true" /></button>}
-                {this.state.isDJ ? <button className="btn btn-danger btn-round vote--downvoteCurrent" id="downvote" onClick={this.downvote}>
-                  <i className="fa fa-ban" aria-hidden="true" /></button>
+                {this.state.isDJ ? <button className="btn btn-danger btn-round vote--downvoteCurrent" disabled id="downvote">
+                  <i className="fa fa-times" aria-hidden="true" /></button>
                   :
                   <button className="btn btn-danger btn-round vote--downvote" id="downvote" onClick={this.downvote}>
                     <i className="fa fa-times" aria-hidden="true" /></button>}
