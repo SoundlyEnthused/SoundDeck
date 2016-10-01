@@ -7,7 +7,7 @@ let votings = {};
 let votingIdsByRoom = {};
 let nextId = 0;
 const skipRatio = 0.4;
-const mercy = 2;
+const mercy = 3;
 
 Voting.create = function create(roomId) {
   const voting = {
@@ -63,11 +63,11 @@ Voting.downvote = function downvote(roomId, userId, currentDJ, track) {
       User.get(currentDJ).likes = User.get(currentDJ).likes - 1;
     }
     voting.downvoteCount += 1;
-    if (voting.downvoteCount / voting.totalCount > skipRatio) {
+    if (voting.downvoteCount / voting.totalCount >= skipRatio) {
       // skip track
       DjQueue.clearTrack(DjQueue.getByRoom(roomId).id);
       voting.downvotes[currentDJ] += 1;
-      if (voting.downvotes[currentDJ] > mercy) {
+      if (voting.downvotes[currentDJ] >= mercy) {
         // kickout the DJ
         delete voting.downvotes[currentDJ];
         DjQueue.removeUser(DjQueue.getByRoom(roomId).id, currentDJ);
@@ -75,6 +75,7 @@ Voting.downvote = function downvote(roomId, userId, currentDJ, track) {
     }
     voting.voted[userId] = 'downvote';
   }
+  console.log('voting downvote', voting);
 };
 
 Voting.newTrack = function newTrack(roomId, track) {
@@ -96,20 +97,27 @@ Voting.DJenqueue = function DJenqueue(roomId, djList) {
       voting.downvotes[dj.id] = 0;
     }
   });
+  console.log('voting enq', voting);
 };
 
 Voting.DJdequeue = function DJdequeue(roomId, djList) {
   const voting = votings[votingIdsByRoom[roomId]];
-  Object.keys(voting.downvotes).forEach((key) => {
-    if (djList.indexOf(key) < 0) {
-      delete voting.downvotes[key];
+  const newDjIds = djList.map(dj => dj && dj.id.toString());
+  const oldDjIds = Object.keys(voting.downvotes);
+  oldDjIds.forEach((oldDj) => {
+    if (!newDjIds.includes(oldDj)) {
+      console.log('deleting...', oldDj, newDjIds.indexOf(oldDj))
+      delete voting.downvotes[oldDj];
     }
   });
+  console.log('xxxxxxx', voting.downvotes);
 
-  djList.forEach((dj) => {
-    if (dj != null && !(dj.id in voting.downvotes)) {
-      voting.downvotes[dj] = 0;
+  newDjIds.forEach((newDj) => {
+    console.log('voting deq, adding djs', newDj, voting.downvotes);
+    if (newDj != null && !(newDj in voting.downvotes)) {
+      voting.downvotes[newDj] = 0;
     }
   });
+  console.log('voting deq', voting);
 };
 module.exports = Voting;
