@@ -246,6 +246,22 @@ export default class Room extends React.Component {
     }
   }
 
+  updateDownvoteProgressBar() {
+    // Total downvotes
+    let downvoteCount = this.state.downvoteCount; // => 1
+    console.log('downvoteCount = ', downvoteCount);
+    // Total number of users
+    let numUsers = this.state.users.length; // => 3
+    console.log('numUsers = ', numUsers)
+    // A DJ can downvote the active DJ
+    let numDJs = this.state.djs.filter(d => d).length;  // => 1
+    console.log('numDJs = ', numDJs)
+    //`${(this.state.downvoteCount / (this.state.users.length + this.state.djs.filter(d => d).length)) * 100}%` }
+    const width = ((downvoteCount / (numUsers + numDJs)) * 100) + '%'; // => 1 / 4 => 0.25 * 100 => 25
+    console.log('width = ', width);
+    return width;
+  }
+
   render() {
     // console.log('room render', this.state)
     return (
@@ -351,7 +367,7 @@ export default class Room extends React.Component {
                     aria-valuenow={this.state.downvoteCount}
                     aria-valuemin="0"
                     aria-valuemax={this.state.users.length + this.state.djs.filter(d => d).length}
-                    style={{ width: `${(this.state.downvoteCount / ((this.state.users.length + this.state.djs.filter(d => d).length)) * 0.4) * 100}%` }}
+                    style={{ width: this.state.updateDownvoteProgressBar }}
                   />
                 </div>
               </div>

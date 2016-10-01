@@ -19,7 +19,7 @@
 	</div>
 </div>
 
-updateProgressBarWidth() {
+updateDownvoteProgressBar() {
   let downvoteCount = this.state.downvoteCount;
   let numUsers = this.state.users.length;
   let numDJs = this.state.djs.filter(d => d).length;
