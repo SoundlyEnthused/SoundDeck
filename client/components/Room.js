@@ -198,14 +198,11 @@ export default class Room extends React.Component {
     const currentDjObj = djList[this.state.currentDj];
     const isDJ = this.props;
     const currentDjId = currentDjObj.id;
-    console.log('clicked!');
     if (currentDjObj.id === isDJ.userId) {
-      console.log('same id');
       return;
     }
     if (currentDjObj) {
       if (currentDjId) {
-        console.log('sending to server');
         this.props.ServerAPI.upvote(currentDjId, this.state.track);
       }
     }
