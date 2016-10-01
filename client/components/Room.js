@@ -71,9 +71,9 @@ export default class Room extends React.Component {
     const _this = this;
     // check current time vs. time stamp
     const timeDiff = (Date.now() - this.state.timeStamp) / 1000;
-    console.log('init player');
     if(!this.state.track) {
       player.pause();
+      player.currentTime = 0;
       _this.infoArtist.innerHTML = 'N/A';
       _this.trackProgress.style.width = '0';
       _this.infoTrack.innerHTML = 'No available tracks';
@@ -81,13 +81,17 @@ export default class Room extends React.Component {
     } else {
       SC.get(`/tracks/${this.state.track}`).catch((err) => {
         console.log('loading err', err);
+        player.pause();
+        player.currentTime = 0;
+        _this.infoArtist.innerHTML = 'LOADING ERROR';
+        _this.trackProgress.style.width = '0';
+        _this.infoTrack.innerHTML = 'Reloading...';
+        _this.infoImage.setAttribute('src', 'img/user.svg');
         setTimeout(_this.initPlayer, 3000);
       }).then((sound) => {
         if (sound.errors) {
           console.log('Error', sound.errors);
         } else {
-          console.log('sound object', sound);
-
           player.crossOrigin = 'anonymous';
           player.setAttribute('src', `${sound.stream_url}?client_id=${process.env.CLIENT_ID}`);
           player.play();
