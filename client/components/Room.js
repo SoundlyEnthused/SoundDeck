@@ -42,7 +42,6 @@ export default class Room extends React.Component {
     this.trackProgress = document.getElementById('progressBar');
 
     this.initPlayer();
-
     this.highlightDj();
     $('.avatar').tooltip();
   }
@@ -62,6 +61,8 @@ export default class Room extends React.Component {
       this.initPlayer();
     }
     this.highlightDj();
+    $('.avatar').tooltip();
+    console.log('tooltips');
   }
 
   // ********************
