@@ -193,33 +193,16 @@ export default class Room extends React.Component {
 
   upvote() {
     const djList = this.state.djs;
-    // djList is an array of objects.
-    // Each object contains the following information:
-    // { avatar_url : ________,
-    //   id : ________________,
-    //   likes : _____________,
-    //   username : __________,
-    // }
-    console.log('this.state.currentDj = ', this.state.currentDj);
-    // Define current DJ object
     const currentDjObj = djList[this.state.currentDj];
-    // Test if current DJ object exists:
+    const isDJ = this.props;
+    if (currentDjObj.id === isDJ.userId) {
+      return;
+    }
     if (currentDjObj) {
-      // Define currentDjID
-      const currentDjID = currentDjObj.id;
-      // Test if currentDjID exists:
-      if (currentDjID) {
-        const currentTrack = this.state.track;
-        if (currentTrack) {
-          this.props.ServerAPI.upvote(currentDjID, currentTrack);
-        } else {
-          console.log('client/Room/upvote() => currentTrack undefined');
-        }
-      } else {
-        console.log('client/Room/upvote() => currentDjID undefined');
+      const currentDjId = currentDjObj.id;
+      if (currentDjId) {
+        this.props.ServerAPI.upvote(currentDjId, this.state.track);
       }
-    } else {
-      console.log('client/Room/upvote() => currentDjObj undefined');
     }
 
     // $('.vote--upvote').addClass('upvoteActive').delay(2500).removeClass('upvoteActive');
@@ -233,23 +216,15 @@ export default class Room extends React.Component {
   downvote() {
     const djList = this.state.djs;
     const currentDjObj = djList[this.state.currentDj];
-    // Test if current DJ object exists:
+    const isDJ = this.props;
+    if (currentDjObj.id === isDJ.userId) {
+      return;
+    }
     if (currentDjObj) {
-      // Define currentDjID
-      const currentDjID = currentDjObj.id;
-      // Test if currentDjID exists:
-      if (currentDjID) {
-        const currentTrack = this.state.track;
-        if (currentTrack) {
-          this.props.ServerAPI.downvote(currentDjID, currentTrack);
-        } else {
-          console.log('client/Room/downvote() => currentTrack undefined');
-        }
-      } else {
-        console.log('client/Room/downvote() => currentDjID undefined');
+      const currentDjId = currentDjObj.id;
+      if (currentDjId) {
+        this.props.ServerAPI.downvote(currentDjId, this.state.track);
       }
-    } else {
-      console.log('client/Room/downvote() => currentDjObj undefined');
     }
 
     document.getElementsByClassName('vote--downvote')[0].classList.add('downvoteActive');
@@ -371,12 +346,16 @@ export default class Room extends React.Component {
                 </div>
               </div>
               <div className="vote--btns col-xs-4">
-                <button className="btn btn-success btn-round vote--upvote" id="upvote" onClick={this.upvote}>
-                  <i className="fa fa-check" aria-hidden="true" />
-                </button>
-                <button className="btn btn-danger btn-round vote--downvote" id="downvote" onClick={this.downvote}>
-                  <i className="fa fa-times" aria-hidden="true" />
-                </button>
+                {this.state.isDJ ? <button className="btn btn-success btn-round vote--upvoteCurrent" id="upvote" onClick={this.upvote}>
+                  <i className="fa fa-ban" aria-hidden="true" /></button>
+                  :
+                  <button className="btn btn-success btn-round vote--upvote" id="upvote" onClick={this.upvote}>
+                    <i className="fa fa-check" aria-hidden="true" /></button>}
+                {this.state.isDJ ? <button className="btn btn-danger btn-round vote--downvoteCurrent" id="downvote" onClick={this.downvote}>
+                  <i className="fa fa-ban" aria-hidden="true" /></button>
+                  :
+                  <button className="btn btn-danger btn-round vote--downvote" id="downvote" onClick={this.downvote}>
+                    <i className="fa fa-times" aria-hidden="true" /></button>}
               </div>
               <div className="vote--djQueue col-xs-4">
                 <button className="vote--djqueueBtn btn btn-default btn-round" onClick={this.handleDjQueue}>
