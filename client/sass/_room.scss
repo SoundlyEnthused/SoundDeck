@@ -122,6 +122,69 @@ h1 {
   display: inline-block;
   margin: 0 10px;
   text-align: center;
+  overflow: hidden;
+}
+
+.vote--upvote {
+  position: relative;
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.vote--downvote {
+  position: relative;
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+.upvoteActive {
+  animation: upvoteFade 1s;
+}
+
+@keyframes upvoteFade {
+  0% {
+    color: #fff;
+    background-color: #394b82;
+    border-color: #1a223b;
+    box-shadow: 0px 0px 20px transparent;
+  }
+  10% {
+    background-color: #b5c3ef;
+    color: #405594;
+    box-shadow: 0px 0px 20px #b5c3ef;
+  }
+  100% {
+    color: #fff;
+    background-color: #394b82;
+    border-color: #1a223b;
+    box-shadow: 0px 0px 20px transparent;
+  }
+}
+
+.downvoteActive {
+  animation: downvoteFade 1s;
+}
+
+@keyframes downvoteFade {
+  0% {
+        color: #fff;
+    background-color: #cc2700;
+    border-color: #a82000;
+    box-shadow: 0px 0px 20px transparent;
+  }
+  10% {
+    background-color: #fc9a55;
+    color: #a82000;
+    box-shadow: 0px 0px 20px #fc9a55;
+  }
+  100% {
+        color: #fff;
+    background-color: #cc2700;
+    border-color: #a82000;
+    box-shadow: 0px 0px 20px transparent;
+  }
 }
 
 .vote--djQueue {
