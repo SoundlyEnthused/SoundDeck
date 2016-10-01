@@ -260,7 +260,9 @@ export default class Room extends React.Component {
   }
 
   render() {
-    // console.log('room render', this.state)
+    let activeDJs = this.state.djs.filter(d => d).length;
+    let maxVotes = (this.state.users.length + activeDJs) * 0.4;
+
     return (
       <div className="room">
         <div className="container">
@@ -364,7 +366,7 @@ export default class Room extends React.Component {
                     aria-valuenow={this.state.downvoteCount}
                     aria-valuemin="0"
                     aria-valuemax={this.state.users.length + this.state.djs.filter(d => d).length}
-                    style={{ width: `${(this.state.downvoteCount / ((this.state.users.length + this.state.djs.filter(d => d).length)) * 0.4) * 100}%` }}
+                    style={{ width: `${(this.state.downvoteCount / maxVotes) * 100}%` }}
                   />
                 </div>
               </div>
