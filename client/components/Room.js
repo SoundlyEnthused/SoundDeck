@@ -204,6 +204,10 @@ export default class Room extends React.Component {
   upvote() {
     const djList = this.state.djs;
     const currentDjObj = djList[this.state.currentDj];
+    const isDJ = this.props;
+    if (currentDjObj.id === isDJ.userId) {
+      return;
+    }
     if (currentDjObj) {
       const currentDjId = currentDjObj.id;
       if (currentDjId) {
@@ -213,11 +217,12 @@ export default class Room extends React.Component {
   }
 
   downvote() {
-    // this.setState({
-    //   downvotes: this.state.downvotes + 1 || 1,
-    // });
     const djList = this.state.djs;
     const currentDjObj = djList[this.state.currentDj];
+    const isDJ = this.props;
+    if (currentDjObj.id === isDJ.userId) {
+      return;
+    }
     if (currentDjObj) {
       const currentDjId = currentDjObj.id;
       if (currentDjId) {
@@ -336,12 +341,16 @@ export default class Room extends React.Component {
                 </div>
               </div>
               <div className="vote--btns col-xs-4">
-                <button className="btn btn-success btn-round vote--upvote" id="upvote" onClick={this.upvote}>
-                  <i className="fa fa-check" aria-hidden="true" />
-                </button>
-                <button className="btn btn-danger btn-round vote--downvote" id="downvote" onClick={this.downvote}>
-                  <i className="fa fa-times" aria-hidden="true" />
-                </button>
+                {this.state.isDJ ? <button className="btn btn-success btn-round vote--upvoteCurrent" id="upvote" onClick={this.upvote}>
+                  <i className="fa fa-ban" aria-hidden="true" /></button>
+                  :
+                  <button className="btn btn-success btn-round vote--upvote" id="upvote" onClick={this.upvote}>
+                    <i className="fa fa-check" aria-hidden="true" /></button>}
+                {this.state.isDJ ? <button className="btn btn-danger btn-round vote--downvoteCurrent" id="downvote" onClick={this.downvote}>
+                  <i className="fa fa-ban" aria-hidden="true" /></button>
+                  :
+                  <button className="btn btn-danger btn-round vote--downvote" id="downvote" onClick={this.downvote}>
+                    <i className="fa fa-times" aria-hidden="true" /></button>}
               </div>
               <div className="vote--djQueue col-xs-4">
                 <button className="vote--djqueueBtn btn btn-default btn-round" onClick={this.handleDjQueue}>

@@ -114,6 +114,22 @@ h1 {
   text-align: center;
 }
 
+.vote--upvoteCurrent {
+  cursor: default;
+  &:hover {
+    background-color: #485fa6;
+    border: #405594;
+  }
+}
+
+.vote--downvoteCurrent {
+  cursor: default;
+  &:hover {
+    background-color: #ff3100;
+    border: #e62c00;
+  }
+}
+
 .btn-round {
   width: 50px;
   height: 50px;
