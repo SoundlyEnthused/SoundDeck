@@ -75,7 +75,6 @@ Voting.downvote = function downvote(roomId, userId, currentDJ, track) {
     }
     voting.voted[userId] = 'downvote';
   }
-  console.log('voting downvote', voting);
 };
 
 Voting.newTrack = function newTrack(roomId, track) {
@@ -97,7 +96,6 @@ Voting.DJenqueue = function DJenqueue(roomId, djList) {
       voting.downvotes[dj.id] = 0;
     }
   });
-  console.log('voting enq', voting);
 };
 
 Voting.DJdequeue = function DJdequeue(roomId, djList) {
@@ -106,18 +104,14 @@ Voting.DJdequeue = function DJdequeue(roomId, djList) {
   const oldDjIds = Object.keys(voting.downvotes);
   oldDjIds.forEach((oldDj) => {
     if (!newDjIds.includes(oldDj)) {
-      console.log('deleting...', oldDj, newDjIds.indexOf(oldDj))
       delete voting.downvotes[oldDj];
     }
   });
-  console.log('xxxxxxx', voting.downvotes);
 
   newDjIds.forEach((newDj) => {
-    console.log('voting deq, adding djs', newDj, voting.downvotes);
     if (newDj != null && !(newDj in voting.downvotes)) {
       voting.downvotes[newDj] = 0;
     }
   });
-  console.log('voting deq', voting);
 };
 module.exports = Voting;
