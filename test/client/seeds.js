@@ -40,18 +40,23 @@ seeds.users = [
       { id: 99572, username: 'remixland', avatar_url: 'https://i1.sndcdn.com/avatars-000000593421-456e97-large.jpg' },
       { id: 99585, username: 'dirwood', avatar_url: 'https://i1.sndcdn.com/avatars-000000583441-t9jjr4-large.jpg' },
 ];
+
 seeds.roomname = 'metal';
+
 seeds.djMaxNum = 4;
+
 seeds.ServerAPI = {
   userId: 1000,
-  connect: () => { console.log('socket connecting'); },
-  disconnect: () => { console.log('socket connecting'); },
+  connect: () => { console.log('Socket connecting'); },
+  disconnect: () => { console.log('Socket disconnecting'); },
   onUpdate: (callback) => { console.log('Room event'); callback(); },
-  joinRoom: () => { console.log('client join room'); },
+  joinRoom: () => { console.log('Client join room'); },
   login: () => { console.log('Server API login'); },
-  onLogin: (callback) => { console.log('client join room'); callback(); },
-  enqueue: () => { console.log('SEEDS: Server API enqueue for DJ'); },
-  dequeue: () => { console.log('SEEDS: Server API dequeue for DJ'); },
+  onLogin: (callback) => { console.log('Client join room'); callback(); },
+  enqueue: () => { console.log('Server API enqueue for DJ'); },
+  dequeue: () => { console.log('Server API dequeue for DJ'); },
+  upvote: () => { console.log('Server API upvote for DJ')},
+  downvote: () => { console.log('Server API downvote for song')},
 };
 
 seeds.createRoom = (roomName, djNum, userNum, track) => {

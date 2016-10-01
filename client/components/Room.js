@@ -203,26 +203,56 @@ export default class Room extends React.Component {
 
   upvote() {
     const djList = this.state.djs;
+    // djList is an array of objects.
+    // Each object contains the following information:
+    // { avatar_url : ________,
+    //   id : ________________,
+    //   likes : _____________,
+    //   username : __________,
+    // }
+    console.log('this.state.currentDj = ', this.state.currentDj);
+    // Define current DJ object
     const currentDjObj = djList[this.state.currentDj];
+    // Test if current DJ object exists:
     if (currentDjObj) {
-      const currentDjId = currentDjObj.id;
-      if (currentDjId) {
-        this.props.ServerAPI.upvote(currentDjId, this.state.track);
+      // Define currentDjID
+      const currentDjID = currentDjObj.id;
+      // Test if currentDjID exists:
+      if (currentDjID) {
+        const currentTrack = this.state.track;
+        if (currentTrack) {
+          this.props.ServerAPI.upvote(currentDjID, currentTrack);
+        } else {
+          console.log('client/Room/upvote() => currentTrack undefined');
+        }
+      } else {
+        console.log('client/Room/upvote() => currentDjID undefined');
       }
+    } else {
+      console.log('client/Room/upvote() => currentDjObj undefined');
     }
   }
 
   downvote() {
-    // this.setState({
-    //   downvotes: this.state.downvotes + 1 || 1,
-    // });
     const djList = this.state.djs;
     const currentDjObj = djList[this.state.currentDj];
+    // Test if current DJ object exists:
     if (currentDjObj) {
-      const currentDjId = currentDjObj.id;
-      if (currentDjId) {
-        this.props.ServerAPI.downvote(currentDjId, this.state.track);
+      // Define currentDjID
+      const currentDjID = currentDjObj.id;
+      // Test if currentDjID exists:
+      if (currentDjID) {
+        const currentTrack = this.state.track;
+        if (currentTrack) {
+          this.props.ServerAPI.downvote(currentDjID, currentTrack);
+        } else {
+          console.log('client/Room/downvote() => currentTrack undefined');
+        }
+      } else {
+        console.log('client/Room/downvote() => currentDjID undefined');
       }
+    } else {
+      console.log('client/Room/downvote() => currentDjObj undefined');
     }
   }
 

@@ -214,7 +214,7 @@ MvpAPI.upvote = (socket, data) => {
   }
   const userId = Connection.getUserId(socket);
   const room = Room.getByUserId(userId);
-  Voting.upvote(room.id, userId, data.currentDJ, data.track);
+  Voting.upvote(room.id, userId, data.currentDjID, data.track);
   Connection.sendAll('room', MvpAPI.getState());
 };
 
@@ -226,7 +226,7 @@ MvpAPI.downvote = (socket, data) => {
   }
   const userId = Connection.getUserId(socket);
   const room = Room.getByUserId(userId);
-  Voting.downvote(room.id, userId, data.currentDJ, data.track);
+  Voting.downvote(room.id, userId, data.currentDjID, data.track);
   Connection.sendAll('room', MvpAPI.getState());
 };
 
