@@ -31,6 +31,23 @@
   }
 }
 
+.lobby--roomName {
+  padding-top: 10px;
+}
+
 .lobby--joinBtn {
   text-align: right;
+
+  button:hover {
+    background: $brand-primary;
+    color: #fff;
+    transition: all .25s;
+  }
+
+  button:active,
+  button:focus,
+  button:active:focus {
+    background: darken($brand-primary, 20%);
+    color: #fff;
+  }
 }
