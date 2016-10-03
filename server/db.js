@@ -8,8 +8,18 @@ const updateUser = (user) => {
   Users.update({ id: { $eq: user.id } }, user, { upsert: true });
 };
 // get User
-const getUser = (user) => {
-  Users.find({ id: { $eq: user.id } });
+const getUser = (id) => {
+  if (id) {
+    return new Promise((resolve, reject) => {
+      Users.find({ id: { $eq: id } }).each((err, doc) => {
+        if (err) {
+          reject(doc);
+        }
+        resolve(doc);
+      });
+    });
+  }
+  return Promise.resolve(null);
 };
 // Update playlist
 const updatePlaylist = (userId, playlist) => {

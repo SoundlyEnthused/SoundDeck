@@ -12,25 +12,43 @@ MvpAPI.trackDelay = 500;
 
 /* Bundle the state of all Rooms and DjQueues into one Object */
 MvpAPI.getState = () => {
+  console.log('mvp api get state');
   const state = {};
-  Room.all().forEach((room) => {
-    // Get the DjQueue associated with this room
-    const queue = DjQueue.getByRoom(room.id);
-    const Vote = Votes.getByRoom(room.id);
-    // Build up the state object entry from related Room and DjQueue models
-    state[room.id] = {
-      name: room.name,
-      djs: queue.active.map(dj => User.get(dj)),
-      currentDj: queue.currentDj,
-      // User's array should not include DJ's
-      users: room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)),
-      djMaxNum: queue.maxDjs,
-      track: queue.currentTrack !== null ? queue.currentTrack.songId : null,
-      timeStamp: queue.currentTrack !== null ? queue.currentTrack.startTime + MvpAPI.trackDelay : 0,
-      downvoteCount: Vote.downvoteCount,
-    };
-  });
-  return state;
+  return Promise.all(
+    Room.all().forEach((room) => {
+      // Get the DjQueue associated with this room
+      const queue = DjQueue.getByRoom(room.id);
+      const Vote = Votes.getByRoom(room.id);
+      // Build up the state object entry from related Room and DjQueue models
+      state[room.id] = {
+        name: room.name,
+        // djs: queue.active.map(dj => User.get(dj)),
+        currentDj: queue.currentDj,
+        // User's array should not include DJ's
+        // users: room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)),
+        djMaxNum: queue.maxDjs,
+        track: queue.currentTrack !== null ? queue.currentTrack.songId : null,
+        timeStamp: queue.currentTrack !== null ? queue.currentTrack.startTime + MvpAPI.trackDelay : 0,
+        downvoteCount: Vote.downvoteCount,
+      };
+      console.log('mvp api get data state', state);
+      return Promise.all(queue.active.map(dj => User.get(dj))).then((data) => {
+        state[room.id].djs = data;
+        console.log('mvp api get data djs', data, state);
+        return Promise.all(room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)))
+      }).then((data) => {
+        state[room.id].users = data;
+        console.log('mvp api get data users', data, state);
+        return Promise.resolve();
+      });
+    })
+  );
+  // ).then(() => {
+  //   console.log('mvp api get data state ENDEND', state);
+  //   return state;
+  // }).catch((err) => {
+  //   console.log('error getting data', err);
+  // });
 };
 
 MvpAPI.createRoom = (name) => {
@@ -78,10 +96,16 @@ function updateTracks() {
 
 /* Handler for event to associate a connection with a soundcloud user */
 MvpAPI.login = (socket, data) => {
+  console.log('mvp api login');
   Connection.register(data.id, socket);
   User.create(data.id, data.username, data.avatar_url);
   Connection.send(data.id, 'login', { id: data.id });
-  Connection.send(data.id, 'room', MvpAPI.getState());
+  console.log('here')
+  MvpAPI.getState().then((state) => {
+    console.log('mvp api login', state);
+    Connection.send(data.id, 'room', state);
+  });
+  // Connection.send(data.id, 'room', MvpAPI.getState());
 };
 
 /* Handler for event to join a room */
