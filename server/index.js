@@ -56,6 +56,18 @@ if (process.env.NODE_ENV !== 'test') {
   // Parse incoming request bodies as JSON
   app.use(bodyParser.json());
 
+  // Force the user of https if we are in production
+  // See http://jaketrent.com/post/https-redirect-node-heroku/ for inspiration
+  if (process.env.NODE_ENV === 'production') {
+    app.use((req, res, next) => {
+      if (req.get('x-forwarded-proto') !== 'https') {
+        res.redirect(`https://${req.get('host')}${req.url}`);
+      } else {
+        next();
+      }
+    });
+  }
+
   // Mount our main router
   app.use('/', routes);
 
