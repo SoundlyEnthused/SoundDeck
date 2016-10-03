@@ -2,6 +2,7 @@ const Path = require('path');
 // Imports for express
 const express = require('express');
 const bodyParser = require('body-parser');
+const compression = require('compression')
 // Imports for browserify-middleware
 const browserify = require('browserify-middleware');
 const babelify = require('babelify');
@@ -56,9 +57,9 @@ if (process.env.NODE_ENV !== 'test') {
   // Parse incoming request bodies as JSON
   app.use(bodyParser.json());
 
-  // Force the user of https if we are in production
-  // See http://jaketrent.com/post/https-redirect-node-heroku/ for inspiration
   if (process.env.NODE_ENV === 'production') {
+    // Force the user of https if we are in production
+    // See http://jaketrent.com/post/https-redirect-node-heroku/ for inspiration
     app.use((req, res, next) => {
       if (req.get('x-forwarded-proto') !== 'https') {
         res.redirect(`https://${req.get('host')}${req.url}`);
@@ -66,6 +67,8 @@ if (process.env.NODE_ENV !== 'test') {
         next();
       }
     });
+    // Force use of gzip compression if we are in production
+    app.use(compression());
   }
 
   // Mount our main router
