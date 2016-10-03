@@ -17,8 +17,8 @@ User.create = function create(id, username, avatar_url) {
 };
 
 User.get = function get(id) {
-  // const user = DB.getUser(id);
-  return users[id] === undefined ? null : users[id];
+  return DB.getUser(id);
+  // return users[id] === undefined ? null : users[id];
 };
 
 User.upvote = function upvote(id) {
