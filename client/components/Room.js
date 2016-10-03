@@ -78,7 +78,7 @@ export default class Room extends React.Component {
       _this.infoArtist.innerHTML = 'N/A';
       _this.trackProgress.style.width = '0';
       _this.infoTrack.innerHTML = 'No available tracks';
-      _this.infoImage.setAttribute('src', 'img/user.svg');
+      _this.infoImage.setAttribute('src', 'img/spinner.svg');
     } else {
       SC.get(`/tracks/${this.state.track}`).catch((err) => {
         console.log('loading err', err);
