@@ -3,7 +3,7 @@ const Room = require('../models/Room');
 const DjQueue = require('../models/DjQueue');
 const Playlist = require('../models/Playlist');
 const User = require('../models/User');
-const Voting = require('../models/Voting');
+const Votes = require('../models/Votes');
 
 const MvpAPI = {};
 
@@ -16,7 +16,7 @@ MvpAPI.getState = () => {
   Room.all().forEach((room) => {
     // Get the DjQueue associated with this room
     const queue = DjQueue.getByRoom(room.id);
-    const voting = Voting.getByRoom(room.id);
+    const Vote = Votes.getByRoom(room.id);
     // Build up the state object entry from related Room and DjQueue models
     state[room.id] = {
       name: room.name,
@@ -27,7 +27,7 @@ MvpAPI.getState = () => {
       djMaxNum: queue.maxDjs,
       track: queue.currentTrack !== null ? queue.currentTrack.songId : null,
       timeStamp: queue.currentTrack !== null ? queue.currentTrack.startTime + MvpAPI.trackDelay : 0,
-      downvoteCount: voting.downvoteCount,
+      downvoteCount: Vote.downvoteCount,
     };
   });
   return state;
@@ -36,7 +36,7 @@ MvpAPI.getState = () => {
 MvpAPI.createRoom = (name) => {
   const room = Room.create(name);
   DjQueue.create(room.id);
-  Voting.create(room.id);
+  Votes.create(room.id);
   return room;
 };
 
@@ -45,7 +45,7 @@ MvpAPI.clearAll = () => {
   Room.clearAll();
   DjQueue.clearAll();
   Playlist.clearAll();
-  Voting.clearAll();
+  Votes.clearAll();
 };
 
 // TODO: Test this!
@@ -128,7 +128,7 @@ MvpAPI.enqueue = (socket) => {
   }
   DjQueue.enqueue(queue.id, userId);
   const roomState = MvpAPI.getState();
-  Voting.DJenqueue(room.id, roomState[room.id].djs);
+  Votes.DJenqueue(room.id, roomState[room.id].djs);
   Connection.sendAll('room', roomState);
 };
 
@@ -151,7 +151,7 @@ MvpAPI.dequeue = (socket) => {
   }
   DjQueue.removeUser(queue.id, userId);
   const roomState = MvpAPI.getState();
-  Voting.DJdequeue(room.id, roomState[room.id].djs);
+  Votes.DJdequeue(room.id, roomState[room.id].djs);
   Connection.sendAll('room', roomState);
 };
 
@@ -199,10 +199,10 @@ MvpAPI.sendNextTrack = (roomId) => {
   if (playlist !== null) {
     Connection.send(dj, 'playlist', playlist.tracks);
   }
-  Voting.newTrack(roomId, track);
+  Votes.newTrack(roomId, track);
   const roomState = MvpAPI.getState();
   const totalUsers = roomState[roomId].users.length + roomState[roomId].djs.filter(d => d).length;
-  Voting.updateTotalUser(roomId, totalUsers);
+  Votes.updateTotalUser(roomId, totalUsers);
   Connection.sendAll('room', roomState);
 };
 
@@ -214,7 +214,7 @@ MvpAPI.upvote = (socket, data) => {
   }
   const userId = Connection.getUserId(socket);
   const room = Room.getByUserId(userId);
-  Voting.upvote(room.id, userId, data.currentDjID, data.track);
+  Votes.upvote(room.id, userId, data.currentDjID, data.track);
   Connection.sendAll('room', MvpAPI.getState());
 };
 
@@ -226,7 +226,7 @@ MvpAPI.downvote = (socket, data) => {
   }
   const userId = Connection.getUserId(socket);
   const room = Room.getByUserId(userId);
-  Voting.downvote(room.id, userId, data.currentDjID, data.track);
+  Votes.downvote(room.id, userId, data.currentDjID, data.track);
   Connection.sendAll('room', MvpAPI.getState());
 };
 

@@ -1,7 +1,7 @@
 const User = require('./User');
 const DjQueue = require('./DjQueue');
 
-const Voting = {};
+const Votes = {};
 
 let votings = {};
 let votingIdsByRoom = {};
@@ -9,7 +9,7 @@ let nextId = 0;
 const skipRatio = 0.4;
 const mercy = 3;
 
-Voting.create = function create(roomId) {
+Votes.create = function create(roomId) {
   const voting = {
     roomId,
     id: nextId,
@@ -22,24 +22,24 @@ Voting.create = function create(roomId) {
   nextId += 1;
   votings[voting.id] = voting;
   votingIdsByRoom[roomId] = voting.id;
-  return Voting.get(voting.roomId);
+  return Votes.get(voting.roomId);
 };
 
-Voting.clearAll = function clearAll() {
+Votes.clearAll = function clearAll() {
   votings = {};
   votingIdsByRoom = {};
   nextId = 0;
 };
 
-Voting.get = function get(id) {
+Votes.get = function get(id) {
   return votings[id];
 };
 
-Voting.getByRoom = function get(roomId) {
+Votes.getByRoom = function get(roomId) {
   return votings[votingIdsByRoom[roomId]];
 };
 
-Voting.upvote = function upvote(roomId, userId, currentDJ, track) {
+Votes.upvote = function upvote(roomId, userId, currentDJ, track) {
   const voting = votings[votingIdsByRoom[roomId]];
   if (voting.track === track) {
     if (userId in voting.voted) {
@@ -48,19 +48,21 @@ Voting.upvote = function upvote(roomId, userId, currentDJ, track) {
       }
       voting.downvoteCount -= 1;
     }
-    User.get(currentDJ).likes = User.get(currentDJ).likes + 1;
+    // User.get(currentDJ).likes = User.get(currentDJ).likes + 1;
+    User.upvote(currentDJ);
     voting.voted[userId] = 'upvote';
   }
 };
 
-Voting.downvote = function downvote(roomId, userId, currentDJ, track) {
+Votes.downvote = function downvote(roomId, userId, currentDJ, track) {
   const voting = votings[votingIdsByRoom[roomId]];
   if (voting.track === track) {
     if (userId in voting.voted) {
       if (voting.voted[userId] === 'downvote') {
         return;
       }
-      User.get(currentDJ).likes = User.get(currentDJ).likes - 1;
+      // User.get(currentDJ).likes = User.get(currentDJ).likes - 1;
+      User.downvote(currentDJ);
     }
     voting.downvoteCount += 1;
     if (voting.downvoteCount / voting.totalCount >= skipRatio) {
@@ -77,19 +79,19 @@ Voting.downvote = function downvote(roomId, userId, currentDJ, track) {
   }
 };
 
-Voting.newTrack = function newTrack(roomId, track) {
+Votes.newTrack = function newTrack(roomId, track) {
   const voting = votings[votingIdsByRoom[roomId]];
   voting.track = track.songId;
   voting.downvoteCount = 0;
   voting.voted = {};
 };
 
-Voting.updateTotalUser = function updateTotalUser(roomId, totalCount) {
+Votes.updateTotalUser = function updateTotalUser(roomId, totalCount) {
   const voting = votings[votingIdsByRoom[roomId]];
   voting.totalCount = totalCount;
 };
 
-Voting.DJenqueue = function DJenqueue(roomId, djList) {
+Votes.DJenqueue = function DJenqueue(roomId, djList) {
   const voting = votings[votingIdsByRoom[roomId]];
   djList.forEach((dj) => {
     if (dj != null && !(dj.id in voting.downvotes)) {
@@ -98,7 +100,7 @@ Voting.DJenqueue = function DJenqueue(roomId, djList) {
   });
 };
 
-Voting.DJdequeue = function DJdequeue(roomId, djList) {
+Votes.DJdequeue = function DJdequeue(roomId, djList) {
   const voting = votings[votingIdsByRoom[roomId]];
   const newDjIds = djList.map(dj => dj && dj.id.toString());
   const oldDjIds = Object.keys(voting.downvotes);
@@ -114,4 +116,4 @@ Voting.DJdequeue = function DJdequeue(roomId, djList) {
     }
   });
 };
-module.exports = Voting;
+module.exports = Votes;
