@@ -6,3 +6,4 @@ client/components/key.js
 .DS_Store
 client/public/css/
 .env
+db/*

@@ -8,8 +8,11 @@ const babelify = require('babelify');
 const api = require('./apis/MvpAPI');
 const io = require('socket.io');
 const initialRooms = require('./initialRooms');
+const DB = require('./db');
 
+DB.init();
 const routes = express.Router();
+
 //
 // Provide a browserified file at a specified path
 //

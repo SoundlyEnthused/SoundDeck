@@ -1,0 +1,57 @@
+const MongoClient = require('mongodb').MongoClient;
+
+const DB = {};
+let Users = null;
+
+// insert or update new User
+const updateUser = (user) => {
+  Users.update({ id: { $eq: user.id } }, user, { upsert: true });
+};
+// get User
+const getUser = (user) => {
+  Users.find({ id: { $eq: user.id } });
+};
+// Update playlist
+const updatePlaylist = (userId, playlist) => {
+  console.log('DB update playlist', userId, playlist);
+  Users.updateOne({ id: { $eq: userId } }, { $set: { playlist } });
+};
+// Upvote. Increase likes
+const upvote = (userId) => {
+  console.log('db upvote', userId);
+  Users.updateOne({ id: { $eq: userId } }, { $inc: { likes: 1 } });
+};
+// Downvote. Decrease likes
+const downvote = (userId) => {
+  console.log('db downvote', userId);
+  Users.updateOne({ id: { $eq: userId } }, { $inc: { likes: -1 } });
+};
+
+/*
+  create folder /db at project root
+  to initialize mongo db, run
+    mongod --dbpath ./db
+  then inside /db folder, run
+    mongo
+  to start the mongo shell
+  inside of mongo shell, run
+    use sounddeck
+  to switch to sounddeck database
+  add env variable DB_URL='mongodb://localhost:27017/sounddeck'
+*/
+DB.init = () => {
+  MongoClient.connect(process.env.DB_URL, (err, db) => {
+    if (err) {
+      console.log('err connecting to database');
+    }
+    console.log('Connected successfully to database');
+    Users = db.collection('Users');
+    DB.getUser = getUser;
+    DB.updateUser = updateUser;
+    DB.updatePlaylist = updatePlaylist;
+    DB.upvote = upvote;
+    DB.downvote = downvote;
+  });
+};
+
+module.exports = DB;

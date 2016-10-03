@@ -1,3 +1,5 @@
+const DB = require('../db');
+
 const Playlist = {};
 
 let playlists = {};
@@ -12,6 +14,7 @@ Playlist.create = function create(userId, tracks = []) {
   const playlist = { tracks: tracks.slice(), id, userId };
   playlists[id] = playlist;
   usersToPlaylists[userId] = id;
+  DB.updatePlaylist(userId, tracks);
   return Playlist.get(id);
 };
 
@@ -23,6 +26,7 @@ Playlist.clearAll = function clearAll() {
 Playlist.update = function update(userId, tracks) {
   if (userId in playlists) {
     playlists[userId].tracks = tracks.map(ele => ({ songId: ele.songId, duration: ele.duration }));
+    DB.updatePlaylist(playlists[userId].userId, tracks);
   }
 };
 
