@@ -9,6 +9,7 @@ User.create = function create(id, username, avatar_url) {
     username,
     avatar_url,
     likes: 0,
+    avatar: null,
   };
   users[id] = user;
   DB.updateUser(user);
@@ -16,6 +17,7 @@ User.create = function create(id, username, avatar_url) {
 };
 
 User.get = function get(id) {
+  // const user = DB.getUser(id);
   return users[id] === undefined ? null : users[id];
 };
 
@@ -32,4 +34,8 @@ User.downvote = function downvote(id) {
   }
   DB.downvote(id);
 };
+
+// User.updateAvatar = function updataAvatar(avatar) {
+
+// }
 module.exports = User;
