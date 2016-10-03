@@ -27,6 +27,7 @@
     "body-parser": "^1.14.1",
     "bootstrap-sass": "^3.3.7",
     "browserify-middleware": "^7.0.0",
+    "compression": "^1.6.2",
     "dotenv": "^2.0.0",
     "envify": "^3.4.1",
     "enzyme": "^2.4.1",
