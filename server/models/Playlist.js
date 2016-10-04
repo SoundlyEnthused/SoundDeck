@@ -25,7 +25,11 @@ Playlist.clearAll = function clearAll() {
 
 Playlist.update = function update(userId, tracks) {
   if (userId in playlists) {
-    playlists[userId].tracks = tracks.map(ele => ({ songId: ele.songId, duration: ele.duration }));
+    playlists[userId].tracks = tracks.map(ele => ({
+      songId: ele.songId,
+      duration: ele.duration,
+      title: ele.title,
+    }));
     DB.updatePlaylist(playlists[userId].userId, tracks);
   }
 };
