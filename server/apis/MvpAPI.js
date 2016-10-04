@@ -24,7 +24,7 @@ MvpAPI.getState = () => {
     });
     return state;
   }).catch((err) => {
-    console.log('er', err);
+    console.log('api get state err', err);
   });
 };
 
@@ -52,7 +52,6 @@ MvpAPI.getRoomState = (room) => {
         return Promise.all(room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)));
       }).then((data) => {
         state.users = data;
-        console.log('getting single room state', state);
         resolve(state);
       }).catch((err) => {
         reject(err);
@@ -139,7 +138,7 @@ MvpAPI.join = (socket, data) => {
   }
   Room.join(data.roomId, userId);
   MvpAPI.getState().then((state) => {
-    console.log('mvp api join', state);
+    console.log('mvp api join');
     Connection.sendAll('room', state);
   });
   // Connection.sendAll('room', MvpAPI.getState());
@@ -250,7 +249,7 @@ MvpAPI.sendNextTrack = (roomId) => {
   MvpAPI.getState().then((state) => {
     const totalUsers = state[roomId].users.length + state[roomId].djs.filter(d => d).length;
     Votes.updateTotalUser(roomId, totalUsers);
-    console.log('mvp api join', state);
+    console.log('mvp api join');
     Connection.sendAll('room', state);
   });
   // Connection.sendAll('room', roomState);
@@ -264,12 +263,14 @@ MvpAPI.upvote = (socket, data) => {
   }
   const userId = Connection.getUserId(socket);
   const room = Room.getByUserId(userId);
-  Votes.upvote(room.id, userId, data.currentDjID, data.track);
-  MvpAPI.getState().then((state) => {
-    console.log('mvp api upvote', state);
-    Connection.sendAll('room', state);
+  Votes.upvote(room.id, userId, data.currentDjID, data.track).then((data) => {
+    MvpAPI.getState().then((state) => {
+      console.log('mvp api upvote');
+      Connection.sendAll('room', state);
+    });
+  }).catch((err) => {
+    console.log('api upvote err', err);
   });
-  // Connection.sendAll('room', MvpAPI.getState());
 };
 
 /* Handler for event to downvote for song */
@@ -280,12 +281,14 @@ MvpAPI.downvote = (socket, data) => {
   }
   const userId = Connection.getUserId(socket);
   const room = Room.getByUserId(userId);
-  Votes.downvote(room.id, userId, data.currentDjID, data.track);
-  MvpAPI.getState().then((state) => {
-    console.log('mvp api downvote', state);
-    Connection.sendAll('room', state);
+  Votes.downvote(room.id, userId, data.currentDjID, data.track).then((data) => {
+    MvpAPI.getState().then((state) => {
+      console.log('mvp api downvote');
+      Connection.sendAll('room', state);
+    });
+  }).catch((err) => {
+    console.log('api downvote err', err);
   });
-  // Connection.sendAll('room', MvpAPI.getState());
 };
 
 /* Handler for disconnect event */
@@ -309,7 +312,7 @@ MvpAPI.disconnect = (socket) => {
     // Remove user from Room
     Room.leave(room.id, userId);
     MvpAPI.getState().then((state) => {
-      console.log('mvp api disconnect', state);
+      console.log('mvp api disconnect');
       Connection.sendAll('room', state);
     });
     // Connection.sendAll('room', MvpAPI.getState());

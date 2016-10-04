@@ -24,17 +24,18 @@ const getUser = (id) => {
 // Update playlist
 const updatePlaylist = (userId, playlist) => {
   console.log('DB update playlist', userId, playlist);
-  Users.updateOne({ id: { $eq: userId } }, { $set: { playlist } });
+  return Users.updateOne({ id: { $eq: userId } }, { $set: { playlist } });
 };
+
 // Upvote. Increase likes
 const upvote = (userId) => {
   console.log('db upvote', userId);
-  Users.updateOne({ id: { $eq: userId } }, { $inc: { likes: 1 } });
+  return Users.updateOne({ id: { $eq: userId } }, { $inc: { likes: 1 } });
 };
 // Downvote. Decrease likes
 const downvote = (userId) => {
   console.log('db downvote', userId);
-  Users.updateOne({ id: { $eq: userId } }, { $inc: { likes: -1 } });
+  return Users.updateOne({ id: { $eq: userId } }, { $inc: { likes: -1 } });
 };
 
 /*
