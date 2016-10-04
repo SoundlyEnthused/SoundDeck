@@ -4,8 +4,8 @@ const Playlist = {};
 
 let playlists = {};
 // map of user ids to playlist ids
-let usersToPlaylists = {};
-let nextId = 0;
+// let usersToPlaylists = {};
+// let nextId = 0;
 // Playlists are always associated with a user!
 Playlist.create = function create(userId, tracks = []) {
   const id = nextId;
@@ -20,7 +20,7 @@ Playlist.create = function create(userId, tracks = []) {
 
 Playlist.clearAll = function clearAll() {
   playlists = {};
-  usersToPlaylists = {};
+  // usersToPlaylists = {};
 };
 
 Playlist.update = function update(userId, tracks) {
@@ -30,8 +30,9 @@ Playlist.update = function update(userId, tracks) {
       duration: ele.duration,
       title: ele.title,
     }));
-    DB.updatePlaylist(playlists[userId].userId, tracks);
+    return DB.updatePlaylist(playlists[userId].userId, tracks);
   }
+  return Promise.resolve(null);
 };
 
 Playlist.get = function get(id) {
