@@ -5,7 +5,10 @@ let Users = null;
 
 // insert or update new User
 const updateUser = (user) => {
-  Users.update({ id: { $eq: user.id } }, user, { upsert: true });
+  Users.update(
+    { id: { $eq: user.id } },
+    { $set: { username: user.username, avatar_url: user.avatar_url } },
+    { upsert: true });
 };
 // get User
 const getUser = (id) => {
@@ -13,7 +16,7 @@ const getUser = (id) => {
     return new Promise((resolve, reject) => {
       Users.find({ id: { $eq: id } }).each((err, doc) => {
         if (err) {
-          reject(doc);
+          reject(err);
         }
         resolve(doc);
       });
@@ -21,6 +24,17 @@ const getUser = (id) => {
   }
   return Promise.resolve(null);
 };
+// Get playlist
+const getPlaylist = (userId) => {
+  console.log('DB get playlist', userId);
+  return Users.findOne({ id: { $eq: userId } }, { playlist: 1 }).then((data) => {
+    if (data && data.playlist) {
+      return data.playlist;
+    }
+    return null;
+  });
+};
+
 // Update playlist
 const updatePlaylist = (userId, playlist) => {
   console.log('DB update playlist', userId, playlist);
@@ -58,6 +72,7 @@ DB.init = () => {
     console.log('Connected successfully to database');
     Users = db.collection('Users');
     DB.getUser = getUser;
+    DB.getPlaylist = getPlaylist;
     DB.updateUser = updateUser;
     DB.updatePlaylist = updatePlaylist;
     DB.upvote = upvote;
