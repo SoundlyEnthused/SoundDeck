@@ -4,21 +4,19 @@ export default class RoomSummary extends React.Component {
   render() {
     return (
       <li className="row lobby--room list-unstyled">
-        <div className="col-sm-1">
+        <div className="col-xs-6">
           <span className="roomname">{this.props.name}</span>
         </div>
-        <div className="col-sm-2">
+        <div className="col-xs-6 lobby--joinBtn" >
           {
             this.props.djs.map((dj, idx) =>
               (dj !== null
-              ? <div className="active-dj-slot" key={idx} />
+              ? <div className="active-dj-slot" key={idx}><img src={dj.avatar_url} /></div>
               : <div className="empty-dj-slot" key={idx} />)
             )
           }
           <span className="roomcount">{this.props.count}</span>
-        </div>
-        <div className="col-sm-10 lobby--joinBtn" >
-          <button className="btn btn-default joinBtn" onClick={this.props.onJoinClick}>
+          <button className="btn btn-primary joinBtn" onClick={this.props.onJoinClick}>
           Join
           </button>
         </div>

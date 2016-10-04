@@ -143,6 +143,7 @@ export default class App extends React.Component {
           roomCounts={this.getRoomCounts()}
           joinRoom={this.joinRoom}
           djs={this.getDjs()}
+          createRoom={this.createRoom}
         />
         <Playlist updatePlaylistLength={this.updatePlaylistLength} />
         {
