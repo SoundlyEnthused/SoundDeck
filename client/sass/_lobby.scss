@@ -51,3 +51,32 @@
     color: #fff;
   }
 }
+
+.roomcount {
+  background-color: pink;
+  margin-left: 2px;
+  padding-left: 6px;
+  padding-right: 6px;
+  border-radius: 50%;
+  text-align: center;
+}
+
+.active-dj-slot {
+  margin-left: 2px;
+  vertical-align: top;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #0061ff;
+  border-radius: 50%;
+}
+
+.empty-dj-slot {
+  margin-left: 2px;
+  vertical-align: top;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+}

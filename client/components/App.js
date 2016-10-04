@@ -71,6 +71,10 @@ export default class App extends React.Component {
       + this.roomData[id].djs.map(x => (x === null ? 0 : 1)).reduce((a, b) => a + b));
   }
 
+  getDjs() {
+    return Object.keys(this.roomData).map(id => this.roomData[id].djs);
+  }
+
   updateOnEvent(data) {
     console.log("App updateOnEvent = ", data);
     this.roomData = data;
@@ -117,7 +121,13 @@ export default class App extends React.Component {
     return (
       <main>
         <Nav currentRoom={this.state.currentRoom} loggingIn={this.loggingIn} userData={this.state.userData} />
-        <Lobby roomIds={this.state.roomIds} roomNames={this.state.roomNames} roomCounts={this.getRoomCounts()} joinRoom={this.joinRoom} />
+        <Lobby
+          roomIds={this.state.roomIds}
+          roomNames={this.state.roomNames}
+          roomCounts={this.getRoomCounts()}
+          joinRoom={this.joinRoom}
+          djs={this.getDjs()}
+        />
         <Playlist />
         {
           this.state.currentRoom ? (
