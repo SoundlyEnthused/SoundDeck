@@ -19,6 +19,15 @@ ServerAPI.onUpdate = (callback) => {
   });
 };
 
+ServerAPI.createRoom = (name, id, callback) => {
+  ServerAPI.socket.emit('create', { name, id });
+  ServerAPI.socket.on('newRoom', (data) => {
+    callback(data.id);
+  });
+};
+
+
+
 ServerAPI.joinRoom = (roomId) => {
   // console.log('client join room', roomId);
   ServerAPI.socket.emit('join', { roomId });

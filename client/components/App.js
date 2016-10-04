@@ -31,14 +31,17 @@ export default class App extends React.Component {
       roomIds: [],
       roomNames: [],
       currentRoom: undefined,
+      playlistLength: 0,
     };
     this.me = null;
     this.ServerAPI = null;
     this.roomData = {};
     this.joinRoom = this.joinRoom.bind(this);
+    this.createRoom = this.createRoom.bind(this);
     this.loggingIn = this.loggingIn.bind(this);
     this.updateOnEvent = this.updateOnEvent.bind(this);
     this.getRoomStates = this.getRoomStates.bind(this);
+    this.updatePlaylistLength = this.updatePlaylistLength.bind(this);
   }
 
   componentWillMount() {
@@ -107,6 +110,19 @@ export default class App extends React.Component {
     this.setState(this.getRoomStates());
   }
 
+  updatePlaylistLength(num) {
+    this.setState({
+      playlistLength: num,
+    });
+  }
+
+  createRoom(name) {
+    const _this = this;
+    ServerAPI.createRoom(name, this.state.userData.id, (id) => {
+      _this.joinRoom(id);
+    });
+  }
+
   loggingIn() {
     Auth.signin().then((userData) => {
       console.log(userData);
@@ -127,8 +143,9 @@ export default class App extends React.Component {
           roomCounts={this.getRoomCounts()}
           joinRoom={this.joinRoom}
           djs={this.getDjs()}
+          createRoom={this.createRoom}
         />
-        <Playlist />
+        <Playlist updatePlaylistLength={this.updatePlaylistLength} />
         {
           this.state.currentRoom ? (
             <Room
@@ -141,6 +158,7 @@ export default class App extends React.Component {
               currentDj={this.state.currentDj}
               users={this.state.users}
               downvoteCount={this.state.downvoteCount}
+              playlistLength={this.state.playlistLength}
               ServerAPI={ServerAPI}
             />) : null
         }

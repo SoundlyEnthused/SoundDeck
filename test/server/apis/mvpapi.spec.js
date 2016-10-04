@@ -53,6 +53,11 @@ describe('MvpAPI', () => {
       expect(room.id).to.be.a('number');
     });
   });
+  describe('userCreateRoom', () => {
+    it('should be a function', () => {
+      expect(MvpAPI.userCreateRoom).to.be.a('function');
+    });
+  });
   describe('getState', () => {
     let room1;
     let room2;

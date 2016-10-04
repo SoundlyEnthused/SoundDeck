@@ -75,18 +75,23 @@ h1 {
 }
 
 .player {
-  overflow: auto;
+  overflow: hidden;
   position: relative;
   z-index: 998;
   background: rgba(0,0,0,0.53);
   padding-right: 15px;
 }
 
+
+
 .player--image {
   width: 100px;
   height: 100px;
   float: left;
   margin: 0 15px 0 0;
+  &[src="img/spinner.svg"] {
+    animation: spin 1s linear reverse infinite;
+  }
 }
 
 .player--artist {
