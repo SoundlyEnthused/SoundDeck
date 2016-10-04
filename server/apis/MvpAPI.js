@@ -82,6 +82,7 @@ MvpAPI.login = (socket, data) => {
   User.create(data.id, data.username, data.avatar_url);
   Connection.send(data.id, 'login', { id: data.id });
   Connection.send(data.id, 'room', MvpAPI.getState());
+  MvpAPI.getPlaylist(socket);
 };
 
 /* Handler for event to join a room */

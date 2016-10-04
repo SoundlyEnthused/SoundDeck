@@ -28,13 +28,13 @@ export default class Playlist extends React.Component {
   }
 
   onServerPlaylistUpdate(tracks) {
-    const playlistById = {};
-    this.state.playlist.forEach((track) => { playlistById[track.id] = track; });
-    const updatedPlaylist = tracks.map(track => playlistById[track.songId]);
+    // const playlistById = {};
+    // this.state.playlist.forEach((track) => { playlistById[track.id] = track; });
+    // const updatedPlaylist = tracks.map(track => playlistById[track.songId]);
     this.setState({
-      playlist: updatedPlaylist,
+      playlist: tracks.map(track => ({ id: track.songId, duration: track.duration, title: track.title })),
     });
-    console.log('onServerPlaylistUpdate: ', updatedPlaylist);
+    // console.log('onServerPlaylistUpdate: ', updatedPlaylist);
   }
 
   updateState(obj) {
@@ -59,7 +59,7 @@ export default class Playlist extends React.Component {
   }
 
   sendPlaylistToServer() {
-    const updated = this.state.playlist.map(track => ({ songId: track.id, duration: track.duration }));
+    const updated = this.state.playlist.map(track => ({ songId: track.id, duration: track.duration, title: track.title }));
     console.log('updated playlist: ', updated);
     ServerAPI.updatePlaylist(updated);
   }
@@ -133,7 +133,7 @@ export default class Playlist extends React.Component {
                     className="form-control"
                     onChange={(e) => { this.setState({ searchPhrase: e.target.value }); }}
                   />
-                  <button 
+                  <button
                     className="btn btn-primary"
                     onClick={(e) => { this.search(e); }}
                   >
