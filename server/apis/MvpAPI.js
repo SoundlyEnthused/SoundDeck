@@ -40,6 +40,13 @@ MvpAPI.createRoom = (name) => {
   return room;
 };
 
+MvpAPI.userCreateRoom = (socket, data) => {
+  const name = data.name;
+  const room = MvpAPI.createRoom(name);
+  MvpAPI.join(socket, { roomId: room.id });
+  Connection.send(data.id, 'newRoom', { id: room.id });
+};
+
 // Resets all the App's models! -- used for testing
 MvpAPI.clearAll = () => {
   Room.clearAll();
@@ -126,7 +133,7 @@ MvpAPI.enqueue = (socket) => {
     // This shouldn't happen as queues should always be associated with rooms
     console.error('MvpAPI.enqueue error: Room has no corresponding DjQueue');
     return;
-  }
+  } 
   DjQueue.enqueue(queue.id, userId);
   const roomState = MvpAPI.getState();
   Votes.DJenqueue(room.id, roomState[room.id].djs);
@@ -261,6 +268,7 @@ MvpAPI.attachListeners = (io) => {
     // On a connection event, add handlers to socket
     socket.on('login', MvpAPI.login.bind(null, socket));
     socket.on('join', MvpAPI.join.bind(null, socket));
+    socket.on('create', MvpAPI.userCreateRoom.bind(null, socket));
     socket.on('enqueue', MvpAPI.enqueue.bind(null, socket));
     socket.on('dequeue', MvpAPI.dequeue.bind(null, socket));
     socket.on('disconnect', MvpAPI.disconnect.bind(null, socket));

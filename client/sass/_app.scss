@@ -30,6 +30,15 @@ body {
   background: linear-gradient(135deg, #ffffff 0%,#c4d7ed 100%);
 }
 
+.modal {
+  .close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    float: none;
+  }
+}
+
 @keyframes spin {
   from {
     transform: rotateZ(0);

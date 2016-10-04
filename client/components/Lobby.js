@@ -6,18 +6,29 @@ export default class Lobby extends React.Component {
   constructor(props) {
     super(props);
     this.handleRoomJoin = this.handleRoomJoin.bind(this);
+    this.handleRoomCreate = this.handleRoomCreate.bind(this);
   }
 
   handleRoomJoin(room) {
     const _this = this;
 
-    $('#lobby').collapse('hide', () => {
-      console.log('all hidden now');
-    });
-
+    $('#lobby').collapse('hide');
+    // wait for animation to finish
     window.setTimeout(() => {
       _this.props.joinRoom(room);
     }, 350);
+  }
+
+  handleRoomCreate(e) {
+    const _this = this;
+
+    e.preventDefault();
+    $('#lobby').collapse('hide');
+
+    window.setTimeout(() => {
+      _this.props.createRoom($('#newRoomName').val());
+      $('#newRoomName').val('');
+    });
   }
 
   render() {
@@ -29,6 +40,16 @@ export default class Lobby extends React.Component {
           </h1>
           <div className="row">
             <ul className="lobby--roomlist col-sm-12">
+              <li className="row lobby--room list-unstyled">
+              <form onSubmit={this.handleRoomCreate}>
+                <div className="col-xs-10">
+                  <input type="text" id="newRoomName" className="form-control" />
+                </div>
+                <div className="col-xs-2" >
+                  <button type="submit" id="createRoomBtn" className="btn btn-primary form-control">Add Room </button>
+                </div>
+              </form>
+              </li>
               {
                 this.props.roomIds.map((roomId, index) => (
                   <RoomSummary

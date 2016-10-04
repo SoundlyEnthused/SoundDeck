@@ -116,7 +116,6 @@ export default class Room extends React.Component {
           audioSrc.connect(ctx.destination);
 
           const frequencyData = new Uint8Array(analyser.frequencyBinCount);
-          console.log('frequencyData outside', frequencyData);
 
           renderFrame(frequencyData);
 
@@ -157,7 +156,16 @@ export default class Room extends React.Component {
     if (this.state.isDJ) {
       this.props.ServerAPI.dequeue();
     } else {
-      this.props.ServerAPI.enqueue();
+      if (this.props.playlistLength === 0) {
+        $('#myModal').modal({
+          backdrop: true,
+          keyboard: true,
+          show: true,
+        });
+      } else {
+        this.props.ServerAPI.enqueue();
+        console.log('enqueue', this.state.djs, this.state.users);
+      }
     }
   }
 
@@ -394,6 +402,24 @@ export default class Room extends React.Component {
             }
           </div>
         </div>
+
+
+
+        <div id="myModal" className="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+          <div className="modal-dialog modal-sm" role="document">
+            <div className="modal-content panel">
+
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h1 className="modal-title" id="gridSystemModalLabel">Your playlist is empty.</h1>
+
+            </div>
+          </div>
+        </div>
+
+
+
+
+
       </div>
     );
   }
