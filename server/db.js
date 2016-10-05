@@ -64,8 +64,14 @@ const downvote = (userId) => {
   to switch to sounddeck database
   add env variable MONGODB_URI='mongodb://localhost:27017/sounddeck'
 */
+
+let url = process.env.MONGODB_URI;
+if (process.env.NODE_ENV === 'test') {
+  url = 'mongodb://localhost:27017/sounddeck';
+}
+
 DB.init = () => {
-  MongoClient.connect(process.env.MONGODB_URI, (err, db) => {
+  MongoClient.connect(url, (err, db) => {
     if (err) {
       console.log('err connecting to database');
     }
