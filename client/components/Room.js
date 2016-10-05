@@ -2,6 +2,7 @@ import React from 'react';
 import load from 'load-script';
 import SC from 'soundcloud';
 import $ from 'jquery';
+import DjStage from './DjStage';
 /* globals $ player */
 export default class Room extends React.Component {
   constructor(props) {
@@ -255,35 +256,7 @@ export default class Room extends React.Component {
         <div className="container">
           <h1> {this.state.name} </h1>
           <div className="stage">
-            <div className="stage--djs">
-              {
-              this.state.djs.map((dj, index) => {
-                if (dj && dj.username) {
-                  return (
-                    <div className="dj--seat" key={dj.id}>
-                      <div className="dj--avatar">
-                        <div
-                          className="avatar"
-                          src={dj.avatar_url}
-                          alt={dj.username}
-                          title={dj.username}
-                          data-placement="bottom"
-                          data-animation="true"
-                          data-toggle="tooltip"
-                          data-likes={dj.likes || 0}
-                        >
-                          <img src={dj.avatar_url} alt={dj.username} />
-                        </div>
-                      </div>
-                    </div>
-                  );
-                }
-                return (
-                  <div className="dj--seat empty" key={index} />
-                );
-              })
-            }
-            </div>
+            <DjStage djs={this.state.djs} />
 
             <div className="visualizer">
               <div id="spectrum">
