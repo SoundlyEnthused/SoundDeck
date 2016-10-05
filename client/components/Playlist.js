@@ -33,6 +33,8 @@ export default class Playlist extends React.Component {
     // const updatedPlaylist = tracks.map(track => playlistById[track.songId]);
     this.setState({
       playlist: tracks.map(track => ({ id: track.songId, duration: track.duration, title: track.title })),
+    }, () => {
+      this.props.updatePlaylistLength(this.state.playlist.length);
     });
     // console.log('onServerPlaylistUpdate: ', updatedPlaylist);
   }
@@ -162,3 +164,7 @@ export default class Playlist extends React.Component {
     );
   }
 }
+
+Playlist.propTypes = {
+  updatePlaylistLength: React.PropTypes.func,
+};

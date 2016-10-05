@@ -98,7 +98,6 @@ export default class Nav extends React.Component {
 
 // Specifies the prop types for es Linting
 Nav.propTypes = {
-  currentRoom: React.PropTypes.string,
   loggingIn: React.PropTypes.func.isRequired,
   userData: React.PropTypes.any,
 };
