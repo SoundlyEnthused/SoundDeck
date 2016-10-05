@@ -2,7 +2,8 @@ import React from 'react';
 import load from 'load-script';
 import SC from 'soundcloud';
 import $ from 'jquery';
-
+import DjStage from './DjStage';
+/* globals $ player */
 export default class Room extends React.Component {
   constructor(props) {
     super(props);
@@ -62,7 +63,6 @@ export default class Room extends React.Component {
     }
     this.highlightDj();
     $('.avatar').tooltip();
-    console.log('tooltips');
   }
 
   // ********************
@@ -72,7 +72,7 @@ export default class Room extends React.Component {
     const _this = this;
     // check current time vs. time stamp
     const timeDiff = (Date.now() - this.state.timeStamp) / 1000;
-    if(!this.state.track) {
+    if (!this.state.track) {
       player.pause();
       player.currentTime = 0;
       _this.infoArtist.innerHTML = 'N/A';
@@ -81,7 +81,6 @@ export default class Room extends React.Component {
       _this.infoImage.setAttribute('src', 'img/spinner.svg');
     } else {
       SC.get(`/tracks/${this.state.track}`).catch((err) => {
-        console.log('loading err', err);
         player.pause();
         player.currentTime = 0;
         _this.infoArtist.innerHTML = 'LOADING ERROR';
@@ -91,7 +90,6 @@ export default class Room extends React.Component {
         setTimeout(_this.initPlayer, 3000);
       }).then((sound) => {
         if (sound.errors) {
-          console.log('Error', sound.errors);
         } else {
           player.crossOrigin = 'anonymous';
           player.setAttribute('src', `${sound.stream_url}?client_id=${process.env.CLIENT_ID}`);
@@ -155,17 +153,16 @@ export default class Room extends React.Component {
   handleDjQueue() {
     if (this.state.isDJ) {
       this.props.ServerAPI.dequeue();
+      return;
+    }
+    if (this.props.playlistLength === 0) {
+      $('#myModal').modal({
+        backdrop: true,
+        keyboard: true,
+        show: true,
+      });
     } else {
-      if (this.props.playlistLength === 0) {
-        $('#myModal').modal({
-          backdrop: true,
-          keyboard: true,
-          show: true,
-        });
-      } else {
-        this.props.ServerAPI.enqueue();
-        console.log('enqueue', this.state.djs, this.state.users);
-      }
+      this.props.ServerAPI.enqueue();
     }
   }
 
@@ -180,7 +177,7 @@ export default class Room extends React.Component {
   processProps(nextProps) {
     // const djArray = this.processDjs(nextProps.djs, nextProps.djMaxNum);
     const djArray = nextProps.djs;
-    const isDJ = nextProps.djs.map(dj => dj !== null ? dj.id : null).includes(this.props.userId);
+    const isDJ = nextProps.djs.map(dj => (dj !== null ? dj.id : null)).includes(this.props.userId);
     return {
       name: nextProps.name,
       track: nextProps.track,
@@ -248,42 +245,13 @@ export default class Room extends React.Component {
     const activeDJs = this.state.djs.filter(d => d).length;
     const maxVotes = (this.state.users.length + activeDJs) * 0.4;
 
-    console.log('my id', this.state.djs);
 
     return (
       <div className="room">
         <div className="container">
           <h1> {this.state.name} </h1>
           <div className="stage">
-            <div className="stage--djs">
-              {
-              this.state.djs.map((dj, index) => {
-                if (dj && dj.username) {
-                  return (
-                    <div className="dj--seat" key={dj.id}>
-                      <div className="dj--avatar">
-                        <div
-                          className="avatar"
-                          src={dj.avatar_url}
-                          alt={dj.username}
-                          title={dj.username}
-                          data-placement="bottom"
-                          data-animation="true"
-                          data-toggle="tooltip"
-                          data-likes={dj.likes || 0}
-                        >
-                          <img src={dj.avatar_url} alt={dj.username} />
-                        </div>
-                      </div>
-                    </div>
-                  );
-                }
-                return (
-                  <div className="dj--seat empty" key={index} />
-                );
-              })
-            }
-            </div>
+            <DjStage djs={this.state.djs} />
 
             <div className="visualizer">
               <div id="spectrum">
@@ -404,8 +372,7 @@ export default class Room extends React.Component {
         </div>
 
 
-
-        <div id="myModal" className="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div id="myModal" className="modal fade bs-example-modal-sm" tabIndex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
           <div className="modal-dialog modal-sm" role="document">
             <div className="modal-content panel">
 
@@ -416,14 +383,14 @@ export default class Room extends React.Component {
           </div>
         </div>
 
-
-
-
-
       </div>
     );
   }
 }
 
 Room.propTypes = {
+  ServerAPI: React.PropTypes.object.isRequired,
+  userId: React.PropTypes.string.isRequired,
+  djs: React.PropTypes.array.isRequired,
+  playlistLength: React.PropTypes.number.isRequired,
 };
