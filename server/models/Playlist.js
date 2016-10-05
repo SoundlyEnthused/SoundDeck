@@ -17,12 +17,10 @@ Playlist.update = function update(userId, tracks) {
 };
 
 Playlist.get = function get(userId) {
-  // console.log('playlist get', userId);
   return DB.getPlaylist(userId);
 };
 
 Playlist.rotate = function rotate(userId) {
-  // console.log('playlist rotate');
   return Playlist.get(userId).then((data) => {
     const tracks = data;
     if (tracks.length < 2) {

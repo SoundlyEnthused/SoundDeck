@@ -77,7 +77,6 @@ DjQueue.next = function next(id) {
 DjQueue.nextTrack = function nextTrack(id) {
   // Get the next DJ
   const dj = DjQueue.next(id);
-  // console.log('dj q next track', dj)
   // If we have no DJ's return null
   if (dj === null) {
     queues[id].currentTrack = null;
