@@ -12,7 +12,6 @@ MvpAPI.trackDelay = 500;
 
 /* Bundle the state of all Rooms and DjQueues into one Object */
 MvpAPI.getState = () => {
-  console.log('mvp api get state');
   const state = {};
   return Promise.all(
     Room.all().map((room) => {
@@ -85,16 +84,12 @@ MvpAPI.clearAll = () => {
 function updateTracks() {
   Room.all().forEach((room) => {
     const queue = DjQueue.getByRoom(room.id);
-    // console.log('update track xxxxxxx', room.id, room.name, queue.currentTrack);
     // There is not a track playing in this room
     if (queue.currentTrack === null) {
-      // console.log('no cuurent track')
       // We have a DJ -- someone must have just joined an empty Queue
       if (queue.active.some(dj => dj !== null)) {
-        // console.log('has dj');
         MvpAPI.sendNextTrack(room.id);
       }
-      // console.log('no cuurent track and no dj')
       return;
     }
     // Bail early if we don't have any time data
@@ -106,7 +101,6 @@ function updateTracks() {
     // See if it is time to advance this track
     const endTime = queue.currentTrack.startTime + queue.currentTrack.duration + MvpAPI.trackDelay;
     if (Date.now() > endTime) {
-      console.log('api update tracks send next track', queue.currentTrack, Date.now());
       MvpAPI.sendNextTrack(room.id);
     }
   });
@@ -120,11 +114,9 @@ MvpAPI.login = (socket, data) => {
   User.create(data.id, data.username, data.avatar_url);
   Connection.send(data.id, 'login', { id: data.id });
   MvpAPI.getState().then((state) => {
-    console.log('mvp api login');
     Connection.send(data.id, 'room', state);
     MvpAPI.getPlaylist(socket);
   });
-  // Connection.send(data.id, 'room', MvpAPI.getState());
 };
 
 /* Handler for event to join a room */
@@ -149,10 +141,8 @@ MvpAPI.join = (socket, data) => {
   }
   Room.join(data.roomId, userId);
   MvpAPI.getState().then((state) => {
-    console.log('mvp api join');
     Connection.sendAll('room', state);
   });
-  // Connection.sendAll('room', MvpAPI.getState());
 };
 
 /* Handler for event to enqueue for DJ position */
@@ -179,9 +169,6 @@ MvpAPI.enqueue = (socket) => {
     Votes.DJenqueue(room.id, state[room.id].djs);
     Connection.sendAll('room', state);
   });
-  // const roomState = MvpAPI.getState();
-  // Votes.DJenqueue(room.id, roomState[room.id].djs);
-  // Connection.sendAll('room', roomState);
 };
 
 /* Handler for event to dequeue DJ */
@@ -207,20 +194,11 @@ MvpAPI.dequeue = (socket) => {
     Votes.DJdequeue(room.id, state[room.id].djs);
     Connection.sendAll('room', state);
   });
-  // const roomState = MvpAPI.getState();
-  // Votes.DJdequeue(room.id, roomState[room.id].djs);
-  // Connection.sendAll('room', roomState);
 };
 
 /* handler for updating Playlist */
 MvpAPI.updatePlaylist = (socket, tracks) => {
   const userId = Connection.getUserId(socket);
-  // const playlist = Playlist.getByUserId(userId);
-  // if (playlist === null) {
-  //   Playlist.create(userId, tracks);
-  // } else {
-  //   Playlist.update(playlist.id, tracks);
-  // }
   Playlist.update(userId, tracks);
 };
 /* handler for getting Playlist for user */
@@ -247,32 +225,26 @@ MvpAPI.sendNextTrack = (roomId) => {
   // const dj = queue.active[queue.currentDj];
   // const track = DjQueue.nextTrack(queue.id);
   DjQueue.nextTrack(queue.id).then((track) => {
-    console.log('api send next track 000000000', track);
     const updatedQueue = DjQueue.get(queue.id);
     const dj = updatedQueue.active[updatedQueue.currentDj];
     const playlist = Playlist.get(dj);
     if (track === null) {
-      console.log('api next track is null!')
       // No next track for this room
       // Send state in case dj was removed
       // Connection.sendAll('room', MvpAPI.getState());
       MvpAPI.getState().then((state) => {
-        console.log('api next track is null!!!!', state);
         Connection.sendAll('room', state);
       });
       return;
     }
     // Send playlist back to dj
     if (playlist !== null) {
-      console.log('api send playlist back to dj');
       Connection.send(dj, 'playlist', playlist.tracks);
     }
     Votes.newTrack(roomId, track);
     MvpAPI.getState().then((state) => {
-      console.log("xxxxxxxx here")
       const totalUsers = state[roomId].users.length + state[roomId].djs.filter(d => d).length;
       Votes.updateTotalUser(roomId, totalUsers);
-      console.log('mvp api next track');
       Connection.sendAll('room', state);
     });
   });
@@ -289,7 +261,6 @@ MvpAPI.upvote = (socket, data) => {
   const room = Room.getByUserId(userId);
   Votes.upvote(room.id, userId, data.currentDjID, data.track).then((data) => {
     MvpAPI.getState().then((state) => {
-      console.log('mvp api upvote');
       Connection.sendAll('room', state);
     });
   }).catch((err) => {
@@ -307,7 +278,6 @@ MvpAPI.downvote = (socket, data) => {
   const room = Room.getByUserId(userId);
   Votes.downvote(room.id, userId, data.currentDjID, data.track).then((data) => {
     MvpAPI.getState().then((state) => {
-      console.log('mvp api downvote');
       Connection.sendAll('room', state);
     });
   }).catch((err) => {
