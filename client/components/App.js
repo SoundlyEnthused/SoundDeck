@@ -78,17 +78,8 @@ export default class App extends React.Component {
     return Object.keys(this.roomData).map(id => this.roomData[id].djs);
   }
 
-  updateOnEvent(data) {
-    console.log("App updateOnEvent = ", data);
-    this.roomData = data;
-    let state = this.getRoomStates();
-    state.roomIds = Object.keys(this.roomData);
-    state.roomNames = Object.keys(this.roomData).map(roomId => (this.roomData[roomId].name));
-    this.setState(state);
-  }
-
   getRoomStates() {
-    let state = {};
+    const state = {};
     if (this.roomData && this.state.currentRoom && (this.state.currentRoom in this.roomData)) {
       const room = this.roomData[this.state.currentRoom];
       state.roomName = room.name;
@@ -101,6 +92,15 @@ export default class App extends React.Component {
       state.downvoteCount = room.downvoteCount;
     }
     return state;
+  }
+
+  updateOnEvent(data) {
+    console.log("App updateOnEvent = ", data);
+    this.roomData = data;
+    const state = this.getRoomStates();
+    state.roomIds = Object.keys(this.roomData);
+    state.roomNames = Object.keys(this.roomData).map(roomId => (this.roomData[roomId].name));
+    this.setState(state);
   }
 
   joinRoom(roomId) {
