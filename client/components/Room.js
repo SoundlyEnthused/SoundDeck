@@ -2,7 +2,7 @@ import React from 'react';
 import load from 'load-script';
 import SC from 'soundcloud';
 import $ from 'jquery';
-
+/* globals $ player */
 export default class Room extends React.Component {
   constructor(props) {
     super(props);
@@ -72,7 +72,7 @@ export default class Room extends React.Component {
     const _this = this;
     // check current time vs. time stamp
     const timeDiff = (Date.now() - this.state.timeStamp) / 1000;
-    if(!this.state.track) {
+    if (!this.state.track) {
       player.pause();
       player.currentTime = 0;
       _this.infoArtist.innerHTML = 'N/A';
@@ -155,17 +155,17 @@ export default class Room extends React.Component {
   handleDjQueue() {
     if (this.state.isDJ) {
       this.props.ServerAPI.dequeue();
+      return;
+    }
+    if (this.props.playlistLength === 0) {
+      $('#myModal').modal({
+        backdrop: true,
+        keyboard: true,
+        show: true,
+      });
     } else {
-      if (this.props.playlistLength === 0) {
-        $('#myModal').modal({
-          backdrop: true,
-          keyboard: true,
-          show: true,
-        });
-      } else {
-        this.props.ServerAPI.enqueue();
-        console.log('enqueue', this.state.djs, this.state.users);
-      }
+      this.props.ServerAPI.enqueue();
+      console.log('enqueue', this.state.djs, this.state.users);
     }
   }
 
@@ -180,7 +180,7 @@ export default class Room extends React.Component {
   processProps(nextProps) {
     // const djArray = this.processDjs(nextProps.djs, nextProps.djMaxNum);
     const djArray = nextProps.djs;
-    const isDJ = nextProps.djs.map(dj => dj !== null ? dj.id : null).includes(this.props.userId);
+    const isDJ = nextProps.djs.map(dj => (dj !== null ? dj.id : null)).includes(this.props.userId);
     return {
       name: nextProps.name,
       track: nextProps.track,
@@ -404,8 +404,7 @@ export default class Room extends React.Component {
         </div>
 
 
-
-        <div id="myModal" className="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div id="myModal" className="modal fade bs-example-modal-sm" tabIndex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
           <div className="modal-dialog modal-sm" role="document">
             <div className="modal-content panel">
 
@@ -416,14 +415,14 @@ export default class Room extends React.Component {
           </div>
         </div>
 
-
-
-
-
       </div>
     );
   }
 }
 
 Room.propTypes = {
+  ServerAPI: React.PropTypes.object.isRequired,
+  userId: React.PropTypes.string.isRequired,
+  djs: React.PropTypes.array.isRequired,
+  playlistLength: React.PropTypes.number.isRequired,
 };
