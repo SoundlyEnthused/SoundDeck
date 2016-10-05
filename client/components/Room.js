@@ -63,7 +63,6 @@ export default class Room extends React.Component {
     }
     this.highlightDj();
     $('.avatar').tooltip();
-    console.log('tooltips');
   }
 
   // ********************
@@ -82,7 +81,6 @@ export default class Room extends React.Component {
       _this.infoImage.setAttribute('src', 'img/spinner.svg');
     } else {
       SC.get(`/tracks/${this.state.track}`).catch((err) => {
-        console.log('loading err', err);
         player.pause();
         player.currentTime = 0;
         _this.infoArtist.innerHTML = 'LOADING ERROR';
@@ -92,7 +90,6 @@ export default class Room extends React.Component {
         setTimeout(_this.initPlayer, 3000);
       }).then((sound) => {
         if (sound.errors) {
-          console.log('Error', sound.errors);
         } else {
           player.crossOrigin = 'anonymous';
           player.setAttribute('src', `${sound.stream_url}?client_id=${process.env.CLIENT_ID}`);
@@ -166,7 +163,6 @@ export default class Room extends React.Component {
       });
     } else {
       this.props.ServerAPI.enqueue();
-      console.log('enqueue', this.state.djs, this.state.users);
     }
   }
 
@@ -249,7 +245,6 @@ export default class Room extends React.Component {
     const activeDJs = this.state.djs.filter(d => d).length;
     const maxVotes = (this.state.users.length + activeDJs) * 0.4;
 
-    console.log('my id', this.state.djs);
 
     return (
       <div className="room">
