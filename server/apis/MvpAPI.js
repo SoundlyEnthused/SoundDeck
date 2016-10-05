@@ -237,8 +237,8 @@ MvpAPI.getPlaylist = (socket) => {
 
 /* sendNextTrack for a given room -- expects a room.id */
 MvpAPI.sendNextTrack = (roomId) => {
-  console.log('api send next track')
   const queue = DjQueue.getByRoom(roomId);
+  console.log('api send next track', queue);
   if (queue === null) {
     // This shouldn't happen as queues should always be associated with rooms
     console.error('MvpAPI.sendNextTrack error: Room has no corresponding DjQueue');

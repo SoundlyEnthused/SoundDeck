@@ -109,18 +109,17 @@ DjQueue.nextTrack = function nextTrack(id) {
       // Set currentDj index back by one in order to keep current position
       queues[id].currentDj = Math.max(0, queues[id].currentDj - 1);
       // Try again!
-      // queues[id].currentTrack = DjQueue.nextTrack(id);
-      // return queues[id].currentTrack;
       return DjQueue.nextTrack(id).then((data) => {
-        console.log("dj qj has on song retry!!!!", data);
+        console.log("dj qj has no song retry!!!!", data);
         queues[id].currentTrack = data;
         return data;
       });
     }
     // Return startTime of track
-    queues[id].currentTrack = Object.assign({ startTime: Date.now() }, data.tracks[0]);
+    queues[id].currentTrack = Object.assign({ startTime: Date.now() }, data[0]);
     console.log('dj q queues', queues[id].currentTrack);
     Playlist.rotate(dj);
+    console.log('dj q queues xxxxxxxxxxx', queues[id].currentTrack);
     return queues[id].currentTrack;
   });
 };
