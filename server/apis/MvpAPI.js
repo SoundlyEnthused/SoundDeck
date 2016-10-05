@@ -4,6 +4,10 @@ const DjQueue = require('../models/DjQueue');
 const Playlist = require('../models/Playlist');
 const User = require('../models/User');
 const Votes = require('../models/Votes');
+const initialRooms = require('../initialRooms');
+
+const isInitialRoom = {};
+initialRooms.forEach((room) => { isInitialRoom[room] = true; });
 
 const MvpAPI = {};
 
@@ -55,6 +59,7 @@ MvpAPI.clearAll = () => {
   Votes.clearAll();
 };
 
+/* Repetitive tasks run by setInterval */
 // TODO: Test this!
 function updateTracks() {
   Room.all().forEach((room) => {
@@ -79,6 +84,20 @@ function updateTracks() {
       MvpAPI.sendNextTrack(room.id);
     }
   });
+}
+
+function removeUnusedRooms() {
+  let roomWasRemoved = false;
+  Room.all().forEach((room) => {
+    console.log(`Checking if Room: ${room.name}`);
+    if (room.users.length === 0 && !isInitialRoom[room.name]) {
+      Room.remove(room.id);
+      roomWasRemoved = true;
+    }
+  });
+  if (roomWasRemoved) {
+    Connection.sendAll('room', MvpAPI.getState());
+  }
 }
 
 /* Socket.io Event Endpoints */
@@ -133,7 +152,7 @@ MvpAPI.enqueue = (socket) => {
     // This shouldn't happen as queues should always be associated with rooms
     console.error('MvpAPI.enqueue error: Room has no corresponding DjQueue');
     return;
-  } 
+  }
   DjQueue.enqueue(queue.id, userId);
   const roomState = MvpAPI.getState();
   Votes.DJenqueue(room.id, roomState[room.id].djs);
@@ -278,6 +297,7 @@ MvpAPI.attachListeners = (io) => {
   });
   // Kick off repeated task to update tracks
   setInterval(updateTracks, 100);
+  setInterval(removeUnusedRooms, 10000);
 };
 
 module.exports = MvpAPI;
