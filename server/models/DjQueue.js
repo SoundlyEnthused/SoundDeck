@@ -84,23 +84,23 @@ DjQueue.nextTrack = function nextTrack(id) {
   }
   // Grab DJ's playlist
   return Playlist.get(dj).then((data) => {
-    // console.log('dj q get playlist', data);
-    // if playlist is empty...
+    // if playlist is empty
     if (!data || data.length === 0) {
       // remove the DJ from queue
       DjQueue.removeUser(id, dj);
       // Set currentDj index back by one in order to keep current position
       queues[id].currentDj = Math.max(0, queues[id].currentDj - 1);
       // Try again!
-      return DjQueue.nextTrack(id).then((data) => {
-        queues[id].currentTrack = data;
-        return data;
+      return DjQueue.nextTrack(id).then((newData) => {
+        queues[id].currentTrack = newData;
+        return newData;
       });
     }
     // Return startTime of track
     queues[id].currentTrack = Object.assign({ startTime: Date.now() }, data[0]);
-    Playlist.rotate(dj);
-    return queues[id].currentTrack;
+    return Playlist.rotate(dj).then(() => {
+      return queues[id].currentTrack;
+    });
   });
 };
 
