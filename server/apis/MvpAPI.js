@@ -297,7 +297,7 @@ MvpAPI.attachListeners = (io) => {
   });
   // Kick off repeated task to update tracks
   setInterval(updateTracks, 100);
-  setInterval(removeUnusedRooms, 1000);
+  setInterval(removeUnusedRooms, 10000);
 };
 
 module.exports = MvpAPI;
