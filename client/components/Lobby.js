@@ -43,7 +43,7 @@ export default class Lobby extends React.Component {
               <li className="row lobby--room list-unstyled">
                 <form onSubmit={this.handleRoomCreate}>
                   <div className="col-xs-10">
-                    <input type="text" id="newRoomName" className="form-control" />
+                    <input type="text" minLength="3" maxLength="35" id="newRoomName" className="form-control" />
                   </div>
                   <div className="col-xs-2" >
                     <button type="submit" id="createRoomBtn" className="btn btn-primary form-control">Add Room </button>
