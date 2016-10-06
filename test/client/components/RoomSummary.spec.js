@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import RoomSummary from '../../../client/components/RoomSummary';
 
 /* globals describe it $ beforeEach expect */
-describe('<RoomSummary>', () => {
+describe('<RoomSummary />', () => {
   let wrapper;
   let onJoinClickCalled = false;
   beforeEach(() => {
