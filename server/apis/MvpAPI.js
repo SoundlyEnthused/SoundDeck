@@ -48,7 +48,14 @@ MvpAPI.getRoomState = (room) => {
     Promise.all(
       queue.active.map(dj => User.get(dj))
       ).then((data) => {
-        state.djs = data;
+        const djs = data.map((dj) => {
+          if (dj !== null) {
+            return Object.assign({ downvotes: Vote.downvotes[dj.id] }, dj);
+          }
+          return null;
+        });
+        console.log('djs: ', djs);
+        state.djs = djs;
         // User's array should not include DJ's
         return Promise.all(
           room.users.filter(user => !queue.active.includes(user)).map(user => User.get(user)));
