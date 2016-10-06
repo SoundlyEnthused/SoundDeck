@@ -16,9 +16,9 @@ const CrowdUser = props => (
 );
 
 CrowdUser.propTypes = {
-  avatar_url: React.PropTypes.string,
-  username: React.PropTypes.string,
-  likes: React.PropTypes.number,
+  avatar_url: React.PropTypes.string.isRequired,
+  username: React.PropTypes.string.isRequired,
+  likes: React.PropTypes.number.isRequired,
 };
 
 export default CrowdUser;
