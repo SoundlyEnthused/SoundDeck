@@ -19,8 +19,8 @@ export default class Room extends React.Component {
         isDJ
         users }
     */
-    this.mute = false;  // can't set this.mute as state, otherwise it will render iframe for some reason
-    this.player = null; // new html5 audio player
+    this.mute = false;
+    this.player = null;
     this.infoImage = null;
     this.infoArtist = null;
     this.infoTrack = null;
@@ -199,14 +199,6 @@ export default class Room extends React.Component {
       downvoteCount: nextProps.downvoteCount,
     };
   }
-
-  // processDjs(djList, djMaxNum) {
-  //   const djSeats = djList.slice();
-  //   while (djSeats.length < djMaxNum) {
-  //     djSeats.push(null);
-  //   }
-  //   return djSeats;
-  // }
 
   upvote() {
     const djList = this.state.djs;
@@ -401,8 +393,10 @@ export default class Room extends React.Component {
 }
 
 Room.propTypes = {
+  // eslint-disable-next-line
   ServerAPI: React.PropTypes.object.isRequired,
   userId: React.PropTypes.string.isRequired,
+  // eslint-disable-next-line
   djs: React.PropTypes.array.isRequired,
   playlistLength: React.PropTypes.number.isRequired,
 };
