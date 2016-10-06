@@ -47,9 +47,7 @@ export default class App extends React.Component {
   componentWillMount() {
     ServerAPI.connect();
     ServerAPI.onUpdate(this.updateOnEvent);
-    ServerAPI.onLogin((data) => {
-      console.log('login data', data);
-    });
+    ServerAPI.onLogin(data => data);
   }
 
   // Seeding for FE dev
@@ -95,7 +93,6 @@ export default class App extends React.Component {
   }
 
   updateOnEvent(data) {
-    console.log("App updateOnEvent = ", data);
     this.roomData = data;
     const state = this.getRoomStates();
     state.roomIds = Object.keys(this.roomData);
@@ -125,7 +122,6 @@ export default class App extends React.Component {
 
   loggingIn() {
     Auth.signin().then((userData) => {
-      console.log(userData);
       ServerAPI.login(userData);
       this.setState({ userData });
     }).catch((err) => {

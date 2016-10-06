@@ -12,10 +12,7 @@ login.signin = () => {
 
   return SC.connect()
     .then(() => SC.get('/me'))
-    .then((me) => {
-      console.log('result of me: ', me);
-      return me;
-    });
+    .then(me => me);
 };
 
 module.exports = login;
