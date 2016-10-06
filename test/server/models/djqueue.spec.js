@@ -1,8 +1,10 @@
 const chai = require('chai');
 const DjQueue = require('../../../server/models/DjQueue');
 const Playlist = require('../../../server/models/Playlist');
+const chaiAsPromised = require('chai-as-promised');
 
 const expect = chai.expect;
+chai.use(chaiAsPromised);
 
 /* global describe it xit after afterEach before beforeEach */
 
@@ -167,7 +169,7 @@ describe('DjQueue', () => {
     it('should set currentTrack to null if user is the currentDj and they are removed', () => {
       const id = DjQueue.create(1, 2).id;
       const u1 = 1;
-      Playlist.create(u1, [{ songId: 1, duration: 1000 }]);
+      Playlist.update(u1, [{ songId: 1, duration: 1000 }]);
       DjQueue.enqueue(id, u1);
       DjQueue.nextTrack(id);
       expect(DjQueue.get(id).currentTrack.songId).to.equal(1);
@@ -182,7 +184,7 @@ describe('DjQueue', () => {
     it('should set the current track to null', () => {
       const id = DjQueue.create(1, 4).id;
       const u1 = 1;
-      Playlist.create(u1, [{ songId: 5, duration: 2300 }]);
+      Playlist.update(u1, [{ songId: 5, duration: 2300 }]);
       DjQueue.enqueue(id, u1);
       DjQueue.nextTrack(id);
       expect(DjQueue.get(id).currentTrack.songId).to.equal(5);
@@ -243,8 +245,8 @@ describe('DjQueue', () => {
     let p2;
     beforeEach(() => {
       queue = DjQueue.create(roomId);
-      p1 = Playlist.create(u1, tracks1);
-      p2 = Playlist.create(u2, tracks2);
+      p1 = Playlist.update(u1, tracks1);
+      p2 = Playlist.update(u2, tracks2);
     });
     it('should be a function', () => {
       expect(DjQueue.nextTrack).to.be.a('function');
@@ -302,7 +304,7 @@ describe('DjQueue', () => {
     });
     it('should remove DJs that have empty playlists', () => {
       const u3 = 3;
-      Playlist.create(u3); // create an empty playlist
+      Playlist.update(u3); // create an empty playlist
       DjQueue.enqueue(queue.id, u1);
       DjQueue.enqueue(queue.id, u3);
       DjQueue.enqueue(queue.id, u2);

@@ -5,7 +5,7 @@ let Users = null;
 
 // insert or update new User
 const updateUser = (user) => {
-  Users.update(
+  return Users.update(
     { id: { $eq: user.id } },
     { $set: { username: user.username, avatar_url: user.avatar_url } },
     { upsert: true });
@@ -26,7 +26,6 @@ const getUser = (id) => {
 };
 // Get playlist
 const getPlaylist = (userId) => {
-  console.log('DB get playlist', userId);
   return Users.findOne({ id: { $eq: userId } }, { playlist: 1 }).then((data) => {
     if (data && data.playlist) {
       return data.playlist;
@@ -37,19 +36,20 @@ const getPlaylist = (userId) => {
 
 // Update playlist
 const updatePlaylist = (userId, playlist) => {
-  console.log('DB update playlist', userId, playlist);
   return Users.updateOne({ id: { $eq: userId } }, { $set: { playlist } });
 };
 
 // Upvote. Increase likes
 const upvote = (userId) => {
-  console.log('db upvote', userId);
   return Users.updateOne({ id: { $eq: userId } }, { $inc: { likes: 1 } });
 };
 // Downvote. Decrease likes
 const downvote = (userId) => {
-  console.log('db downvote', userId);
   return Users.updateOne({ id: { $eq: userId } }, { $inc: { likes: -1 } });
+};
+
+const clearAll = () => {
+  return Users.remove({});
 };
 
 /*
@@ -83,6 +83,7 @@ DB.init = () => {
     DB.updatePlaylist = updatePlaylist;
     DB.upvote = upvote;
     DB.downvote = downvote;
+    DB.clearAll = clearAll;
   });
 };
 

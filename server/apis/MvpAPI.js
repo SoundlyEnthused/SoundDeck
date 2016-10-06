@@ -75,7 +75,7 @@ MvpAPI.userCreateRoom = (socket, data) => {
 MvpAPI.clearAll = () => {
   Room.clearAll();
   DjQueue.clearAll();
-  Playlist.clearAll();
+  User.clearAll();
   Votes.clearAll();
 };
 
@@ -110,9 +110,10 @@ function updateTracks() {
 /* Handler for event to associate a connection with a soundcloud user */
 MvpAPI.login = (socket, data) => {
   Connection.register(data.id, socket);
-  User.create(data.id, data.username, data.avatar_url);
-  Connection.send(data.id, 'login', { id: data.id });
-  MvpAPI.getState().then((state) => {
+  User.create(data.id, data.username, data.avatar_url).then(() => {
+    Connection.send(data.id, 'login', { id: data.id });
+    return MvpAPI.getState();
+  }).then((state) => {
     Connection.send(data.id, 'room', state);
     MvpAPI.getPlaylist(socket);
   });

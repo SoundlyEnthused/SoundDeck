@@ -1,8 +1,10 @@
 const MvpAPI = require('../../../server/apis/MvpAPI');
 const Connection = require('../../../server/models/Connection');
 const chai = require('chai');
+const chaiAsPromised = require('chai-as-promised');
 
 const expect = chai.expect;
+chai.use(chaiAsPromised);
 
 /* global xdescribe xit describe it after afterEach before beforeEach */
 describe('MvpAPI', () => {
@@ -75,14 +77,14 @@ describe('MvpAPI', () => {
       expect(MvpAPI.getState).to.be.a('function');
     });
     it('should return an object representing the state of the App', () => {
-      expect(MvpAPI.getState()).to.be.an('object');
+      expect(MvpAPI.getState()).to.eventually.be.an('object');
     });
     it('should return an object of objects, one for each room', () => {
-      expect(Object.keys(MvpAPI.getState()).length).to.equal(2);
+      expect(Object.keys(MvpAPI.getState()).length).to.eventually.equal(2);
     });
     it('should return object of objects indexed by room IDs', () => {
-      expect(MvpAPI.getState()[room1.id]).to.be.an('object');
-      expect(MvpAPI.getState()[room2.id]).to.be.an('object');
+      expect(MvpAPI.getState()[room1.id]).to.eventually.be.an('object');
+      expect(MvpAPI.getState()[room2.id]).to.eventually.be.an('object');
     });
     it('should return object of objects with .name properties', () => {
       expect(MvpAPI.getState()[room1.id].name).to.equal(room1.name);

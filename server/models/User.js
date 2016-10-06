@@ -10,8 +10,7 @@ User.create = function create(id, username, avatar_url) {
     likes: 0,
     avatar: null,
   };
-  DB.updateUser(user);
-  return user;
+  return DB.updateUser(user);
 };
 
 User.get = function get(id) {
@@ -24,6 +23,10 @@ User.upvote = function upvote(id) {
 
 User.downvote = function downvote(id) {
   return DB.downvote(id);
+};
+
+User.clearAll = function clearAll(id) {
+  return DB.clearAll();
 };
 
 // User.updateAvatar = function updataAvatar(avatar) {
