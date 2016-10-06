@@ -25,6 +25,7 @@ export default class Room extends React.Component {
     this.infoArtist = null;
     this.infoTrack = null;
     this.trackProgress = null;
+    this.trackDuration = null;
     this.updataTrack = false;
     this.currentDj = null;
     this.handleMute = this.handleMute.bind(this);
@@ -41,6 +42,7 @@ export default class Room extends React.Component {
     this.infoArtist = document.getElementById('infoArtist');
     this.infoTrack = document.getElementById('infoTrack');
     this.trackProgress = document.getElementById('progressBar');
+    this.trackDuration = document.getElementById('trackDuration');
 
     this.initPlayer();
     this.highlightDj();
@@ -138,6 +140,7 @@ export default class Room extends React.Component {
             }
             // update play position in player UI
             _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
+            _this.trackDuration.innerHTML = `${(player.currentTime / 60).toFixed(2).split('.').join(':')} / ${(player.duration / 60).toFixed(2).split('.').join(':')}`;
           }
         }
       });
@@ -299,24 +302,30 @@ export default class Room extends React.Component {
 
             <div className="player">
               <img src="" alt="" id="infoImage" className="player--image" width="100" height="100" />
-              <h2 id="infoArtist" className="player--artist" />
-              <h3 id="infoTrack" className="player--track" />
-              <audio id="player" loop autoPlay preload />
-              <div className="progress player--progress">
-                <div
-                  className="progress-bar progress-bar-primary progress-bar-striped active"
-                  role="progressbar"
-                  aria-valuenow="0"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  style={{ width: '0%' }}
-                  id="progressBar"
-                />
+
+              <div className="player--info">
+                <h2 id="infoArtist" className="player--artist" />
+                <div className="track">
+                  <div id="infoTrack" className="player--track" />
+                  <div id="trackDuration" className="player--duration" />
+                </div>
+                <audio id="player" loop autoPlay preload />
+                <div className="progress player--progress">
+                  <div
+                    className="progress-bar progress-bar-primary progress-bar-striped active"
+                    role="progressbar"
+                    aria-valuenow="0"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    style={{ width: '0%' }}
+                    id="progressBar"
+                  />
+                </div>
               </div>
             </div>
 
             <div id="vote" className="vote row">
-              <div className="col-xs-4 vote--meter">
+              <div className="col-sm-4 vote--meter">
                 <p>Downvotes</p>
                 <div className="progress">
                   <div
@@ -329,7 +338,7 @@ export default class Room extends React.Component {
                   />
                 </div>
               </div>
-              <div className="vote--btns col-xs-4">
+              <div className="vote--btns col-sm-4 col-xs-6">
                 {(this.state.currentDj === -1) || (this.state.track === null) || (this.props.userId === this.state.djs[this.state.currentDj].id) ? <button className="btn btn-success btn-round vote--upvote" disabled id="upvote">
                   <i className="fa fa-check" aria-hidden="true" /></button>
                   :
@@ -341,7 +350,7 @@ export default class Room extends React.Component {
                   <button className="btn btn-danger btn-round vote--downvoteCurrent" title="Vote to Skip" data-placement="bottom" data-animation="true" data-toggle="tooltip" id="downvote" onClick={this.downvote}>
                     <i className="fa fa-times" aria-hidden="true" /></button>}
               </div>
-              <div className="vote--djQueue col-xs-4">
+              <div className="vote--djQueue col-sm-4 col-xs-6">
                 <button className="vote--djqueueBtn btn btn-default btn-round" title="DJ Queue" data-placement="bottom" data-animation="true" data-toggle="tooltip" onClick={this.handleDjQueue}>
                   {this.state.isDJ ? <img src="img/removeFromList.svg" alt="dequeue" /> : <img src="img/addToList.svg" alt="enqueue" />}
                 </button>

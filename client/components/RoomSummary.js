@@ -1,11 +1,11 @@
 import React from 'react';
 
 const RoomSummary = props => (
-  <li className="row lobby--room list-unstyled">
-    <div className="col-xs-6">
-      <span className="roomname">{props.name}</span>
-    </div>
-    <div className="col-xs-6 lobby--joinBtn" >
+  <li className="lobby--room list-unstyled">
+    <div className="lobby--roomWrapper">
+    <div className="lobby--roomname">{props.name}</div>
+
+    <div className="lobby--join" >
       {
         props.djs.map((dj, idx) =>
           (dj !== null
@@ -15,8 +15,9 @@ const RoomSummary = props => (
       }
       <span className="roomcount">{props.count}</span>
       <button className="btn btn-primary joinBtn" onClick={props.onJoinClick}>
-      Join
+        Join
       </button>
+    </div>
     </div>
   </li>
 );

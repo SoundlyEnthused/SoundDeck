@@ -22,24 +22,39 @@
   margin-bottom: 10px;
   padding-bottom: 10px;
   font-size: 1.2em;
+
   &:after {
     display: block;
     content: '';
-    margin: 0 15px;
     padding-top: 10px;
     border-bottom: 1px dashed rgba(0,0,0,0.3);
   }
+}
+
+.lobby--newRoom {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  font-size: 1.2em;
+}
+
+.lobby--newRoomForm {
+  display: flex;
+  button {
+    width: 100px;
+    margin-left: 15px;
+  }
+}
+
+.lobby--roomWrapper {
+  display: flex;
+  justify-content: space-between;
 }
 
 .lobby--roomName {
   padding-top: 10px;
 }
 
-.roomname {
-  cursor: default;
-}
-
-.lobby--joinBtn {
+.lobby--join {
   text-align: right;
   display: flex;
   align-items: flex-end;
@@ -48,21 +63,6 @@
 
   button {
     margin-left: 10px;
-    //background: $brand-primary;
-    //color: #fff;
-  }
-
-  button:hover {
-    //background: darken($brand-primary, 10%);
-    //color: #fff;
-    //transition: all .25s;
-  }
-
-  button:active,
-  button:focus,
-  button:active:focus {
-    //background: darken($brand-primary, 20%);
-    //color: #fff;
   }
 }
 
@@ -102,4 +102,17 @@
   border-radius: 50%;
   flex-shrink: 0;
   background: rgba(0,0,0,0.15) url(img/user.svg) bottom center no-repeat;
+}
+
+.closeNavBtn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 2em;
+  // border: none;
+  // background: transparent;
+  // font-size: 2.4em;
+  // width: 40px;
+  // /* height: 40px; */
+  // color: #337ab7;
 }

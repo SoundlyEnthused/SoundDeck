@@ -1,3 +1,5 @@
+@import "dj";
+
 h1 {
   font-size: 24px;
   cursor: default;
@@ -37,50 +39,7 @@ p {
   }
 }
 
-.dj--seat {
-  width: 100px;
-  height: 100px;
-  margin: 20px 10px;
-  box-sizing: border-box;
-  // border: 3px solid black;
-  border-radius: 50%;
-  flex-shrink: 0;
-  position: relative;
-}
 
-.dj--seat.current:not(.empty) {
-    box-shadow: 0px 0px 20px #0061ff;
-    border: 1px solid black;
-  &:after {
-    box-sizing: border-box;
-    border-radius: 50%;
-    content: '';
-    position: absolute;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    border: 3px dashed #009aff;
-    // background: #002a6e;
-    will-change: transform;
-    animation: spin 2.5s infinite linear;
-  }
-}
-
-.dj--seat.empty {
-  background: rgba(0,0,0,0.5) url(img/user.svg) bottom center no-repeat;
-}
-
-.dj--avatar {
-  border-radius: 50%;
-  border: 2px solid black;
-  img {
-    width: 100%;
-    border-radius: 50%;
-    height: auto;
-  }
-}
 
 .player {
   overflow: hidden;
@@ -88,9 +47,8 @@ p {
   z-index: 998;
   background: rgba(0,0,0,0.53);
   padding-right: 15px;
+  display: flex;
 }
-
-
 
 .player--image {
   width: 100px;
@@ -102,6 +60,10 @@ p {
   }
 }
 
+.player--info {
+  width: 100%;
+}
+
 .player--artist {
   font-size: 1.3em;
   cursor: default;
@@ -109,14 +71,14 @@ p {
 
 .player--track {
   font-size: 1em;
-  margin-top: 0;
   cursor: default;
+  // margin: 0 0 0 10px;
 }
 
 .player--progress {
   background: rgba(55, 72, 109, 0.35);
   height: 10px;
-  margin-bottom: 0;
+  margin: 7px 0 10px 0;
 }
 
 .vote {
@@ -127,7 +89,9 @@ p {
 }
 
 .vote--btns {
-  text-align: center;
+  @media (min-width: $screen-sm-min) {
+    text-align: center;
+  }
 }
 
 .btn-round {
@@ -139,6 +103,12 @@ p {
   margin: 0 10px;
   text-align: center;
   overflow: hidden;
+  @media (max-width: $screen-sm-min) {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+  }
 }
 
 .vote--upvote {
@@ -204,7 +174,17 @@ p {
 }
 
 .vote--djQueue {
+    text-align: right;
+}
+
+.track {
+  display: flex;
+  justify-content: space-between;
+}
+
+.player--duration {
   text-align: right;
+  flex-shrink: 0;
 }
 
 .crowd {
@@ -248,7 +228,7 @@ p {
   &:before {
     content: attr(data-likes);
     position: absolute;
-    background: $brand-danger;
+    background: $brand-primary;
     color: white;
     border-radius: 10px;
     left: 65%;
@@ -259,6 +239,7 @@ p {
     min-width: 14px;
     line-height: 17px;
     z-index: 999;
+    box-shadow: -1px 0px 3px 1px rgba(0,0,0,0.4);
   }
 }
 
@@ -312,6 +293,10 @@ p {
 
     &:last-child {
       margin-right: 0;
+    }
+
+    @media (max-width: $screen-sm-min) {
+      margin: 0 1px;
     }
   }
 }
