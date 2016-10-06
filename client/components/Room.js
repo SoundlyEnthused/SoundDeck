@@ -3,6 +3,7 @@ import load from 'load-script';
 import SC from 'soundcloud';
 import $ from 'jquery';
 import DjStage from './DjStage';
+import CrowdList from './CrowdList';
 /* globals $ player */
 export default class Room extends React.Component {
   constructor(props) {
@@ -99,8 +100,7 @@ export default class Room extends React.Component {
         _this.infoImage.setAttribute('src', 'img/user.svg');
         setTimeout(_this.initPlayer, 3000);
       }).then((sound) => {
-        if (sound.errors) {
-        } else {
+        if (!sound.errors) {
           player.crossOrigin = 'anonymous';
           player.setAttribute('src', `${sound.stream_url}?client_id=${process.env.CLIENT_ID}`);
           player.play();
@@ -363,25 +363,7 @@ export default class Room extends React.Component {
 
           </div>
 
-          <div className="crowd">
-            {
-              this.state.users.map(user => (
-                <div className="crowd--user" key={user.username}>
-                  <div
-                    className="avatar"
-                    title={user.username}
-                    data-placement="bottom"
-                    data-animation="true"
-                    data-toggle="tooltip"
-                    data-likes={user.likes}
-                  >
-                    <img src={user.avatar_url} alt={user.username} />
-                  </div>
-                </div>
-                )
-              )
-            }
-          </div>
+          <CrowdList users={this.state.users} />
         </div>
 
 
