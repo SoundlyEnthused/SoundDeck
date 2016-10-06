@@ -1,41 +1,32 @@
-<img src="https://travis-ci.org/SoundlyEnthused/SoundDeck.svg?branch=master"/>
 # SoundDeck
-TBD
+---
+[<img src="https://travis-ci.org/SoundlyEnthused/SoundDeck.svg?branch=master"/>](https://travis-ci.org//SoundlyEnthused/SoundDeck.svg?branch=master)
+[![coverage-12%](http://img.shields.io/badge/coverage-12%-brightgreen.svg?style=flat)]()
 
-- [Description](#description)
-    - [Tech Stack](#tech-stack)
-    - [Authors](#authors)
-- [Usage](#usage)
-    - [Getting Started](#getting-started)
-    - [Testing](#testing)
-    - [Git Flow](#git-flow)
 
-## Description
+SoundDeck is a place where SoundCloud users can go to share music with other SoundCloud users in a turn-based DJ environment. Users collect a 'like' count and can vote to skip tracks.
 
-TBD
+https://sounddeck.herokuapp.com/
 
 ### Tech Stack
+
 - React
-- Node/Express
+- NodeJS
+- Express
+- MongoDB
 - Socket.io
-- Mocha/Chai for testing
-
-### Authors
-- [Aaron](https://github.com/Macabre1)
-- [CC](https://github.com/siliconion)
-- [Chris](https://github.com/no-fi)
-- [Joe](https://github.com/jstowers)
-- [Robert](https://github.com/rewfergu)
-
-## Usage
+- Mocha/Chai/Enzyme for testing
 
 ### Getting Started
 ```
 $ npm install
 $ npm start
 ```
-
 Now visit [localhost:4000](http://localhost:4000/)
+
+### API
+
+See the [**SoundCloud API guide**](https://developers.soundcloud.com/docs/api/guide) here.
 
 ### Testing
 
@@ -45,12 +36,20 @@ Now visit [localhost:4000](http://localhost:4000/)
 - Run code coverage (make sure you have babel-cli installed globally)
 > npm run cover
 
+### Team
+
+[Robert Ferguson](https://github.com/rewfergu) |
+[Chris Kiel](https://github.com/no-fi) |
+[Joe Stowers](https://github.com/jstowers) |
+[Aaron Ventura](https://github.com/Macabre1) |
+[CC Yang](https://github.com/siliconion)
+
 ### Git Flow
 
 For a new feature, do:
 > git checkout -b <featureName>
 
-then work on the feature on the local branch.
+Then work on the feature on the local branch.
 
 To make a pull request:
 > git checkout master
