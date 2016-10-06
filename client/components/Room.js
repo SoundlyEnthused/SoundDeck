@@ -71,7 +71,6 @@ export default class Room extends React.Component {
     $('.vote--djqueueBtn').tooltip();
     $('.vote--upvoteCurrent').tooltip();
     $('.vote--downvoteCurrent').tooltip();
-    console.log('tooltips');
   }
 
   // ********************
@@ -342,12 +341,12 @@ export default class Room extends React.Component {
                 {(this.state.currentDj === -1) || (this.state.track === null) || (this.props.userId === this.state.djs[this.state.currentDj].id) ? <button className="btn btn-success btn-round vote--upvote" disabled id="upvote">
                   <i className="fa fa-check" aria-hidden="true" /></button>
                   :
-                  <button className="btn btn-success btn-round vote--upvoteCurrent" data-tip="Upvote" id="upvote" onClick={this.upvote}>
+                  <button className="btn btn-success btn-round vote--upvoteCurrent" title="Upvote DJ" data-placement="bottom" data-animation="true" data-toggle="tooltip" id="upvote" onClick={this.upvote}>
                     <i className="fa fa-check" aria-hidden="true" /></button>}
                 {(this.state.currentDj === -1) || (this.state.track === null) || (this.props.userId === this.state.djs[this.state.currentDj].id) ? <button className="btn btn-danger btn-round vote--downvote" disabled id="downvote">
                   <i className="fa fa-times" aria-hidden="true" /></button>
                   :
-                  <button className="btn btn-danger btn-round vote--downvoteCurrent" data-tip="Skip" id="downvote" onClick={this.downvote}>
+                  <button className="btn btn-danger btn-round vote--downvoteCurrent" title="Vote to Skip" data-placement="bottom" data-animation="true" data-toggle="tooltip" id="downvote" onClick={this.downvote}>
                     <i className="fa fa-times" aria-hidden="true" /></button>}
               </div>
               <div className="vote--djQueue col-xs-4">

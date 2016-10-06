@@ -62,7 +62,6 @@ export default class Playlist extends React.Component {
 
   sendPlaylistToServer() {
     const updated = this.state.playlist.map(track => ({ songId: track.id, duration: track.duration, title: track.title }));
-    console.log('updated playlist: ', updated);
     ServerAPI.updatePlaylist(updated);
     this.props.updatePlaylistLength(this.state.playlist.length);
   }
