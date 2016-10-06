@@ -127,7 +127,7 @@ function removeUnusedRooms() {
     }
   });
   if (roomWasRemoved) {
-    Connection.sendAll('room', MvpAPI.getState());
+    MvpAPI.getState().then(state => Connection.sendAll('room', state));
   }
 }
 
