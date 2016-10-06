@@ -133,6 +133,7 @@ export default class App extends React.Component {
     return (
       <main>
         <Nav currentRoom={this.state.currentRoom} loggingIn={this.loggingIn} userData={this.state.userData} />
+        <button className="lobby--bg" onClick={() => { $('#lobby').collapse('hide'); }} />
         <Lobby
           roomIds={this.state.roomIds}
           roomNames={this.state.roomNames}

@@ -33,12 +33,14 @@ export default class Lobby extends React.Component {
 
   render() {
     return (
-      <div id="lobby" className="lobby collapse">
+      <section id="lobby" className="lobby collapse">
         <div className="container">
-          <button className="close closeNavBtn">&times;</button>
-          <h1 className="lobby--title">
-            Lobby
-          </h1>
+          <header>
+            <button className="close closeNavBtn" onClick={() => { $('#lobby').collapse('hide'); }}>&times;</button>
+            <h1 className="lobby--title">
+              Lobby
+            </h1>
+          </header>
           <div className="row">
             <ul className="lobby--roomlist col-sm-12">
               <li className="lobby--newRoom list-unstyled">
@@ -62,7 +64,8 @@ export default class Lobby extends React.Component {
             </ul>
           </div>
         </div>
-      </div>
+        <button className="lobby--bg" onClick={() => { $('#lobby').collapse('hide'); }} />
+      </section>
     );
   }
 }
