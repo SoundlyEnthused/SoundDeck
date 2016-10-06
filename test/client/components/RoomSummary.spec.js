@@ -23,8 +23,8 @@ describe('<RoomSummary>', () => {
     expect(wrapper.find('.roomcount').text()).to.equal('12');
   });
   it('should render the room name', () => {
-    expect(wrapper.find('.roomname')).to.have.length(1);
-    expect(wrapper.find('.roomname').text()).to.equal('Rock');
+    expect(wrapper.find('.lobby--roomname')).to.have.length(1);
+    expect(wrapper.find('.lobby--roomname').text()).to.equal('Rock');
   });
   it('should call onJoinClick prop when button is pressed', () => {
     wrapper.find('.joinBtn').simulate('click');
