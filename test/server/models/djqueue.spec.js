@@ -338,7 +338,7 @@ describe('DjQueue', () => {
       }).then((q) => {
         expect(q.songId).to.equal(tracks2[0].songId);
         return DjQueue.nextTrack(queue.id);
-      }).then((q) => {
+      }).then(() => {
         expect(DjQueue.get(queue.id).active).to.not.include(u3);
         expect(DjQueue.get(queue.id).waiting).to.not.include(u3);
       });
