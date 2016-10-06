@@ -11,6 +11,7 @@ const DjStage = props => (
               avatar_url={dj.avatar_url}
               likes={dj.likes}
               username={dj.username}
+              strikes={dj.downvotes}
               key={dj.id}
             />);
         }
