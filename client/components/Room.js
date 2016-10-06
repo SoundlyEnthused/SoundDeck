@@ -45,6 +45,10 @@ export default class Room extends React.Component {
     this.initPlayer();
     this.highlightDj();
     $('.avatar').tooltip();
+    $('.vote--muteBtn').tooltip();
+    $('.vote--djqueueBtn').tooltip();
+    $('.vote--upvoteCurrent').tooltip();
+    $('.vote--downvoteCurrent').tooltip();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -63,6 +67,11 @@ export default class Room extends React.Component {
     }
     this.highlightDj();
     $('.avatar').tooltip();
+    $('.vote--muteBtn').tooltip();
+    $('.vote--djqueueBtn').tooltip();
+    $('.vote--upvoteCurrent').tooltip();
+    $('.vote--downvoteCurrent').tooltip();
+    console.log('tooltips');
   }
 
   // ********************
@@ -137,6 +146,7 @@ export default class Room extends React.Component {
   }
 
   handleMute() {
+    $('.vote--muteBtn').tooltip('destroy');
     if (this.player.volume === 1) {
       this.player.volume = 0;
       this.setState({
@@ -151,6 +161,7 @@ export default class Room extends React.Component {
   }
 
   handleDjQueue() {
+    $('.vote--djQueueBtn').tooltip('destroy');
     if (this.state.isDJ) {
       this.props.ServerAPI.dequeue();
       return;
@@ -208,6 +219,7 @@ export default class Room extends React.Component {
     }
     if (currentDjObj) {
       if (currentDjId) {
+        $('.vote--upvoteCurrent').tooltip('destroy');
         this.props.ServerAPI.upvote(currentDjId, this.state.track);
       }
     }
@@ -230,6 +242,7 @@ export default class Room extends React.Component {
     if (currentDjObj) {
       const currentDjId = currentDjObj.id;
       if (currentDjId) {
+        $('.vote--downvoteCurrent').tooltip('destroy');
         this.props.ServerAPI.downvote(currentDjId, this.state.track);
       }
     }
@@ -329,20 +342,20 @@ export default class Room extends React.Component {
                 {(this.state.currentDj === -1) || (this.state.track === null) || (this.props.userId === this.state.djs[this.state.currentDj].id) ? <button className="btn btn-success btn-round vote--upvote" disabled id="upvote">
                   <i className="fa fa-check" aria-hidden="true" /></button>
                   :
-                  <button className="btn btn-success btn-round vote--upvoteCurrent" id="upvote" onClick={this.upvote}>
+                  <button className="btn btn-success btn-round vote--upvoteCurrent" data-tip="Upvote" id="upvote" onClick={this.upvote}>
                     <i className="fa fa-check" aria-hidden="true" /></button>}
                 {(this.state.currentDj === -1) || (this.state.track === null) || (this.props.userId === this.state.djs[this.state.currentDj].id) ? <button className="btn btn-danger btn-round vote--downvote" disabled id="downvote">
                   <i className="fa fa-times" aria-hidden="true" /></button>
                   :
-                  <button className="btn btn-danger btn-round vote--downvoteCurrent" id="downvote" onClick={this.downvote}>
+                  <button className="btn btn-danger btn-round vote--downvoteCurrent" data-tip="Skip" id="downvote" onClick={this.downvote}>
                     <i className="fa fa-times" aria-hidden="true" /></button>}
               </div>
               <div className="vote--djQueue col-xs-4">
-                <button className="vote--djqueueBtn btn btn-default btn-round" onClick={this.handleDjQueue}>
+                <button className="vote--djqueueBtn btn btn-default btn-round" title="DJ Queue" data-placement="bottom" data-animation="true" data-toggle="tooltip" onClick={this.handleDjQueue}>
                   {this.state.isDJ ? <img src="img/removeFromList.svg" alt="dequeue" /> : <img src="img/addToList.svg" alt="enqueue" />}
                 </button>
 
-                <button className="vote--muteBtn btn btn-default btn-round" onClick={this.handleMute}>
+                <button className="vote--muteBtn btn btn-default btn-round" title="Mute" data-placement="bottom" data-animation="true" data-toggle="tooltip" onClick={this.handleMute}>
                   {this.state.mute ? <span className="fa fa-volume-off" /> : <span className="fa fa-volume-up" /> }
                 </button>
               </div>

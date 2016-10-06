@@ -3,6 +3,14 @@ h1 {
   cursor: default;
 }
 
+h2 {
+  cursor: default;
+}
+
+p {
+  cursor: default;
+}
+
 .stage {
   background: rgba(0,0,0,0.3);
   padding: 20px;
@@ -96,11 +104,13 @@ h1 {
 
 .player--artist {
   font-size: 1.3em;
+  cursor: default;
 }
 
 .player--track {
   font-size: 1em;
   margin-top: 0;
+  cursor: default;
 }
 
 .player--progress {

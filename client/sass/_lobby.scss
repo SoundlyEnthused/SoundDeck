@@ -35,6 +35,10 @@
   padding-top: 10px;
 }
 
+.roomname {
+  cursor: default;
+}
+
 .lobby--joinBtn {
   text-align: right;
   display: flex;
@@ -72,6 +76,7 @@
   text-align: center;
   flex-shrink: 0;
   padding: 0 7px;
+  cursor: default;
 }
 
 .active-dj-slot {
