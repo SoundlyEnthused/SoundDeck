@@ -46,6 +46,10 @@ p {
   border-radius: 50%;
   flex-shrink: 0;
   position: relative;
+  @media (max-width: 560px) {
+    width: 56px;
+    height: 56px;
+  }
 }
 
 .dj--seat.current:not(.empty) {
@@ -88,9 +92,8 @@ p {
   z-index: 998;
   background: rgba(0,0,0,0.53);
   padding-right: 15px;
+  display: flex;
 }
-
-
 
 .player--image {
   width: 100px;
@@ -102,6 +105,10 @@ p {
   }
 }
 
+.player--info {
+  width: 100%;
+}
+
 .player--artist {
   font-size: 1.3em;
   cursor: default;
@@ -109,14 +116,14 @@ p {
 
 .player--track {
   font-size: 1em;
-  margin-top: 0;
   cursor: default;
+  // margin: 0 0 0 10px;
 }
 
 .player--progress {
   background: rgba(55, 72, 109, 0.35);
   height: 10px;
-  margin-bottom: 0;
+  margin: 7px 0 10px 0;
 }
 
 .vote {
@@ -127,7 +134,9 @@ p {
 }
 
 .vote--btns {
-  text-align: center;
+  @media (min-width: $screen-sm-min) {
+    text-align: center;
+  }
 }
 
 .btn-round {
@@ -139,6 +148,12 @@ p {
   margin: 0 10px;
   text-align: center;
   overflow: hidden;
+  @media (max-width: $screen-sm-min) {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+  }
 }
 
 .vote--upvote {
@@ -207,6 +222,16 @@ p {
   text-align: right;
 }
 
+.track {
+  display: flex;
+  justify-content: space-between;
+}
+
+.player--duration {
+  text-align: right;
+  flex-shrink: 0;
+}
+
 .crowd {
   display: flex;
   width: 100%;
@@ -248,7 +273,7 @@ p {
   &:before {
     content: attr(data-likes);
     position: absolute;
-    background: $brand-danger;
+    background: $brand-primary;
     color: white;
     border-radius: 10px;
     left: 65%;
@@ -259,6 +284,7 @@ p {
     min-width: 14px;
     line-height: 17px;
     z-index: 999;
+    box-shadow: -1px 0px 3px 1px rgba(0,0,0,0.4);
   }
 }
 
@@ -312,6 +338,10 @@ p {
 
     &:last-child {
       margin-right: 0;
+    }
+
+    @media (max-width: $screen-sm-min) {
+      margin: 0 1px;
     }
   }
 }
