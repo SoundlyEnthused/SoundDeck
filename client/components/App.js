@@ -61,7 +61,7 @@ export default class App extends React.Component {
   // }
 
   componentDidUpdate() {
-    if (this.state.userData && !this.state.currentRoom) {
+    if (this.state.userData && !this.state.currentRoom && ($('#playlist.collapse.in').length === 0)) {
       $('#lobby').collapse('show');
     }
   }
@@ -160,7 +160,7 @@ export default class App extends React.Component {
         }
 
         {
-          this.state.userData === false ? <div className="panel"><h1>Please log in using SoundCloud.</h1><h3>If you do not have a SoundCloud account, you can make one <a href="https://soundcloud.com/signin" rel="noreferrer noopener" target="_blank">here</a></h3></div> : null
+          this.state.userData === false ? <div className="panel"><h1>Please <button className="frontLogin" onClick={this.loggingIn}>log in</button> using SoundCloud.</h1><h3>If you do not have a SoundCloud account, you can make one <a href="https://soundcloud.com/signin" rel="noreferrer noopener" target="_blank">here</a></h3></div> : null
         }
       </main>
     );

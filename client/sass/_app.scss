@@ -4,10 +4,26 @@ body {
   background-blend-mode: multiply, multiply;
   background-attachment: fixed;
   background-size: cover;
+  color: white;
 }
 
 h3 {
   font-size: 15px;
+}
+
+.frontLogin {
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: #337ab7;
+  padding: 0px;
+  &:focus{
+    outline: none;
+  }
+  &:hover {
+    color: #23527c;
+    text-decoration: underline;
+ }
 }
 
 #app {
