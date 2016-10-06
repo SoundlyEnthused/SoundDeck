@@ -103,7 +103,7 @@ export default class Playlist extends React.Component {
           <h1> Playlist </h1>
           <div className="row">
             <div className="playlist--playlist col-sm-6">
-              <h2 className="playlist--onDeck">{(this.state.playlist.length === 0) ? false : 'Track On Deck: '}</h2>
+              <h2 className="playlist--onDeck">{(this.state.playlist.length === 0) ? false : 'Tracks On Deck: '}</h2>
               <ul className="playlist--list list list-unstyled">
                 {this.state.playlist.map((track, i) =>
                   <PlaylistTrack
