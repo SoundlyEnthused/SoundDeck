@@ -5,7 +5,7 @@ import { mount } from 'enzyme';
 import Lobby from '../../../client/components/Lobby';
 
 /* globals describe it $ beforeEach expect */
-describe('<Lobby>', () => {
+describe('<Lobby />', () => {
   let wrapper;
   let joinRoomCalled;
   beforeEach(() => {
@@ -25,8 +25,8 @@ describe('<Lobby>', () => {
     expect(wrapper.find('.roomcount').map(x => x.text())).to.deep.equal(['12', '25', '87']);
   });
   it('should render the room names', () => {
-    expect(wrapper.find('.roomname')).to.have.length(3);
-    expect(wrapper.find('.roomname').map(x => x.text())).to.deep.equal(['rock', 'rap', 'dance']);
+    expect(wrapper.find('.lobby--roomname')).to.have.length(3);
+    expect(wrapper.find('.lobby--roomname').map(x => x.text())).to.deep.equal(['rock', 'rap', 'dance']);
   });
   it('should render mini representations of the DJs', () => {
     expect(wrapper.find('.active-dj-slot')).to.have.length(4);

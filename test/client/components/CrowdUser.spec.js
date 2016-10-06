@@ -5,23 +5,24 @@ import CrowdUser from '../../../client/components/CrowdUser';
 /* globals describe it beforeEach */
 describe('<CrowdUser />', () => {
   let wrapper;
-  const users = [
-    { username: 'Rachel', avatar_url: '/some_url1.jpg', likes: 100 },
-    { username: 'Nate', avatar_url: '/some_url2.jpg', likes: 0 },
-    { username: 'Russ', avatar_url: '/some_url3.jpg', likes: 12 },
-  ];
-  beforeEach('Setup CrowdList Component', () => {
+  beforeEach('Setup CrowdUser Component', () => {
     wrapper = shallow(
-      <CrowdList
-        users={[{ username: 'Rachel', avatar_url: '/some_url1.jpg', likes: 100 }]}
+      <CrowdUser
+        username="Rachel"
+        avatar_url="/some_url1.jpg"
+        likes={100}
       />
     );
   });
-  it('should render the crowd', () => {
-    expect(wrapper.find('CrowdUser').length).to.equal(1);
+  it('should render the user', () => {
+    expect(wrapper.find('.crowd--user').length).to.equal(1);
+    expect(wrapper.find('.avatar').length).to.equal(1);
+    expect(wrapper.find('.avatar').props()).to.have.property('title', 'Rachel');
+    expect(wrapper.find('.avatar').props()).to.have.property('data-likes', 100);
+    expect(wrapper.find('.crowd--user img').props()).to.have.property('src', '/some_url1.jpg');
   });
-  it('should render the crowd change', () => {
-    wrapper.setProps({ users });
-    expect(wrapper.find('CrowdUser').length).to.equal(users.length);
+  it('should render user change', () => {
+    wrapper.setProps({ likes: 120 });
+    expect(wrapper.find('.avatar').props()).to.have.property('data-likes', 120);
   });
 });
