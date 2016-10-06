@@ -8,11 +8,14 @@ Playlist.clearAll = function clearAll() {
 };
 
 Playlist.update = function update(userId, tracks) {
-  const tracksCache = tracks.map(ele => ({
-    songId: ele.songId,
-    duration: ele.duration,
-    title: ele.title,
-  }));
+  let tracksCache = [];
+  if (tracks) {
+    tracksCache = tracks.map(ele => ({
+      songId: ele.songId,
+      duration: ele.duration,
+      title: ele.title,
+    }));
+  }
   return DB.updatePlaylist(userId, tracksCache);
 };
 

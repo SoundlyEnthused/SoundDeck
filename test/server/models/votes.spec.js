@@ -37,7 +37,7 @@ describe('Votes', () => {
 
   describe('create', () => {
     it('should be a function', () => {
-      expect(Voting.create).to.be.a('function');
+      expect(Votes.create).to.be.a('function');
     });
 
   });
