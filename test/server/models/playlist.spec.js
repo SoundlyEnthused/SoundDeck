@@ -43,12 +43,14 @@ describe('Playlist', () => {
     });
     it('should return an empty array for a new user\'s playlist.tracks', () => {
       const userId = 5;
-      const playlistWrite = Playlist.update(userId, []);
-      expect(playlistWrite).to.eventually.be.a('object');
-      expect(playlistWrite.id).to.equal(userId);
-      const playlist = Playlist.get(playlistWrite.id);
-      expect(playlist).to.eventually.be.a('object');
-      expect(playlist.tracks).to.eventually.deep.equal([]);
+      Playlist.update(userId, []).then((playlist) => {
+        expect(playlist).to.eventually.be.a('object');
+        expect(playlist.id).to.equal(userId);
+        return Playlist.get(playlist.id);
+      }).then((playlist) => {
+        expect(playlist).to.eventually.be.a('object');
+        expect(playlist.tracks).to.eventually.deep.equal([]);
+      });
     });
     it('should return an object', () => {
       const userId = 12;
@@ -93,10 +95,12 @@ describe('Playlist', () => {
     });
     it('should update a specific user\'s playlist', () => {
       const userId = 17;
-      const id = Playlist.update(userId).id;
       const list = [{ songId: 1, duration: 100 }, { songId: 2, duration: 200 }];
-      Playlist.update(id, list);
-      Playlist.get(id).then((playlist) => {
+      Playlist.update(userId, []).then((playlist) => {
+        const id = playlist.id;
+        expect(playlist.id).to.equal(userId);
+        return Playlist.update(id, list);
+      }).then((playlist) => {
         expect(playlist.tracks).to.eventually.deep.equal(list);
         expect(playlist.userId).to.eventually.equal(userId);
       });
@@ -108,26 +112,33 @@ describe('Playlist', () => {
     });
     it('should move the top track to the bottom', () => {
       const userId = 1;
-      const id = Playlist.update(userId).id;
       const list = [
         { songId: 1, duration: 100 },
         { songId: 2, duration: 200 },
         { songId: 3, duration: 150 },
       ];
-      Playlist.update(id, list);
-      expect(Playlist.get(id).tracks).to.eventually.deep.equal(list);
-      Playlist.rotate(id);
-      expect(Playlist.get(id).tracks).to.eventually.deep.equal([
-        { songId: 2, duration: 200 },
-        { songId: 3, duration: 150 },
-        { songId: 1, duration: 100 },
-      ]);
+      Playlist.update(userId, []).then((playlist) => {
+        expect(playlist.id).to.equal(userId);
+        return Playlist.update(playlist.id, list);
+      }).then((playlist) => {
+        expect(playlist.tracks).to.eventually.deep.equal(list);
+        return Playlist.rotate(playlist.id);
+      }).then((playlist) => {
+        expect(playlist.tracks).to.eventually.deep.equal([
+          { songId: 2, duration: 200 },
+          { songId: 3, duration: 150 },
+          { songId: 1, duration: 100 },
+        ]);
+      });
     });
     it('should work with empty playlists', () => {
       const userId = 7;
-      const id = Playlist.update(userId).id;
-      Playlist.rotate(id);
-      expect(Playlist.get(id).tracks).to.eventually.deep.equal([]);
+      Playlist.update(userId).then((playlist) => {
+        expect(playlist.id).to.equal(userId);
+        return Playlist.rotate(userId);
+      }).then((playlist) => {
+        expect(playlist.tracks).to.deep.equal([]);
+      });
     });
   });
 });
