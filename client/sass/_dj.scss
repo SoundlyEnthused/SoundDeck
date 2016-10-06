@@ -1,8 +1,7 @@
 .dj--strikes {
-      display: flex;
-    /* border: 1px solid; */
-    justify-content: center;
-    margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
 }
 
 .dj--strike {
@@ -12,11 +11,34 @@
   margin: 10px 2px 0px;
   background: rgba(0,0,0,0.3);
   border: 1px solid black;
-  &:first-child {
+  transition: background .5s;
+  // &:first-child {
+  //   background: $brand-danger;
+  //   // background: radial-gradient(ellipse at center, $brand-warning 0%, $brand-danger 100%);
+  // }
+}
+
+.dj--strikes[data-strikes="1"] {
+  .dj--strike:nth-child(1) {
     background: $brand-danger;
-    // background: radial-gradient(ellipse at center, $brand-warning 0%, $brand-danger 100%);
   }
 }
+
+.dj--strikes[data-strikes="2"] {
+  .dj--strike:nth-child(1) {
+    background: $brand-danger;
+  }
+  .dj--strike:nth-child(2) {
+    background: $brand-danger;
+  }
+
+}
+
+.dj--strikes[data-strikes="3"] .dj--strike:nth-child(3) {
+  background: $brand-danger;
+}
+
+
 
 .dj--seat .dj {
   width: 100px;

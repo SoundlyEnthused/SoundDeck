@@ -350,7 +350,7 @@ export default class Room extends React.Component {
                   <button className="btn btn-danger btn-round vote--downvoteCurrent" title="Vote to Skip" data-placement="bottom" data-animation="true" data-toggle="tooltip" id="downvote" onClick={this.downvote}>
                     <i className="fa fa-times" aria-hidden="true" /></button>}
               </div>
-              <div className="vote--djQueue col-xs-4">
+              <div className="vote--djQueue col-sm-4 col-xs-6">
                 <button className="vote--djqueueBtn btn btn-default btn-round" title="DJ Queue" data-placement="bottom" data-animation="true" data-toggle="tooltip" onClick={this.handleDjQueue}>
                   {this.state.isDJ ? <img src="img/removeFromList.svg" alt="dequeue" /> : <img src="img/addToList.svg" alt="enqueue" />}
                 </button>

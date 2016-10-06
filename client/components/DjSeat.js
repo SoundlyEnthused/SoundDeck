@@ -2,7 +2,7 @@ import React from 'react';
 
 const DjSeat = props => (
   <div className="dj--seat">
-    <div className="dj--strikes">
+    <div className="dj--strikes" data-strikes={props.strikes}>
       <div className="dj--strike" />
       <div className="dj--strike" />
       <div className="dj--strike" />
@@ -18,7 +18,6 @@ const DjSeat = props => (
           data-animation="true"
           data-toggle="tooltip"
           data-likes={props.likes || 0}
-          data-strikes={props.strikes}
         >
           <img src={props.avatar_url} alt={props.username} />
         </div>
