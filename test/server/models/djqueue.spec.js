@@ -171,10 +171,13 @@ describe('DjQueue', () => {
       const u1 = 1;
       Playlist.update(u1, [{ songId: 1, duration: 1000 }]);
       DjQueue.enqueue(id, u1);
-      DjQueue.nextTrack(id);
-      expect(DjQueue.get(id).currentTrack.songId).to.equal(1);
-      DjQueue.removeUser(id, u1);
-      expect(DjQueue.get(id).currentTrack).to.equal(null);
+      DjQueue.nextTrack(id).then(() => {
+        expect(DjQueue.get(id).currentTrack.songId).to.equal(1);
+        return;
+      }).then(() => {
+        DjQueue.removeUser(id, u1);
+        expect(DjQueue.get(id).currentTrack).to.equal(null);
+      });
     });
   });
   describe('clearTrack', () => {
@@ -186,10 +189,12 @@ describe('DjQueue', () => {
       const u1 = 1;
       Playlist.update(u1, [{ songId: 5, duration: 2300 }]);
       DjQueue.enqueue(id, u1);
-      DjQueue.nextTrack(id);
-      expect(DjQueue.get(id).currentTrack.songId).to.equal(5);
-      DjQueue.clearTrack(id);
-      expect(DjQueue.get(id).currentTrack).to.equal(null);
+      DjQueue.nextTrack(id).then(() => {
+        expect(DjQueue.get(id).currentTrack.songId).to.equal(5);
+        return DjQueue.clearTrack(id);
+      }).then(() => {
+        expect(DjQueue.get(id).currentTrack).to.equal(null);
+      });
     });
   });
   describe('next', () => {
@@ -252,17 +257,20 @@ describe('DjQueue', () => {
       expect(DjQueue.nextTrack).to.be.a('function');
     });
     it('should return null if there is no next track', () => {
-      expect(DjQueue.nextTrack(queue.id)).to.equal(null);
+      expect(DjQueue.nextTrack(queue.id)).to.eventually.equal(null);
     });
     it('should return current DJ\'s next track', () => {
       DjQueue.enqueue(queue.id, u1);
-      const q = DjQueue.nextTrack(queue.id);
-      expect(q.songId).to.equal(tracks1[0].songId);
-      expect(q.duration).to.equal(tracks1[0].duration);
+      DjQueue.nextTrack(queue.id).then((q) => {
+        expect(q.songId).to.equal(tracks1[0].songId);
+        expect(q.duration).to.equal(tracks1[0].duration);
+      });
     });
     it('should return the timestamp of when track was requested as startTime', () => {
       DjQueue.enqueue(queue.id, u1);
-      expect(DjQueue.nextTrack(queue.id).startTime).to.be.closeTo(Date.now(), 100);
+      DjQueue.nextTrack(queue.id).then((q) => {
+        expect(q.startTime).to.be.closeTo(Date.now(), 100);
+      });
     });
     it('should set currentTrack to null if there is no next track', () => {
       DjQueue.nextTrack(queue.id);
@@ -271,36 +279,52 @@ describe('DjQueue', () => {
     });
     it('should set currentTrack to current DJ\'s next track', () => {
       DjQueue.enqueue(queue.id, u1);
-      DjQueue.nextTrack(queue.id);
-      const updated = DjQueue.get(queue.id);
-      expect(updated.currentTrack.songId).to.equal(tracks1[0].songId);
-      expect(updated.currentTrack.duration).to.equal(tracks1[0].duration);
-      expect(updated.currentTrack.startTime).to.be.closeTo(Date.now(), 100);
+      DjQueue.nextTrack(queue.id).then(() => {
+        const updated = DjQueue.get(queue.id);
+        expect(updated.currentTrack.songId).to.equal(tracks1[0].songId);
+        expect(updated.currentTrack.duration).to.equal(tracks1[0].duration);
+        expect(updated.currentTrack.startTime).to.be.closeTo(Date.now(), 100);
+      });
     });
     it('should rotate tracks', () => {
       DjQueue.enqueue(queue.id, u1);
-      DjQueue.nextTrack(queue.id);
-      expect(Playlist.get(p1.id).tracks[0].songId).to.equal(tracks1[1].songId);
-      DjQueue.nextTrack(queue.id);
-      expect(Playlist.get(p1.id).tracks[0].songId).to.equal(tracks1[0].songId);
-      DjQueue.nextTrack(queue.id);
-      expect(Playlist.get(p1.id).tracks[0].songId).to.equal(tracks1[1].songId);
+      DjQueue.nextTrack(queue.id).then(() => {
+        expect(Playlist.get(p1.id).tracks[0].songId).to.equal(tracks1[1].songId);
+        return DjQueue.nextTrack(queue.id);
+      }).then(() => {
+        expect(Playlist.get(p1.id).tracks[0].songId).to.equal(tracks1[0].songId);
+        return DjQueue.nextTrack(queue.id);
+      }).then(() => {
+        expect(Playlist.get(p1.id).tracks[0].songId).to.equal(tracks1[1].songId);
+      });
     });
     it('should work with only one track and dj', () => {
-      Playlist.update(p1.id, [{ songId: 5, duration: 2300 }]);
-      expect(Playlist.get(p1.id).tracks[0].songId).to.equal(5);
-      DjQueue.nextTrack(queue.id);
-      expect(Playlist.get(p1.id).tracks[0].songId).to.equal(5);
+      Playlist.update(p1.id, [{ songId: 5, duration: 2300 }]).then(() => {
+        expect(Playlist.get(p1.id).tracks[0].songId).to.equal(5);
+        return DjQueue.nextTrack(queue.id);
+      }).then(() => {
+        expect(Playlist.get(p1.id).tracks[0].songId).to.equal(5);
+      });
     });
     it('should rotate DJs', () => {
       DjQueue.enqueue(queue.id, u1);
       DjQueue.enqueue(queue.id, u2);
-      expect(DjQueue.nextTrack(queue.id).songId).to.deep.equal(tracks1[0].songId);
-      expect(DjQueue.nextTrack(queue.id).songId).to.deep.equal(tracks2[0].songId);
-      expect(DjQueue.nextTrack(queue.id).songId).to.deep.equal(tracks1[1].songId);
-      expect(DjQueue.nextTrack(queue.id).songId).to.deep.equal(tracks2[1].songId);
-      expect(DjQueue.nextTrack(queue.id).songId).to.deep.equal(tracks1[0].songId);
-      expect(DjQueue.nextTrack(queue.id).songId).to.deep.equal(tracks2[2].songId);
+      DjQueue.nextTrack(queue.id).then((q) => {
+        expect(q.songId).to.deep.equal(tracks1[0].songId);
+        return DjQueue.nextTrack(queue.id);
+      }).then((q) => {
+        expect(q.songId).to.deep.equal(tracks2[0].songId);
+        return DjQueue.nextTrack(queue.id);
+      }).then((q) => {
+        expect(q.songId).to.deep.equal(tracks1[1].songId);
+        return DjQueue.nextTrack(queue.id);
+      }).then((q) => {
+        expect(q.songId).to.deep.equal(tracks2[1].songId);
+        return DjQueue.nextTrack(queue.id);
+      }).then((q) => {
+        expect(q.songId).to.deep.equal(tracks2[2].songId);
+        return DjQueue.nextTrack(queue.id);
+      });
     });
     it('should remove DJs that have empty playlists', () => {
       const u3 = 3;
@@ -308,42 +332,57 @@ describe('DjQueue', () => {
       DjQueue.enqueue(queue.id, u1);
       DjQueue.enqueue(queue.id, u3);
       DjQueue.enqueue(queue.id, u2);
-      expect(DjQueue.nextTrack(queue.id).songId).to.equal(tracks1[0].songId);
-      // Should skip u3
-      expect(DjQueue.nextTrack(queue.id).songId).to.equal(tracks2[0].songId);
-      // Should remove u3 from active and waiting
-      expect(DjQueue.get(queue.id).active).to.not.include(u3);
-      expect(DjQueue.get(queue.id).waiting).to.not.include(u3);
+      DjQueue.nextTrack(queue.id).then((q) => {
+        expect(q.songId).to.equal(tracks1[0].songId);
+        return DjQueue.nextTrack(queue.id);
+      }).then((q) => {
+        expect(q.songId).to.equal(tracks2[0].songId);
+        return DjQueue.nextTrack(queue.id);
+      }).then((q) => {
+        expect(DjQueue.get(queue.id).active).to.not.include(u3);
+        expect(DjQueue.get(queue.id).waiting).to.not.include(u3);
+      });
     });
     it('should rotate properly when DJ\'s are removed and added', () => {
       DjQueue.enqueue(queue.id, u1);
       DjQueue.enqueue(queue.id, u2);
-      expect(DjQueue.nextTrack(queue.id).songId).to.equal(tracks1[0].songId);
-      DjQueue.removeUser(queue.id, u2);
-      expect(DjQueue.nextTrack(queue.id).songId).to.equal(tracks1[1].songId);
-      DjQueue.enqueue(queue.id, u2);
-      expect(DjQueue.nextTrack(queue.id).songId).to.equal(tracks2[0].songId);
+      DjQueue.nextTrack(queue.id).then((q) => {
+        expect(q.songId).to.equal(tracks1[0].songId);
+        return DjQueue.nextTrack(queue.id);
+      }).then((q) => {
+        expect(q.songId).to.equal(tracks1[1].songId);
+        return DjQueue.nextTrack(queue.id);
+      }).then((q) => {
+        expect(q.songId).to.equal(tracks2[0].songId);
+        return DjQueue.nextTrack(queue.id);
+      });
     });
     it('should remove DJs that don\'t have playlists', () => {
       const u3 = 3;
       DjQueue.enqueue(queue.id, u1);
       DjQueue.enqueue(queue.id, u3);
       DjQueue.enqueue(queue.id, u2);
-      expect(DjQueue.nextTrack(queue.id).songId).to.deep.equal(tracks1[0].songId);
-      // Should skip u3
-      expect(DjQueue.nextTrack(queue.id).songId).to.deep.equal(tracks2[0].songId);
-      // Should reove u3 from active and waiting
-      expect(DjQueue.get(queue.id).active).to.not.include(u3);
-      expect(DjQueue.get(queue.id).waiting).to.not.include(u3);
-      expect(DjQueue.get(queue.id).active).to.include(u1);
-      expect(DjQueue.get(queue.id).active).to.include(u2);
+      DjQueue.nextTrack(queue.id).then((q) => {
+        expect(q.songId).to.equal(tracks1[0].songId);
+
+        return DjQueue.nextTrack(queue.id);
+      }).then((q) => {
+        // Should skip u3
+        expect(q.songId).to.equal(tracks2[0].songId);
+        // Should reove u3 from active and waiting
+        expect(DjQueue.get(queue.id).active).to.not.include(u3);
+        expect(DjQueue.get(queue.id).waiting).to.not.include(u3);
+        expect(DjQueue.get(queue.id).active).to.include(u1);
+        expect(DjQueue.get(queue.id).active).to.include(u2);
+      });
     });
     it('should remove a DJ that enqueues but has no playlist', () => {
       const u4 = 4;
       DjQueue.enqueue(queue.id, u4);
       expect(DjQueue.get(queue.id).active).to.include(u4);
-      DjQueue.nextTrack(queue.id);
-      expect(DjQueue.get(queue.id).active).to.not.include(u4);
+      DjQueue.nextTrack(queue.id).then(() => {
+        expect(DjQueue.get(queue.id).active).to.not.include(u4);
+      });
     });
   });
 });
