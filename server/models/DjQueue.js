@@ -80,24 +80,28 @@ DjQueue.nextTrack = function nextTrack(id) {
   // If we have no DJ's return null
   if (dj === null) {
     queues[id].currentTrack = null;
-    return queues[id].currentTrack;
+    return Promise.resolve(queues[id].currentTrack);
   }
   // Grab DJ's playlist
-  const playlist = Playlist.getByUserId(dj);
-  // if playlist is empty...
-  if (playlist === null || playlist.tracks.length === 0) {
-    // remove the DJ from queue
-    DjQueue.removeUser(id, dj);
-    // Set currentDj index back by one in order to keep current position
-    queues[id].currentDj = Math.max(0, queues[id].currentDj - 1);
-    // Try again!
-    queues[id].currentTrack = DjQueue.nextTrack(id);
-    return queues[id].currentTrack;
-  }
-  // Return startTime of track
-  queues[id].currentTrack = Object.assign({ startTime: Date.now() }, playlist.tracks[0]);
-  Playlist.rotate(playlist.id);
-  return queues[id].currentTrack;
+  return Playlist.get(dj).then((data) => {
+    // if playlist is empty
+    if (!data || data.length === 0) {
+      // remove the DJ from queue
+      DjQueue.removeUser(id, dj);
+      // Set currentDj index back by one in order to keep current position
+      queues[id].currentDj = Math.max(0, queues[id].currentDj - 1);
+      // Try again!
+      return DjQueue.nextTrack(id).then((newData) => {
+        queues[id].currentTrack = newData;
+        return newData;
+      });
+    }
+    // Return startTime of track
+    queues[id].currentTrack = Object.assign({ startTime: Date.now() }, data[0]);
+    return Playlist.rotate(dj).then(() => {
+      return queues[id].currentTrack;
+    });
+  });
 };
 
 DjQueue.clearTrack = function skipTrackfunction(id) {

@@ -1,10 +1,10 @@
 const chai = require('chai');
 const User = require('../../../server/models/User');
-const Voting = require('../../../server/models/Voting');
+const Votes = require('../../../server/models/Votes');
 
 const expect = chai.expect;
 
-describe('Voting', () => {
+describe('Votes', () => {
 
   describe('Upvoting a DJ', () => {
     it('should give the current DJ a like', () => {

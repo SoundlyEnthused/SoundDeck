@@ -44,25 +44,26 @@ Votes.upvote = function upvote(roomId, userId, currentDJ, track) {
   if (voting.track === track) {
     if (userId in voting.voted) {
       if (voting.voted[userId] === 'upvote') {
-        return;
+        return Promise.resolve(null);
       }
       voting.downvoteCount -= 1;
     }
     // User.get(currentDJ).likes = User.get(currentDJ).likes + 1;
-    User.upvote(currentDJ);
     voting.voted[userId] = 'upvote';
+    return User.upvote(currentDJ);
   }
+  return Promise.resolve(null);
 };
 
 Votes.downvote = function downvote(roomId, userId, currentDJ, track) {
   const voting = votings[votingIdsByRoom[roomId]];
+  let voteChange = false;
   if (voting.track === track) {
     if (userId in voting.voted) {
       if (voting.voted[userId] === 'downvote') {
-        return;
+        return Promise.resolve(null);
       }
-      // User.get(currentDJ).likes = User.get(currentDJ).likes - 1;
-      User.downvote(currentDJ);
+      voteChange = true;
     }
     voting.downvoteCount += 1;
     if (voting.downvoteCount / voting.totalCount >= skipRatio) {
@@ -77,6 +78,10 @@ Votes.downvote = function downvote(roomId, userId, currentDJ, track) {
     }
     voting.voted[userId] = 'downvote';
   }
+  if (voteChange) {
+    return User.downvote(currentDJ);
+  }
+  return Promise.resolve(null);
 };
 
 Votes.newTrack = function newTrack(roomId, track) {
