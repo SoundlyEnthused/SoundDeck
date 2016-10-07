@@ -29,8 +29,10 @@ describe('MvpAPI', () => {
       const socket = { id: 1 };
       const userId = 2;
       MvpAPI.login(socket, { id: userId });
-      const msg = sent.shift();
-      expect(msg).to.deep.equal({ userId, eventName: 'login', data: { id: userId } });
+      return MvpAPI.login().should.eventually.equal({ userId, eventName: 'login', data: { id: userId } });
+      //const msg = sent.shift();
+      // console.log('mvpapi.spec msg = ', msg); // => undefined
+      // expect(msg).to.deep.equal({ userId, eventName: 'login', data: { id: userId } });
     });
     it('should send inital app state to user', () => {
       const socket = { id: 1 };

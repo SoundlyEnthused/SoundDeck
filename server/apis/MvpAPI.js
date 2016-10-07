@@ -86,10 +86,14 @@ function updateTracks() {
 /* Handler for event to associate a connection with a soundcloud user */
 MvpAPI.login = (socket, data) => {
   Connection.register(data.id, socket);
-  User.create(data.id, data.username, data.avatar_url);
-  Connection.send(data.id, 'login', { id: data.id });
-  Connection.send(data.id, 'room', MvpAPI.getState());
-  MvpAPI.getPlaylist(socket);
+  User.create(data.id, data.username, data.avatar_url).then(() => {
+    Connection.send(data.id, 'login', { id: data.id });
+    return MvpAPI.getState();
+  }).then((state) => {
+    console.log('MvpAPI.login state = ', state);
+    Connection.send(data.id, 'room', state);
+    MvpAPI.getPlaylist(socket);
+  });
 };
 
 /* Handler for event to join a room */
