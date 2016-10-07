@@ -39,6 +39,10 @@
   cursor: default;
 }
 
+button.close.closeNavBtn:focus {
+  border: none;
+}
+
 .lobby--newRoom {
   margin-bottom: 10px;
   padding-bottom: 10px;
