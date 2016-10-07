@@ -7,6 +7,15 @@ body {
   color: white;
 }
 
+header {
+  position: relative;
+  .closeNavBtn {
+    position: absolute;
+    right: 0px;
+    font-size: 2em;
+  }
+}
+
 h3 {
   font-size: 15px;
 }

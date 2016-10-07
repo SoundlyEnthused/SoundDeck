@@ -98,9 +98,12 @@ export default class Playlist extends React.Component {
 
   render() {
     return (
-      <div id="playlist" className="playlist collapse">
+      <section id="playlist" className="playlist collapse">
         <div className="container">
-          <h1> Playlist </h1>
+          <header>
+            <button className="close closeNavBtn" onClick={() => { $('#playlist').collapse('hide'); }}>&times;</button>
+            <h1> Playlist </h1>
+          </header>
           <div className="row">
             <div className="playlist--playlist col-sm-6">
               <h2 className="playlist--onDeck">{(this.state.playlist.length === 0) ? false : 'Tracks On Deck: '}</h2>
@@ -159,7 +162,8 @@ export default class Playlist extends React.Component {
             </div>
           </div>
         </div>
-      </div>
+        <button className="playlist--bg" onClick={() => { $('#playlist').collapse('hide'); }} />
+      </section>
     );
   }
 }

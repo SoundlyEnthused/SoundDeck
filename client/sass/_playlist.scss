@@ -97,3 +97,19 @@
   font-size: 20px;
   margin-top: 20px;
 }
+
+.playlist--bg {
+    background: transparent;
+    position: absolute;
+    left: 0;
+    height: 0vh;
+    width: 100vw;
+    border: none;
+    outline: none !important;
+}
+
+.playlist.collapse.in {
+    .playlist--bg {
+      height: 50vh;
+    }
+}

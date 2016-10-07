@@ -4,6 +4,8 @@ import SC from 'soundcloud';
 import $ from 'jquery';
 import DjStage from './DjStage';
 import CrowdList from './CrowdList';
+import formatDuration from '../utils/formatDuration';
+
 /* globals $ player */
 export default class Room extends React.Component {
   constructor(props) {
@@ -140,7 +142,7 @@ export default class Room extends React.Component {
             }
             // update play position in player UI
             _this.trackProgress.style.width = `${(player.currentTime / player.duration) * 100}%`;
-            _this.trackDuration.innerHTML = `${(player.currentTime / 60).toFixed(2).split('.').join(':')} / ${(player.duration / 60).toFixed(2).split('.').join(':')}`;
+            _this.trackDuration.innerHTML = `${formatDuration(player.currentTime * 1000)} / ${formatDuration(player.duration * 1000)}`;
           }
         }
       });
