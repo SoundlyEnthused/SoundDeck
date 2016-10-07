@@ -336,7 +336,7 @@ export default class Room extends React.Component {
                     aria-valuenow={this.state.downvoteCount}
                     aria-valuemin="0"
                     aria-valuemax={this.state.users.length + this.state.djs.filter(d => d).length}
-                    style={{ width: `${(this.state.downvoteCount / maxVotes) * 100}%` }}
+                    style={{ width: `${this.state.djs.some(dj => dj !== null) ? (this.state.downvoteCount / maxVotes) * 100 : 0}%` }}
                   />
                 </div>
               </div>
