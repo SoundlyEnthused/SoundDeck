@@ -240,6 +240,7 @@ export default class Room extends React.Component {
     const timeout = window.setTimeout(() => {
       document.getElementsByClassName('vote--upvote')[0].classList.remove('upvoteActive');
       clearTimeout(timeout);
+      $('.vote--upvoteCurrent').tooltip();
     }, 750);
   }
 
@@ -262,6 +263,7 @@ export default class Room extends React.Component {
     const timeout = window.setTimeout(() => {
       document.getElementsByClassName('vote--downvote')[0].classList.remove('downvoteActive');
       clearTimeout(timeout);
+      $('.vote--downvoteCurrent').tooltip();
     }, 750);
   }
 
