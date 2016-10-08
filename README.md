@@ -18,10 +18,20 @@ https://sounddeck.herokuapp.com/
 - Mocha/Chai/Enzyme for testing
 
 ### Getting Started
+Create .env that includes:
 ```
-$ npm install
-$ npm start
+CLIENT_ID=<SoundCloud CLIENT_ID>
+PORT=4000
+HOSTNAME='localhost'
+CALLBACK_URI=http://localhost:4000/callback.html
+MONGODB_URI='mongodb://localhost:27017/sounddeck'
 ```
+Then
+
+> npm install  
+> mongod --dbpath ./dbpath  
+> npm start
+
 Now visit [localhost:4000](http://localhost:4000/)
 
 ### API
