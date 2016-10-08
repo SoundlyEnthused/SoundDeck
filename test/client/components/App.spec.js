@@ -1,15 +1,11 @@
-import jquery from 'jquery';
 import React from 'react';
 import { expect } from 'chai';
-import { mount, shallow } from 'enzyme';
-import sinon from 'sinon';
+import { mount } from 'enzyme';
 import App from '../../../client/components/App';
 import seeds from '../seeds';
-
+/* globals describe it before */
 // describe() is a strictly visual function => it formats output to
 // be more readable; can organize tests with different describe() functions
-
-// describe 
 describe('<App>', () => {
   let wrapper = null;
   describe('<Nav>', () => {
@@ -38,22 +34,22 @@ describe('<App>', () => {
         me = seeds.user;
         wrapper.setState({ userData: me });
       });
-        it('displays a navigation bar', () => {
-          expect(wrapper.find('nav').length).to.equal(1);
-        });
-        it('does NOT display a login button', () => {
-          expect(wrapper.find('#LoginButton').length).to.equal(0);
-        });
-        it('displays a lobby button', () => {
-          expect(wrapper.find('#LobbyButton').length).to.equal(1);
-        });
-        it('displays a playlist button', () => {
-          expect(wrapper.find('#PlaylistButton').length).to.equal(1);
-        });
-        it('displays the user\'s Soundcloud username', () => {
-          expect(wrapper.find('.navbar--signedIn').length).to.equal(1);
-          expect(wrapper.find('.navbar--signedIn').html()).to.include(me.username);
-        });
+      it('displays a navigation bar', () => {
+        expect(wrapper.find('nav').length).to.equal(1);
+      });
+      it('does NOT display a login button', () => {
+        expect(wrapper.find('#LoginButton').length).to.equal(0);
+      });
+      it('displays a lobby button', () => {
+        expect(wrapper.find('#LobbyButton').length).to.equal(1);
+      });
+      it('displays a playlist button', () => {
+        expect(wrapper.find('#PlaylistButton').length).to.equal(1);
+      });
+      it('displays the user\'s Soundcloud username', () => {
+        expect(wrapper.find('.navbar--signedIn').length).to.equal(1);
+        expect(wrapper.find('.navbar--signedIn').html()).to.include(me.username);
+      });
     }); // end describe 'signed in'
   }); // end Nav()
   describe('<Lobby>', () => {
@@ -63,8 +59,8 @@ describe('<App>', () => {
     describe('not signed in', () => {
       it('lobby should collapse', () => {
         expect(wrapper.find('#lobby').hasClass('collapse')).to.equal(true);
-      })
-    })
+      });
+    });
   }); // end Lobby()
 }); // end App()
 
