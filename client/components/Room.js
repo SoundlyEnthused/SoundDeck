@@ -167,15 +167,18 @@ export default class Room extends React.Component {
     const timeout = window.setTimeout(() => {
       document.getElementsByClassName('vote--muteBtn')[0].classList.remove('mutePress');
       clearTimeout(timeout);
+      $('.vote--muteBtn').tooltip();
     }, 750);
   }
 
   handleDjQueue() {
     $('.vote--djQueueBtn').tooltip('destroy');
+
     document.getElementsByClassName('vote--djqueueBtn')[0].classList.add('queuePress');
     const timeout = window.setTimeout(() => {
       document.getElementsByClassName('vote--djqueueBtn')[0].classList.remove('queuePress');
       clearTimeout(timeout);
+      $('.vote--djqueueBtn').tooltip();
     }, 750);
 
 
