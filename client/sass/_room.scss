@@ -1,5 +1,7 @@
 @import "dj";
 
+$buttonSpeed: .75s;
+
 h1 {
   font-size: 24px;
   cursor: default;
@@ -102,7 +104,7 @@ p {
   display: inline-block;
   margin: 0 10px;
   text-align: center;
-  overflow: hidden;
+  // overflow: hidden;
   @media (max-width: $screen-sm-min) {
     width: 40px;
     height: 40px;
@@ -113,20 +115,44 @@ p {
 
 .vote--upvote {
   position: relative;
+  z-index: 100;
   &:disabled {
     opacity: 0.5;
+  }
+  &:before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0;
   }
 }
 
 .vote--downvote {
   position: relative;
+  z-index: 100;
   &:disabled {
     opacity: 0.5;
   }
+  &:before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0;
+  }
 }
 
-.upvoteActive {
-  animation: upvoteFade 1s;
+.upvoteActive:before {
+  animation: upvoteFade $buttonSpeed;
 }
 
 @keyframes upvoteFade {
@@ -134,47 +160,154 @@ p {
     color: #fff;
     background-color: #394b82;
     border-color: #1a223b;
-    box-shadow: 0px 0px 20px transparent;
+    opacity: 0;
+    transform: scale3d(0.85, 0.85, 1);
+    // box-shadow: 0px 0px 20px transparent;
   }
   10% {
     background-color: #b5c3ef;
     color: #405594;
-    box-shadow: 0px 0px 20px #b5c3ef;
+    // box-shadow: 0px 0px 20px #b5c3ef;
+    opacity: 1;
   }
   100% {
     color: #fff;
     background-color: #394b82;
     border-color: #1a223b;
-    box-shadow: 0px 0px 20px transparent;
+    transform: scale3d(1.3, 1.3, 1);
+    opacity: 0;
+    // box-shadow: 0px 0px 20px transparent;
   }
 }
 
-.downvoteActive {
-  animation: downvoteFade 1s;
+// @keyframes upvoteFade {
+//   0% {
+//     color: #fff;
+//     background-color: #394b82;
+//     border-color: #1a223b;
+//     box-shadow: 0px 0px 20px transparent;
+//   }
+//   10% {
+//     background-color: #b5c3ef;
+//     color: #405594;
+//     box-shadow: 0px 0px 20px #b5c3ef;
+//   }
+//   100% {
+//     color: #fff;
+//     background-color: #394b82;
+//     border-color: #1a223b;
+//     box-shadow: 0px 0px 20px transparent;
+//   }
+// }
+
+.downvoteActive:before {
+  animation: downvoteFade $buttonSpeed;
 }
 
 @keyframes downvoteFade {
   0% {
-        color: #fff;
+    color: #fff;
     background-color: #cc2700;
     border-color: #a82000;
-    box-shadow: 0px 0px 20px transparent;
+    opacity: 0;
+    transform: scale3d(0.85, 0.85, 1);
   }
   10% {
-    background-color: #fc9a55;
-    color: #a82000;
-    box-shadow: 0px 0px 20px #fc9a55;
+    background-color: #f78677;
+    opacity: 1;
   }
   100% {
-        color: #fff;
+    color: #fff;
     background-color: #cc2700;
     border-color: #a82000;
-    box-shadow: 0px 0px 20px transparent;
+    transform: scale3d(1.3, 1.3, 1);
+    opacity: 0;
   }
 }
 
-.vote--djQueue {
-    text-align: right;
+// @keyframes downvoteFade {
+//   0% {
+//     color: #fff;
+//     background-color: #cc2700;
+//     border-color: #a82000;
+//     box-shadow: 0px 0px 20px transparent;
+//   }
+//   10% {
+//     background-color: #f78677;
+//     color: #a82000;
+//     box-shadow: 0px 0px 20px #f78677;
+//   }
+//   100% {
+//         color: #fff;
+//     background-color: #cc2700;
+//     border-color: #a82000;
+//     box-shadow: 0px 0px 20px transparent;
+//   }
+// }
+
+.vote--muteBtn {
+  position: relative;
+  z-index: 100;
+  &:disabled {
+    opacity: 0.5;
+  }
+  &:before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0;
+  }
+}
+
+.mutePress:before {
+  animation: defaultFade $buttonSpeed;
+}
+
+@keyframes defaultFade {
+  0% {
+    background-color: #cccccc;
+    border-color: darken(#ccc, 20%);
+    opacity: 0;
+    transform: scale3d(0.85, 0.85, 1);
+  }
+  10% {
+    background-color: #fff;
+    opacity: 1;
+  }
+  100% {
+    background-color: #cccccc;
+    border-color: darken(#ccc, 20%);
+    transform: scale3d(1.3, 1.3, 1);
+    opacity: 0;
+  }
+}
+
+.vote--djqueueBtn {
+  position: relative;
+  z-index: 100;
+  &:disabled {
+    opacity: 0.5;
+  }
+  &:before {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0;
+  }
+}
+
+.queuePress:before {
+  animation: defaultFade $buttonSpeed;
 }
 
 .track {
