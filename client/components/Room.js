@@ -162,10 +162,23 @@ export default class Room extends React.Component {
         mute: false,
       });
     }
+
+    document.getElementsByClassName('vote--muteBtn')[0].classList.add('mutePress');
+    const timeout = window.setTimeout(() => {
+      document.getElementsByClassName('vote--muteBtn')[0].classList.remove('mutePress');
+      clearTimeout(timeout);
+    }, 750);
   }
 
   handleDjQueue() {
     $('.vote--djQueueBtn').tooltip('destroy');
+    document.getElementsByClassName('vote--djqueueBtn')[0].classList.add('queuePress');
+    const timeout = window.setTimeout(() => {
+      document.getElementsByClassName('vote--djqueueBtn')[0].classList.remove('queuePress');
+      clearTimeout(timeout);
+    }, 750);
+
+
     if (this.state.isDJ) {
       this.props.ServerAPI.dequeue();
       return;
@@ -220,12 +233,11 @@ export default class Room extends React.Component {
       }
     }
 
-    // $('.vote--upvote').addClass('upvoteActive').delay(2500).removeClass('upvoteActive');
     document.getElementsByClassName('vote--upvote')[0].classList.add('upvoteActive');
     const timeout = window.setTimeout(() => {
       document.getElementsByClassName('vote--upvote')[0].classList.remove('upvoteActive');
       clearTimeout(timeout);
-    }, 1200);
+    }, 750);
   }
 
   downvote() {
@@ -247,7 +259,7 @@ export default class Room extends React.Component {
     const timeout = window.setTimeout(() => {
       document.getElementsByClassName('vote--downvote')[0].classList.remove('downvoteActive');
       clearTimeout(timeout);
-    }, 1200);
+    }, 750);
   }
 
   render() {
@@ -341,24 +353,44 @@ export default class Room extends React.Component {
                 </div>
               </div>
               <div className="vote--btns col-sm-4 col-xs-6">
-                {(this.state.currentDj === -1) || (this.state.track === null) || (this.props.userId === this.state.djs[this.state.currentDj].id) ? <button className="btn btn-success btn-round vote--upvote" disabled id="upvote">
-                  <i className="fa fa-check" aria-hidden="true" /></button>
+                {
+                  (this.state.currentDj === -1) || (this.state.track === null) || (this.props.userId === this.state.djs[this.state.currentDj].id) ?
+                    <button className="btn btn-success btn-round vote--upvote" disabled id="upvote">
+                      <i className="fa fa-check" aria-hidden="true" />
+                    </button>
                   :
-                  <button className="btn btn-success btn-round vote--upvoteCurrent" title="Upvote DJ" data-placement="bottom" data-animation="true" data-toggle="tooltip" id="upvote" onClick={this.upvote}>
-                    <i className="fa fa-check" aria-hidden="true" /></button>}
-                {(this.state.currentDj === -1) || (this.state.track === null) || (this.props.userId === this.state.djs[this.state.currentDj].id) ? <button className="btn btn-danger btn-round vote--downvote" disabled id="downvote">
-                  <i className="fa fa-times" aria-hidden="true" /></button>
+                    <button className="btn btn-success btn-round vote--upvote vote--upvoteCurrent" title="Upvote DJ" data-placement="bottom" data-animation="true" data-toggle="tooltip" id="upvote" onClick={this.upvote}>
+                      <i className="fa fa-check" aria-hidden="true" />
+                    </button>
+                }
+                {
+                  (this.state.currentDj === -1) || (this.state.track === null) || (this.props.userId === this.state.djs[this.state.currentDj].id) ?
+                    <button className="btn btn-danger btn-round vote--downvote" disabled id="downvote">
+                      <i className="fa fa-times" aria-hidden="true" />
+                    </button>
                   :
-                  <button className="btn btn-danger btn-round vote--downvoteCurrent" title="Vote to Skip" data-placement="bottom" data-animation="true" data-toggle="tooltip" id="downvote" onClick={this.downvote}>
-                    <i className="fa fa-times" aria-hidden="true" /></button>}
+                    <button className="btn btn-danger btn-round vote--downvote vote--downvoteCurrent" title="Vote to Skip" data-placement="bottom" data-animation="true" data-toggle="tooltip" id="downvote" onClick={this.downvote}>
+                      <i className="fa fa-times" aria-hidden="true" />
+                    </button>
+                  }
               </div>
               <div className="vote--djQueue col-sm-4 col-xs-6">
                 <button className="vote--djqueueBtn btn btn-default btn-round" title="DJ Queue" data-placement="bottom" data-animation="true" data-toggle="tooltip" onClick={this.handleDjQueue}>
-                  {this.state.isDJ ? <img src="img/removeFromList.svg" alt="dequeue" /> : <img src="img/addToList.svg" alt="enqueue" />}
+                  {
+                    this.state.isDJ ?
+                      <img src="img/removeFromList.svg" alt="dequeue" />
+                    :
+                      <img src="img/addToList.svg" alt="enqueue" />
+                  }
                 </button>
 
                 <button className="vote--muteBtn btn btn-default btn-round" title="Mute" data-placement="bottom" data-animation="true" data-toggle="tooltip" onClick={this.handleMute}>
-                  {this.state.mute ? <span className="fa fa-volume-off" /> : <span className="fa fa-volume-up" /> }
+                  {
+                    this.state.mute ?
+                      <span className="fa fa-volume-off" />
+                    :
+                      <span className="fa fa-volume-up" />
+                  }
                 </button>
               </div>
             </div>
