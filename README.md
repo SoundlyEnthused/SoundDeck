@@ -1,7 +1,7 @@
 # SoundDeck
 ---
 [<img src="https://travis-ci.org/SoundlyEnthused/SoundDeck.svg?branch=master"/>](https://travis-ci.org//SoundlyEnthused/SoundDeck.svg?branch=master)
-[![coverage-12%](http://img.shields.io/badge/coverage-12%-brightgreen.svg?style=flat)]()
+![coverage-100%](http://img.shields.io/badge/coverage-100%-brightgreen.svg?style=flat)
 
 
 SoundDeck is a place where SoundCloud users can go to share music with other SoundCloud users in a turn-based DJ environment. Users collect a 'like' count and can vote to skip tracks.
