@@ -335,8 +335,9 @@ div#trackDuration {
   background: rgba(0,0,0,0.3);
   padding: 25px;
   border-radius: 20px;
-  animation: fade .35s;
-  animation-delay: .35s;
+  animation: fade2 .5s;
+  opacity: 1;
+  // animation-delay: .35s;
   &:empty {
     padding: 0;
   }
