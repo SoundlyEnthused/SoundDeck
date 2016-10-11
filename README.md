@@ -1,12 +1,13 @@
 # SoundDeck
 ---
 [<img src="https://travis-ci.org/SoundlyEnthused/SoundDeck.svg?branch=master"/>](https://travis-ci.org//SoundlyEnthused/SoundDeck.svg?branch=master)
-![coverage-100%](http://img.shields.io/badge/coverage-100%-brightgreen.svg?style=flat)
 
 
 SoundDeck is a place where SoundCloud users can go to share music with other SoundCloud users in a turn-based DJ environment. Users collect a 'like' count and can vote to skip tracks.
 
-https://sounddeck.herokuapp.com/
+A short video demo of the app is available here: https://www.youtube.com/watch?v=r31VnkD1kbM
+
+SoundDeck is currently deployed via Heroku at: https://sounddeck.herokuapp.com/
 
 ### Tech Stack
 
