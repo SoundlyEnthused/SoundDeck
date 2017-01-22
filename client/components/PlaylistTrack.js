@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sortable } from 'react-sortable';
+import { sortable } from 'react-sortable';
 import formatDuration from '../utils/formatDuration';
 
 class Track extends React.Component {
@@ -50,6 +50,6 @@ Track.defaultProps = {
 };
 
 // eslint-disable-next-line
-const PlaylistTrack = Sortable(Track);
+const PlaylistTrack = sortable(Track);
 
 export default PlaylistTrack;
